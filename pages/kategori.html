@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeaFresh - Kategori Produk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-slate-700 antialiased font-['Inter'] pb-16">
+    <header class="sticky top-0 z-50 flex justify-between items-center px-[8%] py-4 bg-white shadow-sm">
+        <div class="flex flex-col">
+            <div class="text-2xl font-bold text-sky-600 flex items-center gap-2"><i class="fa-solid fa-fish-fins"></i> SeaFresh</div>
+        </div>
+        <nav class="hidden lg:flex gap-6 text-sm font-medium text-slate-600">
+            <a href="index.html" class="hover:text-sky-600">Beranda</a>
+            <a href="kategori.html" class="text-sky-600 font-semibold">Kategori</a>
+            <a href="tentang-kami.html" class="hover:text-sky-600">Tentang Kami</a>
+            <a href="cara-belanja.html" class="hover:text-sky-600">Cara Belanja</a>
+            <a href="blog.html" class="hover:text-sky-600">Blog</a>
+            <a href="kontak.html" class="hover:text-sky-600">Kontak</a>
+        </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto mt-8 px-5">
+        <h1 class="text-2xl font-bold text-slate-900 mb-6">Semua Kategori Hasil Laut</h1>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
+            <button class="bg-sky-600 text-white p-4 rounded-xl font-semibold flex flex-col items-center gap-2 shadow-sm"><i class="fa-solid fa-fish text-xl"></i> Semua</button>
+            <button class="bg-white border border-slate-200 p-4 rounded-xl font-medium flex flex-col items-center gap-2 hover:border-sky-500 transition"><i class="fa-solid fa-shrimp text-xl text-sky-600"></i> Udang</button>
+            <button class="bg-white border border-slate-200 p-4 rounded-xl font-medium flex flex-col items-center gap-2 hover:border-sky-500 transition"><i class="fa-solid fa-crab text-xl text-sky-600"></i> Kepiting</button>
+            <button class="bg-white border border-slate-200 p-4 rounded-xl font-medium flex flex-col items-center gap-2 hover:border-sky-500 transition"><i class="fa-solid fa-cloud-meatball text-xl text-sky-600"></i> Cumi</button>
+            <button class="bg-white border border-slate-200 p-4 rounded-xl font-medium flex flex-col items-center gap-2 hover:border-sky-500 transition"><i class="fa-solid fa-cookie text-xl text-sky-600"></i> Kerang</button>
+            <button class="bg-white border border-slate-200 p-4 rounded-xl font-medium flex flex-col items-center gap-2 hover:border-sky-500 transition"><i class="fa-solid fa-ellipsis text-xl text-sky-600"></i> Lainnya</button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col">
+                <div class="aspect-[4/3] flex items-center justify-center mb-3"><img src="https://images.unsplash.com/photo-1534604973900-c43ab4c2e0ab?auto=format&fit=crop&w=300&q=80" class="max-h-full object-contain"></div>
+                <div class="text-sm font-semibold text-slate-800">Ikan Kakap Merah</div>
+                <div class="text-base font-bold text-slate-900 mt-2">Rp 85.000 <span class="text-xs text-slate-400 font-normal">/ekor</span></div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
