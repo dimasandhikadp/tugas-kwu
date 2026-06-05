@@ -3,24 +3,45 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SeaFresh - Hasil Laut Segar Langsung dari Laut</title>
+    <title>Segar - Hasil Laut Segar Langsung dari Laut</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
   </head>
   <body class="bg-gray-50 text-gray-800 font-sans">
     <header class="bg-white shadow-sm sticky top-0 z-50">
+      <!-- RUNNING TEXT -->
+<div class="bg-blue-600 text-white overflow-hidden py-2">
+  <!-- BARIS ATAS (KIRI → KANAN) -->
+  <div class="whitespace-nowrap animate-marquee-right text-sm font-medium">
+    <span class="mx-6">🐟 Ikan segar langsung dari nelayan</span>
+    <span class="mx-6">🦐 Udang kualitas premium</span>
+    <span class="mx-6">🦀 Kepiting segar setiap hari</span>
+    <span class="mx-6">🦑 Cumi & sotong fresh</span>
+    <span class="mx-6">🚚 Pengiriman cepat seluruh Indonesia</span>
+  </div>
+
+  <!-- BARIS BAWAH (KANAN → KIRI) -->
+  <div class="whitespace-nowrap animate-marquee-left text-sm font-medium mt-1">
+    <span class="mx-6">🔥 Promo spesial setiap minggu</span>
+    <span class="mx-6">💯 100% segar & bergaransi</span>
+    <span class="mx-6">📦 Packing aman cold chain</span>
+    <span class="mx-6">🏝️ Langsung dari laut Tarakan</span>
+    <span class="mx-6">💙 Segar untuk keluarga Anda</span>
+  </div>
+</div>
       <div
         class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between"
       >
         <div class="flex items-center space-x-1">
-          <i
-            data-lucide="fish"
-            class="text-blue-600 w-15 h-8"
+          <img
+            src="assets/img/logo.png"
+            alt="Logo Segar"
+            class="w-15 h-10 object-contain"
             style="transform: scaleX(1.5)"
-          ></i>
+          />
           <div>
             <span class="text-xl font-bold text-blue-600 block leading-none"
-              >Sea<span class="text-blue-950">Fresh</span></span
+              >Se<span class="text-blue-950">gar</span></span
             >
             <span class="text-xs text-gray-400 leading-none"
               >Hasil Laut Segar, Dari Laut Ke Meja Anda</span
@@ -286,10 +307,15 @@
           class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center"
         >
           <div
-            class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center text-blue-600"
+            class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
           >
-            <i data-lucide="fish" class="w-10 h-10"></i>
+            <img
+              src="assets/img/icon-ikan.png"
+              alt="Ikan"
+              class="w-20 h-20 object-contain"
+            />
           </div>
+
           <h4 class="font-bold text-sm text-blue-950">Ikan</h4>
           <p class="text-xs text-gray-400">25+ Produk</p>
         </div>
@@ -298,21 +324,13 @@
           class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center"
         >
           <div
-            class="w-24 h-20 bg-amber-50 rounded-lg mb-3 flex items-center justify-center text-amber-600"
+            class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
           >
-            <svg
-              class="w-10 h-10"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-              ></path>
-            </svg>
+            <img
+              src="assets/img/icon-udang.png"
+              alt="Ikan"
+              class="w-20 h-20 object-contain"
+            />
           </div>
           <h4 class="font-bold text-sm text-blue-950">Udang</h4>
           <p class="text-xs text-gray-400">15+ Produk</p>
@@ -322,21 +340,13 @@
           class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center"
         >
           <div
-            class="w-24 h-20 bg-red-50 rounded-lg mb-3 flex items-center justify-center text-red-500"
+            class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
           >
-            <svg
-              class="w-10 h-10"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
-              ></path>
-            </svg>
+            <img
+              src="assets/img/icon-kepiting.png"
+              alt="Ikan"
+              class="w-20 h-20 object-contain"
+            />
           </div>
           <h4 class="font-bold text-sm text-blue-950">Kepiting</h4>
           <p class="text-xs text-gray-400">10+ Produk</p>
@@ -346,21 +356,13 @@
           class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center"
         >
           <div
-            class="w-24 h-20 bg-purple-50 rounded-lg mb-3 flex items-center justify-center text-purple-500"
+            class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
           >
-            <svg
-              class="w-10 h-10"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-              ></path>
-            </svg>
+            <img
+              src="assets/img/icon-sotong.png"
+              alt="Ikan"
+              class="w-20 h-20 object-contain"
+            />
           </div>
           <h4 class="font-bold text-sm text-blue-950">Cumi & Sotong</h4>
           <p class="text-xs text-gray-400">12+ Produk</p>
@@ -370,21 +372,13 @@
           class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center"
         >
           <div
-            class="w-24 h-20 bg-orange-50 rounded-lg mb-3 flex items-center justify-center text-orange-500"
+            class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
           >
-            <svg
-              class="w-10 h-10"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-              ></path>
-            </svg>
+            <img
+              src="assets/img/icon-kerang.png"
+              alt="Ikan"
+              class="w-20 h-20 object-contain"
+            />
           </div>
           <h4 class="font-bold text-sm text-blue-950">Kerang</h4>
           <p class="text-xs text-gray-400">8+ Produk</p>
@@ -661,128 +655,73 @@
       </div>
     </section>
 
-    <footer class="bg-blue-950 text-white mt-20">
-      <div class="max-w-7xl mx-auto px-4 py-14">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          <!-- Brand -->
-          <div>
-            <p class="text-gray-300 text-sm leading-relaxed">
-              Menyediakan hasil laut segar berkualitas tinggi langsung dari
-              nelayan lokal untuk keluarga Indonesia.
-            </p>
+<!-- METODE PEMBAYARAN (TAILWIND ONLY) -->
+<section id="metode-pembayaran" class="max-w-7xl mx-auto px-4 my-16">
+  <div class="bg-white rounded-2xl shadow-sm border p-8 overflow-hidden">
 
-            <div class="flex space-x-3 mt-5">
-              <a
-                href="#"
-                class="bg-blue-900 hover:bg-blue-800 p-2 rounded-lg transition"
-              >
-                <i data-lucide="facebook" class="w-5 h-5"></i>
-              </a>
+    <h2 class="text-3xl font-bold text-blue-950 mb-6">
+      Metode Pembayaran
+    </h2>
 
-              <a
-                href="#"
-                class="bg-blue-900 hover:bg-blue-800 p-2 rounded-lg transition"
-              >
-                <i data-lucide="instagram" class="w-5 h-5"></i>
-              </a>
+    <!-- BARIS 1 (KE KIRI) -->
+    <div class="overflow-hidden mb-6">
+      <div class="flex w-max gap-10 animate-[marqueeLeft_18s_linear_infinite]">
 
-              <a
-                href="#"
-                class="bg-blue-900 hover:bg-blue-800 p-2 rounded-lg transition"
-              >
-                <i data-lucide="twitter" class="w-5 h-5"></i>
-              </a>
-            </div>
-          </div>
+        <span class="font-bold text-blue-700">BCA</span>
+        <span class="font-bold text-orange-500">BNI</span>
+        <span class="font-bold text-blue-600">BRI</span>
+        <span class="font-bold text-yellow-500">Mandiri</span>
+        <span class="font-bold text-sky-500">DANA</span>
+        <span class="font-bold text-purple-600">OVO</span>
+        <span class="font-bold text-cyan-600">GoPay</span>
+        <span class="font-bold text-orange-500">ShopeePay</span>
+        <span class="font-bold text-red-500">QRIS</span>
+        <span class="font-bold text-blue-800">VISA</span>
+        <span class="font-bold text-red-600">Mastercard</span>
+        <span class="font-bold text-green-600">COD</span>
 
-          <!-- Menu -->
-          <div>
-            <h4 class="font-bold mb-4 text-lg">Menu</h4>
+      </div>
+    </div>
 
-            <ul class="space-y-2 text-sm text-gray-300">
-              <li>
-                <a href="#" class="hover:text-blue-400">Beranda</a>
-              </li>
-              <li>
-                <a href="#" class="hover:text-blue-400">Produk</a>
-              </li>
-              <li>
-                <a href="#" class="hover:text-blue-400">Kategori</a>
-              </li>
-              <li>
-                <a href="pages/tentang-kami.php" class="hover:text-blue-400"
-                  >Tentang Kami</a
-                >
-              </li>
-              <li>
-                <a href="#" class="hover:text-blue-400">Kontak</a>
-              </li>
-            </ul>
-          </div>
+    <!-- BARIS 2 (KE KANAN) -->
+    <div class="overflow-hidden">
+      <div class="flex w-max gap-10 animate-[marqueeRight_18s_linear_infinite]">
 
-          <!-- Bantuan -->
-          <div>
-            <h4 class="font-bold mb-4 text-lg">Bantuan</h4>
+        <span class="font-bold text-green-600">COD</span>
+        <span class="font-bold text-red-600">Mastercard</span>
+        <span class="font-bold text-blue-800">VISA</span>
+        <span class="font-bold text-red-500">QRIS</span>
+        <span class="font-bold text-orange-500">ShopeePay</span>
+        <span class="font-bold text-cyan-600">GoPay</span>
+        <span class="font-bold text-purple-600">OVO</span>
+        <span class="font-bold text-sky-500">DANA</span>
+        <span class="font-bold text-yellow-500">Mandiri</span>
+        <span class="font-bold text-blue-600">BRI</span>
+        <span class="font-bold text-orange-500">BNI</span>
+        <span class="font-bold text-blue-700">BCA</span>
 
-            <ul class="space-y-2 text-sm text-gray-300">
-              <li>
-                <a href="#" class="hover:text-blue-400">Cara Belanja</a>
-              </li>
-              <li>
-                <a href="#" class="hover:text-blue-400">Metode Pembayaran</a>
-              </li>
-              <li>
-                <a href="#" class="hover:text-blue-400">Pengiriman</a>
-              </li>
-              <li>
-                <a href="#" class="hover:text-blue-400">FAQ</a>
-              </li>
-              <li>
-                <a href="#" class="hover:text-blue-400">Kebijakan Privasi</a>
-              </li>
-            </ul>
-          </div>
+      </div>
+    </div>
 
-          <!-- Kontak -->
-          <div>
-            <h4 class="font-bold mb-4 text-lg">Hubungi Kami</h4>
+  </div>
+</section>
+<footer class="bg-blue-950 text-white mt-20">
+  <div class="border-t border-blue-900">
+    <div class="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row justify-between items-center gap-3">
 
-            <div class="space-y-3 text-sm text-gray-300">
-              <div class="flex items-start gap-3">
-                <i data-lucide="map-pin" class="w-5 h-5 text-blue-400"></i>
-                <span>Tarakan, Kalimantan Utara</span>
-              </div>
+      <p class="text-sm text-gray-400">
+        © 2026 Segar. Semua hak dilindungi.
+      </p>
 
-              <div class="flex items-center gap-3">
-                <i data-lucide="phone" class="w-5 h-5 text-blue-400"></i>
-                <span>+62 812-3456-7890</span>
-              </div>
-
-              <div class="flex items-center gap-3">
-                <i data-lucide="mail" class="w-5 h-5 text-blue-400"></i>
-                <span>info@seafresh.id</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="flex items-center gap-4 text-sm text-gray-400">
+        <a href="#" class="hover:text-blue-400">Syarat & Ketentuan</a>
+        <a href="#" class="hover:text-blue-400">Privasi</a>
       </div>
 
-      <!-- Bottom Footer -->
-      <div class="border-t border-blue-900">
-        <div
-          class="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row justify-between items-center gap-3"
-        >
-          <p class="text-sm text-gray-400">
-            © 2026 SeaFresh. Semua hak dilindungi.
-          </p>
+    </div>
+  </div>
+</footer>
 
-          <div class="flex items-center gap-4 text-sm text-gray-400">
-            <a href="#" class="hover:text-blue-400">Syarat & Ketentuan</a>
-            <a href="#" class="hover:text-blue-400">Privasi</a>
-          </div>
-        </div>
-      </div>
-    </footer>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {

@@ -1,36 +1,165 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-    <?php
+   <?php
     include '../includes/head.php'
     ?>
-<body class="bg-slate-50 text-slate-700">
+  <body class="bg-slate-50 text-slate-700">
     <?php
     include '../includes/header.php'
-    ?>
+    ?> 
 
-    <main class="max-w-xl mx-auto mt-12 px-5">
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8">
-            <h1 class="text-2xl font-bold text-slate-900 mb-2 text-center">Hubungi Kami</h1>
-            <p class="text-xs text-slate-400 text-center mb-6">Punya pertanyaan atau kendala? Kirimkan pesan di bawah ini.</p>
-            
-            <form class="space-y-4">
-                <div>
-                    <label class="text-xs font-semibold text-slate-600 block mb-1">Nama Lengkap</label>
-                    <input type="text" class="w-full border border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:border-sky-500">
-                </div>
-                <div>
-                    <label class="text-xs font-semibold text-slate-600 block mb-1">Pesan Anda</label>
-                    <textarea rows="4" class="w-full border border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:border-sky-500"></textarea>
-                </div>
-                <button class="w-full py-2.5 bg-blue-600 text-white rounded-lg font-semibold text-sm hover:bg-blue-700 transition">Kirim Pesan</button>
-            </form>
+  <main class="max-w-7xl mx-auto py-16 px-6">
+
+  <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+
+    <div class="grid md:grid-cols-2">
+
+      <!-- BAGIAN KIRI -->
+      <div class="relative">
+
+        <img
+          src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200"
+          alt="Office"
+          class="w-full h-full object-cover"
+        >
+
+        <!-- CARD INFO -->
+        <div class="absolute left-8 top-1/2 -translate-y-1/2">
+
+          <div class="bg-white p-6 rounded-2xl shadow-xl w-72">
+
+            <div class="flex items-start gap-4 mb-6">
+              <div class="bg-blue-100 p-3 rounded-full">
+                <i data-lucide="map-pin" class="text-blue-600 w-5 h-5"></i>
+              </div>
+
+              <div>
+                <h4 class="font-bold text-slate-800">Lokasi</h4>
+                <p class="text-sm text-gray-500">
+                  Tarakan, Kalimantan Utara
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4 mb-6">
+              <div class="bg-blue-100 p-3 rounded-full">
+                <i data-lucide="phone" class="text-blue-600 w-5 h-5"></i>
+              </div>
+
+              <div>
+                <h4 class="font-bold text-slate-800">Telepon</h4>
+                <p class="text-sm text-gray-500">
+                  +62 812-3456-7890
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="bg-blue-100 p-3 rounded-full">
+                <i data-lucide="clock-3" class="text-blue-600 w-5 h-5"></i>
+              </div>
+
+              <div>
+                <h4 class="font-bold text-slate-800">
+                  Jam Operasional
+                </h4>
+                <p class="text-sm text-gray-500">
+                  Senin - Minggu
+                </p>
+                <p class="text-sm text-gray-500">
+                  08:00 - 21:00 WIB
+                </p>
+              </div>
+            </div>
+
+          </div>
+
         </div>
-    </main>
 
-    <?php
-        include '../includes/footer.php';
-        include '../includes/script.php';
-    ?>
+      </div>
+
+      <!-- BAGIAN KANAN -->
+      <div class="p-10 lg:p-14">
+
+        <h2 class="text-4xl font-bold text-slate-800 mb-2">
+          Hubungi Kami
+        </h2>
+
+        <p class="text-gray-500 mb-8">
+          Hubungi tim Segar untuk pertanyaan,
+          pemesanan, atau kerja sama.
+        </p>
+
+        <form class="space-y-5">
+
+          <div>
+            <label class="block text-sm font-medium mb-2">
+              Nama Lengkap
+            </label>
+
+            <input
+              type="text"
+              placeholder="Masukkan nama lengkap"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">
+              Email
+            </label>
+
+            <input
+              type="email"
+              placeholder="Masukkan email"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">
+              Nomor Telepon
+            </label>
+
+            <input
+              type="text"
+              placeholder="08xxxxxxxxxx"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">
+              Pesan
+            </label>
+
+            <textarea
+              rows="5"
+              placeholder="Tulis pesan Anda..."
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-semibold transition"
+          >
+            Kirim Pesan
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
     
-</body>
+  <?php
+    include '../includes/footer.php'; 
+    include '../includes/script.php'; 
+  ?>
+  </body>
 </html>

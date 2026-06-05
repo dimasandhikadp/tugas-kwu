@@ -3,14 +3,15 @@
         class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between"
       >
         <div class="flex items-center space-x-1">
-          <i
-            data-lucide="fish"
-            class="text-blue-600 w-15 h-8"
+          <img
+            src="../assets/img/logo.png"
+            alt="Logo Segar"
+            class="w-15 h-10 object-contain"
             style="transform: scaleX(1.5)"
-          ></i>
+          />
           <div>
             <span class="text-xl font-bold text-blue-600 block leading-none"
-              >Sea<span class="text-blue-950">Fresh</span></span
+              >Se<span class="text-blue-950">gar</span></span
             >
             <span class="text-xs text-gray-400 leading-none"
               >Hasil Laut Segar, Dari Laut Ke Meja Anda</span

@@ -95,7 +95,7 @@
 
           <div class="flex items-center gap-3">
             <i data-lucide="mail" class="w-5 h-5 text-blue-400"></i>
-            <span>info@seafresh.id</span>
+            <span>info@segar.id</span>
           </div>
         </div>
       </div>
@@ -108,7 +108,7 @@
       class="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row justify-between items-center gap-3"
     >
       <p class="text-sm text-gray-400">
-        © 2026 SeaFresh. Semua hak dilindungi.
+        © 2026 Segar. Semua hak dilindungi.
       </p>
 
       <div class="flex items-center gap-4 text-sm text-gray-400">
