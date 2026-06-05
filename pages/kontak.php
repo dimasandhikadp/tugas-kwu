@@ -17,10 +17,14 @@
       <!-- BAGIAN KIRI -->
       <div class="relative">
 
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-blue-950/80 to-blue-900/30"
+      ></div>
+
         <img
-          src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200"
+          src="../assets/img/gambar-kontak.jpg"
           alt="Office"
-          class="w-full h-full object-cover"
+          class="w-full h-200 object-cover"
         >
 
         <!-- CARD INFO -->

@@ -9,26 +9,7 @@
   </head>
   <body class="bg-gray-50 text-gray-800 font-sans">
     <header class="bg-white shadow-sm sticky top-0 z-50">
-      <!-- RUNNING TEXT -->
-<div class="bg-blue-600 text-white overflow-hidden py-2">
-  <!-- BARIS ATAS (KIRI → KANAN) -->
-  <div class="whitespace-nowrap animate-marquee-right text-sm font-medium">
-    <span class="mx-6">🐟 Ikan segar langsung dari nelayan</span>
-    <span class="mx-6">🦐 Udang kualitas premium</span>
-    <span class="mx-6">🦀 Kepiting segar setiap hari</span>
-    <span class="mx-6">🦑 Cumi & sotong fresh</span>
-    <span class="mx-6">🚚 Pengiriman cepat seluruh Indonesia</span>
-  </div>
-
-  <!-- BARIS BAWAH (KANAN → KIRI) -->
-  <div class="whitespace-nowrap animate-marquee-left text-sm font-medium mt-1">
-    <span class="mx-6">🔥 Promo spesial setiap minggu</span>
-    <span class="mx-6">💯 100% segar & bergaransi</span>
-    <span class="mx-6">📦 Packing aman cold chain</span>
-    <span class="mx-6">🏝️ Langsung dari laut Tarakan</span>
-    <span class="mx-6">💙 Segar untuk keluarga Anda</span>
-  </div>
-</div>
+      
       <div
         class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between"
       >
@@ -655,55 +636,68 @@
       </div>
     </section>
 
+
+
 <!-- METODE PEMBAYARAN (TAILWIND ONLY) -->
 <section id="metode-pembayaran" class="max-w-7xl mx-auto px-4 my-16">
-  <div class="bg-white rounded-2xl shadow-sm border p-8 overflow-hidden">
+
 
     <h2 class="text-3xl font-bold text-blue-950 mb-6">
       Metode Pembayaran
     </h2>
 
-    <!-- BARIS 1 (KE KIRI) -->
-    <div class="overflow-hidden mb-6">
-      <div class="flex w-max gap-10 animate-[marqueeLeft_18s_linear_infinite]">
+   
+  <!-- BARIS 1 (KE KANAN) -->
+<div class="overflow-hidden mb-6">
+  <div class="flex w-max gap-10 marquee-right">
 
-        <span class="font-bold text-blue-700">BCA</span>
-        <span class="font-bold text-orange-500">BNI</span>
-        <span class="font-bold text-blue-600">BRI</span>
-        <span class="font-bold text-yellow-500">Mandiri</span>
-        <span class="font-bold text-sky-500">DANA</span>
-        <span class="font-bold text-purple-600">OVO</span>
-        <span class="font-bold text-cyan-600">GoPay</span>
-        <span class="font-bold text-orange-500">ShopeePay</span>
-        <span class="font-bold text-red-500">QRIS</span>
-        <span class="font-bold text-blue-800">VISA</span>
-        <span class="font-bold text-red-600">Mastercard</span>
-        <span class="font-bold text-green-600">COD</span>
+    <span class="font-bold text-blue-700">BCA</span>
+    <span class="font-bold text-orange-500">BNI</span>
+    <span class="font-bold text-blue-600">BRI</span>
+    <span class="font-bold text-yellow-500">Mandiri</span>
+    <span class="font-bold text-sky-500">DANA</span>
+    <span class="font-bold text-purple-600">OVO</span>
+    <span class="font-bold text-cyan-600">GoPay</span>
+    <span class="font-bold text-orange-500">ShopeePay</span>
+    <span class="font-bold text-red-500">QRIS</span>
 
-      </div>
-    </div>
-
-    <!-- BARIS 2 (KE KANAN) -->
-    <div class="overflow-hidden">
-      <div class="flex w-max gap-10 animate-[marqueeRight_18s_linear_infinite]">
-
-        <span class="font-bold text-green-600">COD</span>
-        <span class="font-bold text-red-600">Mastercard</span>
-        <span class="font-bold text-blue-800">VISA</span>
-        <span class="font-bold text-red-500">QRIS</span>
-        <span class="font-bold text-orange-500">ShopeePay</span>
-        <span class="font-bold text-cyan-600">GoPay</span>
-        <span class="font-bold text-purple-600">OVO</span>
-        <span class="font-bold text-sky-500">DANA</span>
-        <span class="font-bold text-yellow-500">Mandiri</span>
-        <span class="font-bold text-blue-600">BRI</span>
-        <span class="font-bold text-orange-500">BNI</span>
-        <span class="font-bold text-blue-700">BCA</span>
-
-      </div>
-    </div>
+    <!-- duplikat -->
+    <span class="font-bold text-blue-700">BCA</span>
+    <span class="font-bold text-orange-500">BNI</span>
+    <span class="font-bold text-blue-600">BRI</span>
+    <span class="font-bold text-yellow-500">Mandiri</span>
+    <span class="font-bold text-sky-500">DANA</span>
+    <span class="font-bold text-purple-600">OVO</span>
+    <span class="font-bold text-cyan-600">GoPay</span>
+    <span class="font-bold text-orange-500">ShopeePay</span>
+    <span class="font-bold text-red-500">QRIS</span>
 
   </div>
+</div>
+
+<!-- BARIS 2 (KE KIRI) -->
+<div class="overflow-hidden">
+  <div class="flex w-max gap-10 marquee-left">
+
+    <span class="font-bold text-green-600">COD</span>
+    <span class="font-bold text-red-600">Mastercard</span>
+    <span class="font-bold text-blue-800">VISA</span>
+    <span class="font-bold text-red-500">QRIS</span>
+    <span class="font-bold text-orange-500">ShopeePay</span>
+    <span class="font-bold text-cyan-600">GoPay</span>
+    <span class="font-bold text-purple-600">OVO</span>
+
+    <!-- duplikat -->
+    <span class="font-bold text-green-600">COD</span>
+    <span class="font-bold text-red-600">Mastercard</span>
+    <span class="font-bold text-blue-800">VISA</span>
+    <span class="font-bold text-red-500">QRIS</span>
+    <span class="font-bold text-orange-500">ShopeePay</span>
+    <span class="font-bold text-cyan-600">GoPay</span>
+    <span class="font-bold text-purple-600">OVO</span>
+
+  </div>
+</div>
 </section>
 <footer class="bg-blue-950 text-white mt-20">
   <div class="border-t border-blue-900">
@@ -722,67 +716,38 @@
   </div>
 </footer>
 
+<style>
+  @keyframes marqueeLeft {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const slides = document.querySelectorAll(".hero-slide");
-        const dots = document.querySelectorAll(".slider-dot");
+  @keyframes marqueeRight {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
 
-        let current = 0;
-        let sliderInterval;
+  .marquee-left {
+    animation: marqueeLeft 20s linear infinite;
+  }
 
-        function showSlide(index) {
-          current = index;
+  .marquee-right {
+    animation: marqueeRight 20s linear infinite;
+  }
+</style>
 
-          slides.forEach((slide, i) => {
-            if (i === index) {
-              slide.classList.remove("opacity-0");
-              slide.classList.add("opacity-100");
-            } else {
-              slide.classList.remove("opacity-100");
-              slide.classList.add("opacity-0");
-            }
-          });
-
-          dots.forEach((dot, i) => {
-            if (i === index) {
-              dot.classList.remove("bg-white/40");
-              dot.classList.add("bg-white");
-            } else {
-              dot.classList.remove("bg-white");
-              dot.classList.add("bg-white/40");
-            }
-          });
-        }
-
-        function startSlider() {
-          sliderInterval = setInterval(() => {
-            current = (current + 1) % slides.length;
-            showSlide(current);
-          }, 5000); // 5 detik
-        }
-
-        function resetSliderTimer() {
-          clearInterval(sliderInterval);
-          startSlider();
-        }
-
-        dots.forEach((dot, index) => {
-          dot.style.cursor = "pointer";
-
-          dot.addEventListener("click", () => {
-            showSlide(index);
-            resetSliderTimer();
-          });
-        });
-
-        // Tampilkan slide pertama
-        showSlide(0);
-
-        // Mulai auto slide
-        startSlider();
-      });
+<script>
       lucide.createIcons();
-    </script>
+</script>
+
+
   </body>
 </html>
