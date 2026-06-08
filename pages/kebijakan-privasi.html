@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kebijakan Privasi - Segar | Hasil Laut Segar</title>
-    <!-- Tailwind CSS -->
+    <title>Informasi Pengguna - Segar | Hasil Laut Segar</title>
+    <!-- Tailwind CSS v4 -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -13,28 +13,21 @@
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <style>
-      body {
-        font-family: "Plus Jakarta Sans", sans-serif;
-      }
-    </style>
   </head>
-  <body class="bg-[#f8fafc] min-h-screen flex flex-col text-slate-700">
-    <!-- HEADER / NAVBAR (Sesuai dengan website Segar Anda) -->
+  <body class="bg-[#f8fafc] min-h-screen flex flex-col text-slate-700 font-['Plus_Jakarta_Sans',sans-serif]">
+    
+    <!-- HEADER / NAVBAR -->
     <header class="bg-white border-b border-slate-100 sticky top-0 z-50">
-      <div
-        class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between"
-      >
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <!-- Logo & Tagline -->
         <div class="flex items-center gap-3">
           <img
             src="assets/img/logo.png"
             alt="Logo Segar"
-            class="w-15 h-10 object-contain"
-            style="transform: scaleX(1.5)"
+            class="w-15 h-10 object-contain scale-x-150"
           />
           <div>
-            <h1 class="text-xl font-bold text-slate-800 leading-tight">
+            <h1 class="text-xl font-bold text-blue-950 leading-tight">
               Segar
             </h1>
             <p class="text-[10px] text-slate-500 font-medium">
@@ -44,19 +37,11 @@
         </div>
 
         <!-- Navigasi Menu -->
-        <nav
-          class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600"
-        >
-          <a href="index.html" class="hover:text-[#0066cc] transition-colors"
-            >Beranda</a
-          >
-          <a href="#" class="hover:text-[#0066cc] transition-colors"
-            >Tentang Kami</a
-          >
-          <a href="#" class="hover:text-[#0066cc] transition-colors"
-            >Cara Belanja</a
-          >
-          <a href="#" class="hover:text-[#0066cc] transition-colors">Kontak</a>
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+          <a href="index.html" class="hover:text-blue-600 transition-colors">Beranda</a>
+          <a href="#" class="text-blue-600 transition-colors">Tentang Kami</a>
+          <a href="#" class="hover:text-blue-600 transition-colors">Cara Belanja</a>
+          <a href="#" class="hover:text-blue-600 transition-colors">Kontak</a>
         </nav>
 
         <!-- Kolom Pencarian -->
@@ -67,347 +52,190 @@
             class="w-full bg-slate-100 text-xs pl-4 pr-10 py-2.5 rounded-full border-none focus:outline-none focus:ring-2 focus:ring-blue-200 text-slate-700 placeholder-slate-400"
           />
           <span class="absolute right-3.5 top-3 text-slate-400">
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </span>
         </div>
       </div>
     </header>
 
-    <!-- MAIN WRAPPER (Layout 2 Kolom: Sidebar & Konten Utama) -->
-    <main
-      class="max-w-7xl w-full mx-auto px-6 py-10 flex-grow flex flex-col md:flex-row gap-8"
-    >
-      <!-- SIDEBAR KIRI -->
+    <!-- MAIN WRAPPER -->
+    <main class="max-w-7xl w-full mx-auto px-6 py-10 flex-grow flex flex-col md:flex-row gap-8">
+      
+      <!-- SIDEBAR KIRI (NAVIGASI AKTIF VIA JAVASCRIPT) -->
       <aside class="w-full md:w-64 shrink-0">
-        <div
-          class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm sticky top-24"
-        >
-          <ul class="space-y-1">
+        <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm sticky top-24">
+          <ul class="space-y-1" id="sidebar-menu">
             <li>
-              <a
-                href="#"
-                class="block px-4 py-2.5 text-sm font-medium rounded-xl text-slate-500 hover:bg-slate-50 hover:text-[#0066cc] transition-colors"
-                >Tentang Kami</a
-              >
+              <button onclick="switchTab('tentang-kami')" id="tab-tentang-kami" class="w-full text-left block px-4 py-2.5 text-sm font-medium rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors cursor-pointer">Tentang Kami</button>
             </li>
             <li>
-              <a
-                href="#"
-                class="block px-4 py-2.5 text-sm font-medium rounded-xl text-slate-500 hover:bg-slate-50 hover:text-[#0066cc] transition-colors"
-                >Pemberitahuan Privasi</a
-              >
+              <button onclick="switchTab('pemberitahuan-privasi')" id="tab-pemberitahuan-privasi" class="w-full text-left block px-4 py-2.5 text-sm font-medium rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors cursor-pointer">Pemberitahuan Privasi</button>
             </li>
             <li>
-              <a
-                href="#"
-                class="block px-4 py-2.5 text-sm font-bold rounded-xl bg-blue-50 text-[#0066cc]"
-                >Kebijakan Privasi</a
-              >
+              <button onclick="switchTab('kebijakan-privasi')" id="tab-kebijakan-privasi" class="w-full text-left block px-4 py-2.5 text-sm font-bold rounded-xl bg-blue-50 text-blue-600 cursor-pointer">Kebijakan Privasi</button>
             </li>
             <li>
-              <a
-                href="#"
-                class="block px-4 py-2.5 text-sm font-medium rounded-xl text-slate-500 hover:bg-slate-50 hover:text-[#0066cc] transition-colors"
-                >Syarat & Ketentuan</a
-              >
+              <button onclick="switchTab('syarat-ketentuan')" id="tab-syarat-ketentuan" class="w-full text-left block px-4 py-2.5 text-sm font-medium rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors cursor-pointer">Syarat & Ketentuan</button>
             </li>
             <li>
-              <a
-                href="#"
-                class="block px-4 py-2.5 text-sm font-medium rounded-xl text-slate-500 hover:bg-slate-50 hover:text-[#0066cc] transition-colors"
-                >FAQ</a
-              >
+              <button onclick="switchTab('faq')" id="tab-faq" class="w-full text-left block px-4 py-2.5 text-sm font-medium rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors cursor-pointer">FAQ</button>
             </li>
           </ul>
         </div>
       </aside>
 
       <!-- KONTEN UTAMA KANAN -->
-      <section
-        class="flex-grow bg-white border border-slate-100 rounded-2xl p-6 md:p-10 shadow-sm"
-      >
-        <h2
-          class="text-2xl font-bold text-slate-800 mb-8 border-b border-slate-100 pb-4"
-        >
-          Kebijakan Privasi
-        </h2>
-
-        <div class="space-y-2">
-          <!-- ACCORDION 1: PENGANTAR (Terbuka Secara Default) -->
-          <div class="border-b border-slate-100 pb-2">
-            <button
-              onclick="toggleAccordion(1)"
-              class="w-full flex justify-between items-center py-4 text-left font-bold text-slate-700 hover:text-[#0066cc] transition-colors group focus:outline-none"
-            >
-              <span class="tracking-wide uppercase text-sm md:text-base"
-                >PENGANTAR</span
-              >
-              <!-- Rotasi panah diset 180deg karena terbuka -->
-              <svg
-                id="icon-1"
-                class="w-5 h-5 text-slate-400 group-hover:text-[#0066cc] transition-transform duration-200 rotate-180"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button>
-            <!-- Kelas 'hidden' dihapus agar langsung tampil -->
-            <div
-              id="content-1"
-              class="overflow-hidden transition-all duration-300"
-            >
-              <p
-                class="text-sm md:text-base text-slate-500 pl-2 pb-4 leading-relaxed"
-              >
-                Selamat datang di Segar. Kami berkomitmen penuh untuk menjaga
-                kepercayaan Anda sebagai pengguna dengan melindungi informasi
-                pribadi yang Anda berikan saat bertransaksi produk hasil laut
-                segar di website kami.
-              </p>
+      <section class="flex-grow bg-white border border-slate-100 rounded-2xl p-6 md:p-10 shadow-sm min-h-[500px]">
+        
+        <!-- SECTION 1: TENTANG KAMI -->
+        <div id="content-tentang-kami" class="tab-content hidden space-y-6">
+          <h2 class="text-2xl font-bold text-blue-950 border-b border-slate-100 pb-4">Tentang Kami</h2>
+          <p class="text-sm md:text-base text-slate-500 leading-relaxed">
+            <strong class="text-blue-600">Segar</strong> adalah platform e-commerce pelopor yang menghubungkan langsung para nelayan lokal tradisional dengan dapur Anda. Kami berkomitmen menyajikan hasil laut kualitas premium dengan memotong rantai distribusi yang panjang.
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <h4 class="font-bold text-blue-950 mb-1">Misi Kami</h4>
+              <p class="text-xs text-slate-500">Meningkatkan kesejahteraan nelayan lokal dan memastikan masyarakat mendapatkan asupan protein laut terbaik yang higienis.</p>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <h4 class="font-bold text-blue-950 mb-1">Jaminan Mutu</h4>
+              <p class="text-xs text-slate-500">Setiap produk laut melalui proses kontrol suhu yang ketat (Cold Chain System) mulai dari kapal hulu hingga kurir pengantaran.</p>
             </div>
           </div>
+        </div>
 
-          <!-- ACCORDION 2: RINGKASAN (Terbuka Secara Default) -->
-          <div class="border-b border-slate-100 pb-2">
-            <button
-              onclick="toggleAccordion(2)"
-              class="w-full flex justify-between items-center py-4 text-left font-bold text-slate-700 hover:text-[#0066cc] transition-colors group focus:outline-none"
-            >
-              <span class="tracking-wide uppercase text-sm md:text-base"
-                >RINGKASAN</span
-              >
-              <!-- Rotasi panah diset 180deg karena terbuka -->
-              <svg
-                id="icon-2"
-                class="w-5 h-5 text-slate-400 group-hover:text-[#0066cc] transition-transform duration-200 rotate-180"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button>
-            <!-- Kelas 'hidden' dihapus agar langsung tampil -->
-            <div
-              id="content-2"
-              class="overflow-hidden transition-all duration-300"
-            >
-              <p
-                class="text-sm md:text-base text-slate-500 pl-2 pb-4 leading-relaxed"
-              >
-                Kebijakan ini merangkum jenis data yang kami kumpulkan, cara
-                memproses pesanan pengiriman dari nelayan, serta kepatuhan
-                perlindungan data digital Anda.
+        <!-- SECTION 2: PEMBERITAHUAN PRIVASI -->
+        <div id="content-pemberitahuan-privasi" class="tab-content hidden space-y-6">
+          <h2 class="text-2xl font-bold text-blue-950 border-b border-slate-100 pb-4">Pemberitahuan Privasi</h2>
+          <p class="text-sm md:text-base text-slate-500 leading-relaxed">
+            Pemberitahuan singkat ini dirancang untuk memberi tahu Anda secara transparan mengenai pemrosesan data kilat saat Anda menggunakan aplikasi atau situs web kami.
+          </p>
+          <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100 text-xs text-slate-600 space-y-2">
+            <p>• Kami menghormati hak privasi digital Anda berdasarkan regulasi perlindungan data yang berlaku di Indonesia.</p>
+            <p>• Data pelacakan cookie digunakan semata-mata untuk menyimpan preferensi keranjang belanja ikan Anda agar tidak hilang saat halaman dimuat ulang.</p>
+          </div>
+        </div>
+
+        <!-- SECTION 3: KEBIJAKAN PRIVASI (DEFAULT ACTIVE) -->
+        <div id="content-kebijakan-privasi" class="tab-content space-y-6">
+          <h2 class="text-2xl font-bold text-blue-950 border-b border-slate-100 pb-4">Kebijakan Privasi</h2>
+          
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-xs font-bold text-blue-600 tracking-wide uppercase mb-2">PENGANTAR</h3>
+              <p class="text-sm md:text-base text-slate-500 leading-relaxed pl-1">
+                Selamat datang di Segar. Kami berkomitmen penuh untuk menjaga kepercayaan Anda sebagai pengguna dengan melindungi informasi pribadi yang Anda berikan saat bertransaksi produk hasil laut segar di website kami.
               </p>
             </div>
-          </div>
 
-          <!-- ACCORDION 3: DATA PRIBADI YANG KAMI KUMPULKAN (Sembunyi) -->
-          <div class="border-b border-slate-100 pb-2">
-            <button
-              onclick="toggleAccordion(3)"
-              class="w-full flex justify-between items-center py-4 text-left font-bold text-slate-700 hover:text-[#0066cc] transition-colors group focus:outline-none"
-            >
-              <span class="tracking-wide uppercase text-sm md:text-base"
-                >DATA PRIBADI YANG KAMI KUMPULKAN</span
-              >
-              <svg
-                id="icon-3"
-                class="w-5 h-5 text-slate-400 group-hover:text-[#0066cc] transition-transform duration-200"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button>
-            <div
-              id="content-3"
-              class="hidden overflow-hidden transition-all duration-300"
-            >
-              <div
-                class="text-sm md:text-base text-slate-500 pl-2 pb-4 leading-relaxed space-y-2"
-              >
-                <p>
-                  Kami mengumpulkan data yang diperlukan untuk pemenuhan
-                  pengiriman belanjaan Anda:
-                </p>
-                <ul class="list-disc list-inside pl-2 space-y-1">
+            <div>
+              <h3 class="text-xs font-bold text-blue-600 tracking-wide uppercase mb-2">RINGKASAN</h3>
+              <p class="text-sm md:text-base text-slate-500 leading-relaxed pl-1">
+                Kebijakan ini merangkum jenis data yang kami kumpulkan, cara memproses pesanan pengiriman dari nelayan, serta kepatuhan perlindungan data digital Anda.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-xs font-bold text-blue-600 tracking-wide uppercase mb-2">DATA PRIBADI YANG KAMI KUMPULKAN</h3>
+              <div class="text-sm md:text-base text-slate-500 leading-relaxed space-y-2 pl-1">
+                <p>Kami mengumpulkan data yang diperlukan untuk pemenuhan pengiriman belanjaan Anda:</p>
+                <ul class="list-disc list-inside space-y-1 pl-1 text-slate-500">
                   <li>Nama lengkap dan alamat pengiriman logistik.</li>
                   <li>Nomor telepon / WhatsApp untuk kurir pengantar ikan.</li>
                   <li>Email konfirmasi tagihan pembayaran.</li>
                 </ul>
               </div>
             </div>
-          </div>
 
-          <!-- ACCORDION 4: PENGGUNAAN DATA PRIBADI (Sembunyi) -->
-          <div class="border-b border-slate-100 pb-2">
-            <button
-              onclick="toggleAccordion(4)"
-              class="w-full flex justify-between items-center py-4 text-left font-bold text-slate-700 hover:text-[#0066cc] transition-colors group focus:outline-none"
-            >
-              <span class="tracking-wide uppercase text-sm md:text-base"
-                >PENGGUNAAN DATA PRIBADI</span
-              >
-              <svg
-                id="icon-4"
-                class="w-5 h-5 text-slate-400 group-hover:text-[#0066cc] transition-transform duration-200"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button>
-            <div
-              id="content-4"
-              class="hidden overflow-hidden transition-all duration-300"
-            >
-              <p
-                class="text-sm md:text-base text-slate-500 pl-2 pb-4 leading-relaxed"
-              >
-                Data Anda sepenuhnya digunakan untuk mempercepat proses
-                verifikasi e-wallet (DANA, OVO, GoPay, ShopeePay), pembuatan
-                manifest kurir, dan memberikan promo kuliner laut spesial dari
-                Segar.
+            <div>
+              <h3 class="text-xs font-bold text-blue-600 tracking-wide uppercase mb-2">PENGGUNAAN DATA PRIBADI</h3>
+              <p class="text-sm md:text-base text-slate-500 leading-relaxed pl-1">
+                Data Anda sepenuhnya digunakan untuk mempercepat proses verifikasi e-wallet (DANA, OVO, GoPay, ShopeePay), pembuatan manifest kurir, dan memberikan promo kuliner laut spesial dari Segar.
               </p>
             </div>
-          </div>
 
-          <!-- ACCORDION 5: MELINDUNGI DATA PRIBADI ANDA (Sembunyi) -->
-          <div class="border-b border-slate-100 pb-2">
-            <button
-              onclick="toggleAccordion(5)"
-              class="w-full flex justify-between items-center py-4 text-left font-bold text-slate-700 hover:text-[#0066cc] transition-colors group focus:outline-none"
-            >
-              <span class="tracking-wide uppercase text-sm md:text-base"
-                >MELINDUNGI DATA PRIBADI ANDA</span
-              >
-              <svg
-                id="icon-5"
-                class="w-5 h-5 text-slate-400 group-hover:text-[#0066cc] transition-transform duration-200"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button>
-            <div
-              id="content-5"
-              class="hidden overflow-hidden transition-all duration-300"
-            >
-              <p
-                class="text-sm md:text-base text-slate-500 pl-2 pb-4 leading-relaxed"
-              >
-                Kami menerapkan enkripsi SSL berlapis untuk memastikan seluruh
-                riwayat pembayaran perbankan maupun identitas digital Anda tidak
-                bocor ke pihak ketiga yang tidak bertanggung jawab.
+            <div>
+              <h3 class="text-xs font-bold text-blue-600 tracking-wide uppercase mb-2">MELINDUNGI DATA PRIBADI ANDA</h3>
+              <p class="text-sm md:text-base text-slate-500 leading-relaxed pl-1">
+                Kami menerapkan enkripsi SSL berlapis untuk memastikan seluruh riwayat pembayaran perbankan maupun identitas digital Anda tidak bocor ke pihak ketiga yang tidak bertanggung jawab.
               </p>
             </div>
-          </div>
 
-          <!-- ACCORDION 6: HAK ANDA SEBAGAI PENGGUNA (Sembunyi) -->
-          <div class="border-b border-slate-100 pb-2">
-            <button
-              onclick="toggleAccordion(6)"
-              class="w-full flex justify-between items-center py-4 text-left font-bold text-slate-700 hover:text-[#0066cc] transition-colors group focus:outline-none"
-            >
-              <span class="tracking-wide uppercase text-sm md:text-base"
-                >HAK ANDA SEBAGAI PENGGUNA</span
-              >
-              <svg
-                id="icon-6"
-                class="w-5 h-5 text-slate-400 group-hover:text-[#0066cc] transition-transform duration-200"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button>
-            <div
-              id="content-6"
-              class="hidden overflow-hidden transition-all duration-300"
-            >
-              <p
-                class="text-sm md:text-base text-slate-500 pl-2 pb-4 leading-relaxed"
-              >
-                Anda berhak menghapus akun, mengubah alamat pengiriman utama,
-                atau menarik persetujuan langganan informasi berkala kapan pun
-                melalui menu pengaturan profil pengguna.
+            <div>
+              <h3 class="text-xs font-bold text-blue-600 tracking-wide uppercase mb-2">HAK ANDA SEBAGAI PENGGUNA</h3>
+              <p class="text-sm md:text-base text-slate-500 leading-relaxed pl-1">
+                Anda berhak menghapus akun, mengubah alamat pengiriman utama, atau menarik persetujuan langganan informasi berkala kapan pun melalui menu pengaturan profil pengguna.
               </p>
             </div>
           </div>
         </div>
+
+        <!-- SECTION 4: SYARAT & KETENTUAN -->
+        <div id="content-syarat-ketentuan" class="tab-content hidden space-y-6">
+          <h2 class="text-2xl font-bold text-blue-950 border-b border-slate-100 pb-4">Syarat & Ketentuan</h2>
+          <div class="space-y-4 text-sm text-slate-500 leading-relaxed">
+            <p>Dengan melakukan pembelian di platform Segar, Anda menyetujui poin-poin kesepakatan berikut:</p>
+            <ol class="list-decimal list-inside space-y-2 pl-1">
+              <li><strong class="text-slate-700">Pemesanan:</strong> Batas waktu pemesanan untuk pengiriman pagi hari adalah maksimal pukul 21:00 WIB pada malam sebelumnya.</li>
+              <li><strong class="text-slate-700">Pembatalan:</strong> Pesanan yang sudah diproses dan masuk ke manifes kurir pengantar tidak dapat dibatalkan atau diuangkan kembali.</li>
+              <li><strong class="text-slate-700">Kebijakan Retur:</strong> Jika produk laut yang diterima terbukti tidak segar atau rusak saat tiba, klaim komplain wajib menyertakan video unboxing maksimal 2 jam setelah paket diterima.</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- SECTION 5: FAQ -->
+        <div id="content-faq" class="tab-content hidden space-y-6">
+          <h2 class="text-2xl font-bold text-blue-950 border-b border-slate-100 pb-4">FAQ (Pertanyaan Umum)</h2>
+          <div class="space-y-4">
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <h4 class="font-bold text-blue-950 text-sm mb-1">Apakah ikan dikirim dalam keadaan beku atau segar?</h4>
+              <p class="text-xs text-slate-500">Semua produk kami dikirim dalam kondisi segar/chilled (bukan dibekukan berbulan-bulan) menggunakan kemasan khusus berpendingin es batu untuk menjaga kualitas.</p>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <h4 class="font-bold text-blue-950 text-sm mb-1">Berapa minimal pembelian di platform Segar?</h4>
+              <p class="text-xs text-slate-500">Tidak ada minimal pembelian. Namun, Anda bisa mendapatkan gratis ongkir dengan kupon promo berkala atau pembelian di atas Rp150.000.</p>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <h4 class="font-bold text-blue-950 text-sm mb-1">Metode pembayaran apa saja yang didukung?</h4>
+              <p class="text-xs text-slate-500">Kami mendukung transfer bank otomatis (Virtual Account) dan seluruh ekosistem e-wallet utama seperti DANA, OVO, GoPay, dan ShopeePay.</p>
+            </div>
+          </div>
+        </div>
+
       </section>
     </main>
 
-    <!-- FOOTER MODEREN -->
-    <footer
-      class="bg-white border-t border-slate-100 py-6 text-center text-xs text-slate-400"
-    >
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-100 py-6 text-center text-xs text-slate-400">
       &copy; 2026 Segar - Hasil Laut Segar. All rights reserved.
     </footer>
 
-    <!-- LOGIK JAVASCRIPT ACCORDION -->
+    <!-- LOGIK JAVASCRIPT NAVIGASI TAB SIDEBAR -->
     <script>
-      function toggleAccordion(id) {
-        const content = document.getElementById(`content-${id}`);
-        const icon = document.getElementById(`icon-${id}`);
+      function switchTab(tabId) {
+        // 1. Sembunyikan semua konten section kanan
+        const contents = document.querySelectorAll('.tab-content');
+        contents.forEach(content => {
+          content.classList.add('hidden');
+        });
 
-        if (content.classList.contains("hidden")) {
-          content.classList.remove("hidden");
-          icon.style.transform = "rotate(180deg)";
-        } else {
-          content.classList.add("hidden");
-          icon.style.transform = "rotate(0deg)";
-        }
+        // 2. Tampilkan konten section yang dipilih
+        document.getElementById(`content-${tabId}`).classList.remove('hidden');
+
+        // 3. Reset semua gaya tombol sidebar menjadi tidak aktif
+        const buttons = document.querySelectorAll('#sidebar-menu button');
+        buttons.forEach(btn => {
+          btn.classList.remove('bg-blue-50', 'text-blue-600', 'font-bold');
+          btn.classList.add('text-slate-500', 'font-medium');
+        });
+
+        // 4. Berikan gaya aktif pada tombol sidebar yang sedang dipilih
+        const activeBtn = document.getElementById(`tab-${tabId}`);
+        activeBtn.classList.remove('text-slate-500', 'font-medium');
+        activeBtn.classList.add('bg-blue-50', 'text-blue-600', 'font-bold');
       }
     </script>
   </body>
