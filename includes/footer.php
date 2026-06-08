@@ -38,19 +38,19 @@
 
         <ul class="space-y-2 text-sm text-gray-300">
           <li>
-            <a href="#" class="hover:text-blue-400">Beranda</a>
+            <a href="../index.html" class="hover:text-blue-400">Beranda</a>
           </li>
           <li>
-            <a href="#" class="hover:text-blue-400">Produk</a>
+            <a href="../pages/products.php" class="hover:text-blue-400">Produk</a>
           </li>
           <li>
-            <a href="#" class="hover:text-blue-400">Kategori</a>
+            <a href="../pages/kategori.php" class="hover:text-blue-400">Kategori</a>
           </li>
           <li>
-            <a href="#" class="hover:text-blue-400">Tentang Kami</a>
+            <a href="../pages/tentang-kami.php" class="hover:text-blue-400">Tentang Kami</a>
           </li>
           <li>
-            <a href="#" class="hover:text-blue-400">Kontak</a>
+            <a href="../pages/kontak.php" class="hover:text-blue-400">Kontak</a>
           </li>
         </ul>
       </div>
@@ -61,19 +61,19 @@
 
         <ul class="space-y-2 text-sm text-gray-300">
           <li>
-            <a href="#" class="hover:text-blue-400">Cara Belanja</a>
+            <a href="../pages/cara-belanja.php" class="hover:text-blue-400">Cara Belanja</a>
           </li>
-          <li>
+          <!-- <li>
             <a href="#" class="hover:text-blue-400">Metode Pembayaran</a>
-          </li>
-          <li>
+          </li> -->
+          <!-- <li>
             <a href="#" class="hover:text-blue-400">Pengiriman</a>
-          </li>
-          <li>
+          </li> -->
+          <!-- <li>
             <a href="#" class="hover:text-blue-400">FAQ</a>
-          </li>
+          </li> -->
           <li>
-            <a href="#" class="hover:text-blue-400">Kebijakan Privasi</a>
+            <a href="../pages/kebijakan-privasi.php" class="hover:text-blue-400">Kebijakan Privasi</a>
           </li>
         </ul>
       </div>
@@ -113,7 +113,7 @@
 
       <div class="flex items-center gap-4 text-sm text-gray-400">
         <a href="#" class="hover:text-blue-400">Syarat & Ketentuan</a>
-        <a href="#" class="hover:text-blue-400">Privasi</a>
+        <!-- <a href="#" class="hover:text-blue-400">Privasi</a> -->
       </div>
     </div>
   </div>
