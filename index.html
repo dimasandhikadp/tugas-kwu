@@ -6,6 +6,7 @@
     <title>Segar - Hasil Laut Segar Langsung dari Laut</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
   </head>
   <body class="bg-gray-50 text-gray-800 font-sans">
     <header class="bg-white shadow-sm sticky top-0 z-50">
@@ -630,58 +631,49 @@
       </div>
     </section>
 
-    <!-- METODE PEMBAYARAN (TAILWIND ONLY) -->
-    <section id="metode-pembayaran" class="max-w-7xl mx-auto px-4 my-16">
-      <h2 class="text-3xl font-bold text-blue-950 mb-6">Metode Pembayaran</h2>
+<section id="metode-pembayaran" class="max-w-7xl mx-auto px-4 my-16">
+    <h2 class="text-3xl font-bold text-blue-950 text-center mb-8">
+        Metode Pembayaran
+    </h2>
 
-      <!-- BARIS 1 (KE KANAN) -->
-      <div class="overflow-hidden mb-6">
-        <div class="flex w-max gap-10 marquee-right">
-          <span class="font-bold text-blue-700">BCA</span>
-          <span class="font-bold text-orange-500">BNI</span>
-          <span class="font-bold text-blue-600">BRI</span>
-          <span class="font-bold text-yellow-500">Mandiri</span>
-          <span class="font-bold text-sky-500">DANA</span>
-          <span class="font-bold text-purple-600">OVO</span>
-          <span class="font-bold text-cyan-600">GoPay</span>
-          <span class="font-bold text-orange-500">ShopeePay</span>
-          <span class="font-bold text-red-500">QRIS</span>
+    <!-- Baris 1 -->
+    <div class="overflow-hidden payment-section mb-15">
+        <div class="flex w-max items-center gap-15 marquee-right">
+            <!-- Logo -->
+            <img src="assets/img/payment-method/bca.jpg" class="h-12 w-32 object-contain scale-175">
+            <img src="assets/img/payment-method/bni.png" class="h-12 w-32 object-contain">
+            <img src="assets/img/payment-method/bri2.png" class="h-12 w-32 mr-4 object-contain scale-250">
+            <img src="assets/img/payment-method/dana.png" class="h-12 w-32 mr-4 object-contain scale-200">
+            <img src="assets/img/payment-method/ovo.png" class="h-12 w-32 object-contain scale-125">
 
-          <!-- duplikat -->
-          <span class="font-bold text-blue-700">BCA</span>
-          <span class="font-bold text-orange-500">BNI</span>
-          <span class="font-bold text-blue-600">BRI</span>
-          <span class="font-bold text-yellow-500">Mandiri</span>
-          <span class="font-bold text-sky-500">DANA</span>
-          <span class="font-bold text-purple-600">OVO</span>
-          <span class="font-bold text-cyan-600">GoPay</span>
-          <span class="font-bold text-orange-500">ShopeePay</span>
-          <span class="font-bold text-red-500">QRIS</span>
+            <!-- Duplikat -->
+            <img src="assets/img/payment-method/bca.jpg" class="h-12 w-32 object-contain scale-175">
+            <img src="assets/img/payment-method/bni.png" class="h-12 w-32 object-contain">
+            <img src="assets/img/payment-method/bri2.png" class="h-12 w-32 mr-4 object-contain scale-250">
+            <img src="assets/img/payment-method/dana.png" class="h-12 w-32 mr-4 object-contain scale-200">
+            <img src="assets/img/payment-method/ovo.png" class="h-12 w-32 object-contain scale-125">
         </div>
-      </div>
+    </div>
 
-      <!-- BARIS 2 (KE KIRI) -->
-      <div class="overflow-hidden">
-        <div class="flex w-max gap-10 marquee-left">
-          <span class="font-bold text-green-600">COD</span>
-          <span class="font-bold text-red-600">Mastercard</span>
-          <span class="font-bold text-blue-800">VISA</span>
-          <span class="font-bold text-red-500">QRIS</span>
-          <span class="font-bold text-orange-500">ShopeePay</span>
-          <span class="font-bold text-cyan-600">GoPay</span>
-          <span class="font-bold text-purple-600">OVO</span>
+    <!-- Baris 2 -->
+    <div class="overflow-hidden payment-section">
+        <div class="flex w-max items-center gap-15 marquee-left">
+            <img src="assets/img/payment-method/mandiri.png" class="h-12 w-32 mr-8 object-contain scale-125">
+            <img src="assets/img/payment-method/gopay.webp" class="h-12 w-32 object-contain scale-125">
+            <img src="assets/img/payment-method/shopeepay.webp" class="h-12 w-32 object-contain scale-125">
+            <img src="assets/img/payment-method/qris.png" class="h-12 w-32 object-contain scale-250">
+            <img src="assets/img/payment-method/cod.png" class="h-12 w-32 object-contain scale-125">
 
-          <!-- duplikat -->
-          <span class="font-bold text-green-600">COD</span>
-          <span class="font-bold text-red-600">Mastercard</span>
-          <span class="font-bold text-blue-800">VISA</span>
-          <span class="font-bold text-red-500">QRIS</span>
-          <span class="font-bold text-orange-500">ShopeePay</span>
-          <span class="font-bold text-cyan-600">GoPay</span>
-          <span class="font-bold text-purple-600">OVO</span>
+            <!-- Duplikat -->
+            <img src="assets/img/payment-method/mandiri.png" class="h-12 w-32 mr-8 object-contain scale-125">
+            <img src="assets/img/payment-method/gopay.webp" class="h-12 w-32 object-contain scale-125">
+            <img src="assets/img/payment-method/shopeepay.webp" class="h-12 w-32 object-contain scale-125">
+            <img src="assets/img/payment-method/qris.png" class="h-12 w-32 object-contain scale-125">
+            <img src="assets/img/payment-method/cod.png" class="h-12 w-32 object-contain scale-125">
         </div>
-      </div>
-    </section>
+    </div>
+</section>
+
     <footer class="bg-blue-950 text-white mt-20">
       <div class="max-w-7xl mx-auto px-4 py-14">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -798,34 +790,6 @@
         </div>
       </div>
     </footer>
-
-    <style>
-      @keyframes marqueeLeft {
-        from {
-          transform: translateX(0);
-        }
-        to {
-          transform: translateX(-50%);
-        }
-      }
-
-      @keyframes marqueeRight {
-        from {
-          transform: translateX(-50%);
-        }
-        to {
-          transform: translateX(0);
-        }
-      }
-
-      .marquee-left {
-        animation: marqueeLeft 20s linear infinite;
-      }
-
-      .marquee-right {
-        animation: marqueeRight 20s linear infinite;
-      }
-    </style>
 
     <script>
       lucide.createIcons();

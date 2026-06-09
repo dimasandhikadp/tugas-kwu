@@ -1,0 +1,31 @@
+@keyframes marqueeLeft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes marqueeRight {
+    from {
+        transform: translateX(-50%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.marquee-left {
+    animation: marqueeLeft 20s linear infinite;
+}
+
+.marquee-right {
+    animation: marqueeRight 20s linear infinite;
+}
+
+/* Melambat saat hover */
+.payment-section:hover .marquee-left,
+.payment-section:hover .marquee-right {
+    animation-duration: paused;
+}
