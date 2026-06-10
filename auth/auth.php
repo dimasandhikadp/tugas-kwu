@@ -127,7 +127,7 @@ if (isset($_POST['login_submit'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
 
-        header('Location: ../index.html');
+        header('Location: ../index.php');
         exit;
 
     } else {
@@ -168,7 +168,7 @@ if (isset($_POST['login_submit'])) {
 
         <!-- Tombol kembali -->
         <a
-          href="../index.html"
+          href="../index.php"
           class="text-sm font-medium text-gray-600 hover:text-blue-600 transition"
         >
           Kembali ke Beranda

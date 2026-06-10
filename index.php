@@ -1,4 +1,8 @@
-<!doctype html>
+<?php
+  session_start();
+?>
+
+<!DOCTYPE html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
@@ -65,49 +69,115 @@
         </nav>
 
         <div class="flex items-center space-x-4">
-  <!-- Search -->
-  <form action="search.php" method="GET" class="relative hidden sm:block">
-    <input
-      type="text"
-      name="q"
-      placeholder="Cari produk laut segar..."
-      class="bg-white text-sm px-4 py-2 pr-10 rounded-full w-80 shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+          <!-- Search -->
+          <form action="search.php" method="GET" class="relative hidden sm:block">
+            <input
+              type="text"
+              name="q"
+              placeholder="Cari produk laut segar..."
+              class="bg-white text-sm px-4 py-2 pr-10 rounded-full w-80 shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
+            <button
+              type="submit"
+              class="absolute right-3 top-2.5 text-gray-400 hover:text-blue-600 transition cursor-pointer"
+              aria-label="Cari"
+            >
+              <i data-lucide="search" class="w-4 h-4"></i>
+            </button>
+          </form>
+
+          <!-- Keranjang -->
+          <a
+          href="cart.php"
+          class="relative text-gray-600 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50"
+        >
+          <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+
+          <span
+            class="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full"
+          >
+            2
+          </span>
+        </a>
+
+  <!-- User Menu -->
+  <div class="relative group">
+    <!-- Tombol User -->
     <button
-      type="submit"
-      class="absolute right-3 top-2.5 text-gray-400 hover:text-blue-600 transition cursor-pointer"
-      aria-label="Cari"
+      class="text-gray-600 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50"
+      aria-label="Akun"
     >
-      <i data-lucide="search" class="w-4 h-4"></i>
+      <i data-lucide="user" class="w-6 h-6"></i>
     </button>
-  </form>
 
-  <!-- Keranjang -->
-  <a
-  href="cart.php"
-  class="relative text-gray-600 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50"
->
-  <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+    <!-- Dropdown -->
+    <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+      <div class="py-2">
 
-  <span
-    class="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full"
-  >
-    2
-  </span>
-</a>
+        <?php if(isset($_SESSION['user_id'])): ?>
+          <!-- Profile -->
+          <a
+            href="profile.php"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
+          >
+            <i data-lucide="user-circle" class="w-4 h-4"></i>
+            <span>Profile</span>
+          </a>
+        <?php endif; ?>
 
-  <!-- User -->
-  <a
-    href="auth/auth.php"
-    class="text-gray-600 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50"
-    aria-label="Akun"
-  >
-    <i data-lucide="user" class="w-6 h-6"></i>
-  </a>
+        <!-- Dark / Light Mode -->
+        <button
+          class="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-left"
+        >
+          <i data-lucide="moon" class="w-4 h-4"></i>
+          <span>Mode Gelap</span>
+        </button>
+
+        <!-- Settings -->
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
+        >
+          <i data-lucide="settings" class="w-4 h-4"></i>
+          <span>Pengaturan</span>
+        </a>
+
+        <!-- Pembatas sebelum Login / Logout -->
+        <div class="h-0.5 bg-gray-300 mx-4 my-2 rounded-full"></div>
+
+        <?php if(isset($_SESSION['user_id'])): ?>
+
+          <!-- Logout -->
+          <a
+            href="auth/logout.php"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-red-600"
+          >
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            <span>Logout</span>
+          </a>
+
+        <?php else: ?>
+
+          <!-- Login -->
+          <a
+            href="auth/auth.php"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
+          >
+            <i data-lucide="log-in" class="w-4 h-4"></i>
+            <span>Login</span>
+          </a>
+
+        <?php endif; ?>
+
+      </div>
+    </div>
+  </div>
 </div>
-    </header>
 
+</header>
+
+    <!-- Section Slide  -->
     <section class="max-w-[1200px] mx-auto px-4 my-6 relative z-0">
       <div
         id="hero-slider"
@@ -116,7 +186,7 @@
         <!-- Slide 1 -->
         <div
           class="hero-slide absolute inset-0 bg-cover bg-center opacity-100 transition-opacity duration-1000"
-          style="background-image: url(assets/img/slide1.jpeg)"
+          style="background-image: url(assets/img/sliders/slide1.jpeg)"
         >
           <div
             class="absolute inset-0 bg-gradient-to-r from-blue-950/80 to-blue-900/30"
@@ -163,9 +233,8 @@
         <!-- Slide 2 -->
         <div
           class="hero-slide absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-1000"
-          style="
-            background-image: url(&quot;https://images.unsplash.com/photo-1510130387422-82bed34b37e9?w=1600&quot;);
-          "
+          style="background-image: url(assets/img/sliders/slide-fish.jpg)"
+
         >
           <div
             class="absolute inset-0 bg-gradient-to-r from-blue-950/80 to-blue-900/30"
@@ -191,9 +260,8 @@
         <!-- Slide 3 -->
         <div
           class="hero-slide absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-1000"
-          style="
-            background-image: url(&quot;https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=1600&quot;);
-          "
+          style="background-image: url(assets/img/sliders/slide3.jpeg)"
+
         >
           <div
             class="absolute inset-0 bg-gradient-to-r from-blue-950/80 to-blue-900/30"
@@ -278,27 +346,22 @@
       </div>
     </section>
 
+    <!-- Section Kategori -->
     <section class="max-w-7xl mx-auto px-4 my-12">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-blue-950">Kategori Produk</h2>
-        <a
-          href="pages/kategori.php?c=ikan"
-          class="text-blue-600 font-semibold text-sm hover:underline flex items-center gap-1"
-        >
-          Lihat Semua Kategori <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </a>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10">
         <a
           href="pages/kategori.php?c=ikan"
-          class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
+          class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
         >
           <div
             class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
           >
             <img
-              src="assets/img/icon-ikan.png"
+              src="assets/img/kategori/ikan.png"
               alt="Ikan"
               class="w-20 h-20 object-contain"
             />
@@ -309,15 +372,15 @@
 
         <a
           href="pages/kategori.php?c=udang"
-          class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
+          class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
         >
           <div
-            class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
+            class="w-22 h-18 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
           >
             <img
-              src="assets/img/icon-udang.png"
+              src="assets/img/kategori/udang.png"
               alt="Udang"
-              class="w-20 h-20 object-contain"
+              class="w-15 h-15 object-contain"
             />
           </div>
           <h4 class="font-bold text-sm text-blue-950">Udang</h4>
@@ -326,15 +389,15 @@
 
         <a
           href="pages/kategori.php?c=kepiting"
-          class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
+          class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
         >
           <div
-            class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
+            class="w-22 h-18 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
           >
             <img
-              src="assets/img/icon-kepiting.png"
+              src="assets/img/kategori/kepiting.png"
               alt="Kepiting"
-              class="w-20 h-20 object-contain"
+              class="w-15 h-15 object-contain"
             />
           </div>
           <h4 class="font-bold text-sm text-blue-950">Kepiting</h4>
@@ -343,15 +406,15 @@
 
         <a
           href="pages/kategori.php?c=cumi"
-          class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
+          class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
         >
           <div
-            class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
+            class="w-22 h-18 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
           >
             <img
-              src="assets/img/icon-sotong.png"
+              src="assets/img/kategori/cumi.png"
               alt="Cumi & Sotong"
-              class="w-20 h-20 object-contain"
+              class="w-15 h-15 object-contain"
             />
           </div>
           <h4 class="font-bold text-sm text-blue-950">Cumi & Sotong</h4>
@@ -360,15 +423,15 @@
 
         <a
           href="pages/kategori.php?c=kerang"
-          class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
+          class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
         >
           <div
-            class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
+            class="w-22 h-18 bg-blue-50 rounded-lg mb-3 flex items-center justify-center"
           >
             <img
-              src="assets/img/icon-kerang.png"
+              src="assets/img/kategori/kerang.png"
               alt="Kerang"
-              class="w-20 h-20 object-contain"
+              class="w-15 h-15 object-contain"
             />
           </div>
           <h4 class="font-bold text-sm text-blue-950">Kerang</h4>
@@ -377,10 +440,10 @@
 
         <a
           href="pages/kategori.php?c=ikan"
-          class="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
+          class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
         >
           <div
-            class="w-24 h-20 bg-gray-50 rounded-lg mb-3 flex items-center justify-center text-gray-500"
+            class="w-20 h-18 bg-gray-50 rounded-lg mb-3 flex items-center justify-center text-gray-500"
           >
             <i data-lucide="layout-grid" class="w-10 h-10"></i>
           </div>
@@ -393,11 +456,6 @@
     <section class="max-w-7xl mx-auto px-4 my-12">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-blue-950">Produk Terlaris</h2>
-        <a
-          href="#"
-          class="text-blue-600 font-semibold text-sm hover:underline flex items-center gap-1"
-          >Lihat Semua Produk <i data-lucide="arrow-right" class="w-4 h-4"></i
-        ></a>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div
@@ -424,11 +482,7 @@
               >
               <span class="text-xs text-gray-400">/ekor</span>
             </div>
-            <button
-              class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700"
-            >
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
+            
           </div>
         </div>
 
@@ -454,11 +508,7 @@
               >
               <span class="text-xs text-gray-400">/pack</span>
             </div>
-            <button
-              class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700"
-            >
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
+            
           </div>
         </div>
 
@@ -497,11 +547,7 @@
               >
               <span class="text-xs text-gray-400">/ekor</span>
             </div>
-            <button
-              class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700"
-            >
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
+            
           </div>
         </div>
 
@@ -539,11 +585,7 @@
               >
               <span class="text-xs text-gray-400">/pack</span>
             </div>
-            <button
-              class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700"
-            >
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
+            
           </div>
         </div>
       </div>
