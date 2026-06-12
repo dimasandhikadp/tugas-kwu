@@ -1,16 +1,111 @@
+<?php
+session_start();
+require_once '../../config/koneksi.php';
+
+/** @var mysqli $conn */
+
+// Cek apakah form telah disubmit
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Ambil dan bersihkan data inputan sesuai tipe data di database
+    $nama_produk = mysqli_real_escape_string($conn, $_POST['nama_produk']);
+    $slug        = mysqli_real_escape_string($conn, $_POST['slug']);
+    $deskripsi   = mysqli_real_escape_string($conn, $_POST['deskripsi']);
+    
+    // Gunakan floatval/intval untuk tipe data Decimal dan Int agar aman di database
+    $harga       = floatval($_POST['harga']);
+    $stok        = intval($_POST['stok']);
+    $berat       = floatval($_POST['berat']);
+    
+    $satuan      = mysqli_real_escape_string($conn, $_POST['satuan']);
+    $badge       = mysqli_real_escape_string($conn, $_POST['badge']);
+    $status      = mysqli_real_escape_string($conn, $_POST['status']);
+
+    // Validasi aman anti-error untuk asal_produk (Checkbox)
+    if (isset($_POST['asal_produk']) && is_array($_POST['asal_produk'])) {
+        $asal_produk = mysqli_real_escape_string($conn, implode(', ', $_POST['asal_produk']));
+    } else {
+        $asal_produk = ''; 
+    }
+
+    // Gunakan Database Transaction agar jika upload gambar gagal, data produk tidak nanggung masuk database
+    mysqli_begin_transaction($conn);
+
+    try {
+        // 1. QUERY INSERT DATABASE ke tabel 'products'
+        $query = "INSERT INTO products (nama_produk, slug, deskripsi, harga, stok, berat, satuan, asal_produk, badge, status) 
+                  VALUES ('$nama_produk', '$slug', '$deskripsi', $harga, $stok, $berat, '$satuan', '$asal_produk', '$badge', '$status')";
+
+        if (!mysqli_query($conn, $query)) {
+            throw new Exception("Gagal menambahkan data produk: " . mysqli_error($conn));
+        }
+
+        // 2. Ambil ID Produk yang baru saja ter-insert
+        $product_id = mysqli_insert_id($conn);
+
+        // 3. PROSES UPLOAD FISIK GAMBAR & INSERT KE TABEL 'product_images'
+        if (isset($_FILES['gambar']) && !empty($_FILES['gambar']['name'][0])) {
+            $target_dir = "../../assets/img/product-image/";
+            
+            // Buat folder jika belum ada
+            if (!is_dir($target_dir)) {
+                mkdir($target_dir, 0755, true);
+            }
+
+            $uploaded_counter = 1;
+            
+            // Looping berdasarkan jumlah file asli yang diunggah
+            foreach ($_FILES['gambar']['name'] as $i => $name) {
+                if ($_FILES['gambar']['error'][$i] === 0) {
+                    $file_tmp = $_FILES['gambar']['tmp_name'][$i];
+                    $file_ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+                    
+                    // Ekstensi yang diperbolehkan
+                    $allowed_extensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+                    if (in_array($file_ext, $allowed_extensions)) {
+                        // Penamaan file fisik menggunakan slug + nomor urut
+                        $new_file_name = $slug . '-' . $uploaded_counter . '.' . $file_ext;
+                        $target_file = $target_dir . $new_file_name;
+
+                        // Pindahkan file ke folder tujuan
+                        if (move_uploaded_file($file_tmp, $target_file)) {
+                            
+                            // Insert nama file ke tabel 'product_images' dengan relasi 'product_id'
+                            $query_image = "INSERT INTO product_images (product_id, nama_file) VALUES ($product_id, '$new_file_name')";
+                            
+                            if (!mysqli_query($conn, $query_image)) {
+                                throw new Exception("Gagal menyimpan data gambar ke database: " . mysqli_error($conn));
+                            }
+
+                            $uploaded_counter++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Jika semua proses insert berhasil tanpa error, commit datanya
+        mysqli_commit($conn);
+
+        $_SESSION['success'] = "Produk dan gambar berhasil ditambahkan!";
+        header("Location: products.php");
+        exit();
+
+    } catch (Exception $e) {
+        // Jika ada satu saja yang gagal, batalkan semua perubahan di database
+        mysqli_rollback($conn);
+        $error_msg = $e->getMessage();
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
   
-<?php
-  include '../../includes/head.php';
-?>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<?php include '../../includes/head.php'; ?>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
     <header class="bg-white shadow-sm sticky top-0 z-50">
-      <div
-        class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between"
-      >
-        <!-- Logo -->
+      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-1">
           <img
             src="../../assets/img/logo.png"
@@ -27,53 +122,50 @@
             </span>
           </div>
         </div>
-
-        <!-- Tombol kembali -->
-        <a
-          href="../index.php"
-          class="text-sm font-medium text-gray-600 hover:text-blue-600 transition"
-        >
-          Kembali ke Beranda
-        </a>
       </div>
     </header>
 
-    <!-- Content -->
     <main class="max-w-5xl mx-auto px-5 py-8">
 
         <div class="mb-6">
             <h2 class="text-3xl font-bold text-blue-950">
                 Tambah Produk
             </h2>
-
             <p class="text-slate-500 mt-1">
                 Tambahkan produk baru ke katalog SeaFresh.
             </p>
+
+            <?php if (isset($error_msg)): ?>
+                <div class="mt-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl">
+                    <?= $error_msg; ?>
+                </div>
+            <?php endif; ?>
         </div>
 
         <form
+            action=""
             method="POST"
             enctype="multipart/form-data"
             class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm"
         >
 
-            <!-- Informasi Produk -->
             <div class="mb-8">
                 <h3 class="text-lg font-semibold text-blue-950 mb-4">
                     Informasi Produk
                 </h3>
 
                 <div class="grid md:grid-cols-2 gap-5">
-
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-2">
                             Nama Produk
                         </label>
-
                         <input
                             type="text"
+                            id="nama_produk"
                             name="nama_produk"
-                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            placeholder="Contoh: Ikan Kembung Segar"
+                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
+                            required
                         >
                     </div>
 
@@ -81,46 +173,46 @@
                         <label class="block text-sm font-medium text-slate-700 mb-2">
                             Slug
                         </label>
-
                         <input
                             type="text"
+                            id="slug"
                             name="slug"
-                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            placeholder="ikan-kembung-segar"
+                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition bg-slate-50"
+                            required
                         >
                     </div>
-
                 </div>
 
                 <div class="mt-5">
                     <label class="block text-sm font-medium text-slate-700 mb-2">
                         Deskripsi Produk
                     </label>
-
                     <textarea
                         rows="5"
                         name="deskripsi"
-                        class="w-full border border-slate-300 rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="Tuliskan deskripsi lengkap produk hasil laut di sini..."
+                        class="w-full border border-slate-300 rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
                     ></textarea>
                 </div>
             </div>
 
-            <!-- Detail Produk -->
             <div class="mb-8">
                 <h3 class="text-lg font-semibold text-blue-950 mb-4">
                     Detail Produk
                 </h3>
 
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-2">
-                            Harga
+                            Harga (Rp)
                         </label>
-
                         <input
                             type="number"
                             name="harga"
-                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 outline-none"
+                            placeholder="0"
+                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                            required
                         >
                     </div>
 
@@ -128,24 +220,26 @@
                         <label class="block text-sm font-medium text-slate-700 mb-2">
                             Stok
                         </label>
-
                         <input
                             type="number"
                             name="stok"
-                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 outline-none"
+                            placeholder="0"
+                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                            required
                         >
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-2">
-                            Berat
+                            Berat (kg)
                         </label>
-
                         <input
                             type="number"
                             step="0.01"
                             name="berat"
-                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 outline-none"
+                            placeholder="0.00"
+                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                            required
                         >
                     </div>
 
@@ -153,10 +247,10 @@
                         <label class="block text-sm font-medium text-slate-700 mb-2">
                             Satuan
                         </label>
-
                         <select
                             name="satuan"
-                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 outline-none"
+                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition appearance-none bg-no-repeat bg-right pr-10"
+                            style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2364748b%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22></polyline></svg>'); background-position: right 12px center; background-size: 16px;"
                         >
                             <option value="kg">kg</option>
                             <option value="gram">gram</option>
@@ -164,90 +258,144 @@
                             <option value="pack">pack</option>
                         </select>
                     </div>
-
                 </div>
             </div>
 
-            <!-- Badge & Asal Produk -->
             <div class="mb-8">
                 <h3 class="text-lg font-semibold text-blue-950 mb-4">
                     Informasi Tambahan
                 </h3>
 
-                <div class="grid md:grid-cols-3 gap-5">
-
+                <div class="space-y-6">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">
-                            Asal Produk
-                        </label>
-
-                        <input
-                            type="text"
-                            name="asal_produk"
-                            placeholder="Tangkapan Harian"
-                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 outline-none"
-                        >
+                        <label class="block text-sm font-medium text-slate-700 mb-3">Asal Produk</label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <label class="relative border border-slate-200 rounded-xl p-4 flex flex-col justify-between cursor-pointer select-none hover:bg-slate-50 transition group">
+                                <input type="radio" name="asal_produk[]" value="Tangkapan Harian" class="sr-only" checked>
+                                <div class="absolute top-2 right-2 w-5 h-5 border-2 border-slate-300 rounded-full flex items-center justify-center bg-white transition group-has-[:checked]:bg-blue-600 group-has-[:checked]:border-blue-600">
+                                    <svg class="w-3 h-3 text-white hidden group-has-[:checked]:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-sm font-semibold text-slate-800 mt-2">Tangkapan Harian</span>
+                                <span class="text-xs text-slate-400 mt-1">Nelayan Lokal</span>
+                            </label>
+                            <label class="relative border border-slate-200 rounded-xl p-4 flex flex-col justify-between cursor-pointer select-none hover:bg-slate-50 transition group">
+                                <input type="radio" name="asal_produk[]" value="Budidaya Air Tawar" class="sr-only">
+                                <div class="absolute top-2 right-2 w-5 h-5 border-2 border-slate-300 rounded-full flex items-center justify-center bg-white transition group-has-[:checked]:bg-blue-600 group-has-[:checked]:border-blue-600">
+                                    <svg class="w-3 h-3 text-white hidden group-has-[:checked]:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-sm font-semibold text-slate-800 mt-2">Budidaya Lokal</span>
+                                <span class="text-xs text-slate-400 mt-1">Kolam/Tambak</span>
+                            </label>
+                            <label class="relative border border-slate-200 rounded-xl p-4 flex flex-col justify-between cursor-pointer select-none hover:bg-slate-50 transition group">
+                                <input type="radio" name="asal_produk[]" value="Impor" class="sr-only">
+                                <div class="absolute top-2 right-2 w-5 h-5 border-2 border-slate-300 rounded-full flex items-center justify-center bg-white transition group-has-[:checked]:bg-blue-600 group-has-[:checked]:border-blue-600">
+                                    <svg class="w-3 h-3 text-white hidden group-has-[:checked]:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-sm font-semibold text-slate-800 mt-2">Premium Impor</span>
+                                <span class="text-xs text-slate-400 mt-1">Luar Negeri</span>
+                            </label>
+                        </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">
-                            Badge
-                        </label>
-
-                        <select
-                            name="badge"
-                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 outline-none"
-                        >
-                            <option value="">Tidak Ada</option>
-                            <option value="TERLARIS">TERLARIS</option>
-                            <option value="PROMO">PROMO</option>
-                            <option value="BARU">BARU</option>
-                        </select>
+                        <span class="block text-sm font-medium text-slate-700 mb-3">Badge Produk</span>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <label class="relative border border-slate-200 rounded-xl p-4 flex flex-col justify-between cursor-pointer select-none hover:bg-slate-50 transition group">
+                                <input type="radio" name="badge" value="" class="sr-only" checked>
+                                <div class="absolute top-2 right-2 w-5 h-5 border-2 border-slate-300 rounded-full flex items-center justify-center bg-white transition group-has-[:checked]:bg-blue-600 group-has-[:checked]:border-blue-600">
+                                    <svg class="w-3 h-3 text-white hidden group-has-[:checked]:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-sm font-semibold text-slate-800 mt-2">Tidak Ada</span>
+                                <span class="text-xs text-gray-400 mt-1">Polos</span>
+                            </label>
+                            <label class="relative border border-slate-200 rounded-xl p-4 flex flex-col justify-between cursor-pointer select-none hover:bg-slate-50 transition group">
+                                <input type="radio" name="badge" value="TERLARIS" class="sr-only">
+                                <div class="absolute top-2 right-2 w-5 h-5 border-2 border-slate-300 rounded-full flex items-center justify-center bg-white transition group-has-[:checked]:bg-blue-600 group-has-[:checked]:border-blue-600">
+                                    <svg class="w-3 h-3 text-white hidden group-has-[:checked]:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-sm font-semibold text-amber-600 mt-2">TERLARIS</span>
+                                <span class="text-xs text-slate-400 mt-1">Produk Populer</span>
+                            </label>
+                            <label class="relative border border-slate-200 rounded-xl p-4 flex flex-col justify-between cursor-pointer select-none hover:bg-slate-50 transition group">
+                                <input type="radio" name="badge" value="PROMO" class="sr-only">
+                                <div class="absolute top-2 right-2 w-5 h-5 border-2 border-slate-300 rounded-full flex items-center justify-center bg-white transition group-has-[:checked]:bg-blue-600 group-has-[:checked]:border-blue-600">
+                                    <svg class="w-3 h-3 text-white hidden group-has-[:checked]:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-sm font-semibold text-red-600 mt-2">PROMO</span>
+                                <span class="text-xs text-slate-400 mt-1">Harga Potongan</span>
+                            </label>
+                            <label class="relative border border-slate-200 rounded-xl p-4 flex flex-col justify-between cursor-pointer select-none hover:bg-slate-50 transition group">
+                                <input type="radio" name="badge" value="BARU" class="sr-only">
+                                <div class="absolute top-2 right-2 w-5 h-5 border-2 border-slate-300 rounded-full flex items-center justify-center bg-white transition group-has-[:checked]:bg-blue-600 group-has-[:checked]:border-blue-600">
+                                    <svg class="w-3 h-3 text-white hidden group-has-[:checked]:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-sm font-semibold text-emerald-600 mt-2">BARU</span>
+                                <span class="text-xs text-slate-400 mt-1">Katalog Terbaru</span>
+                            </label>
+                        </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">
-                            Status
-                        </label>
-
-                        <select
-                            name="status"
-                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-600 outline-none"
-                        >
-                            <option value="aktif">Aktif</option>
-                            <option value="nonaktif">Nonaktif</option>
-                        </select>
+                        <span class="block text-sm font-medium text-slate-700 mb-3">Status Visibilitas</span>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <label class="relative border border-slate-200 rounded-xl p-4 flex flex-col justify-between cursor-pointer select-none hover:bg-slate-50 transition group">
+                                <input type="radio" name="status" value="aktif" class="sr-only" checked>
+                                <div class="absolute top-2 right-2 w-5 h-5 border-2 border-slate-300 rounded-full flex items-center justify-center bg-white transition group-has-[:checked]:bg-blue-600 group-has-[:checked]:border-blue-600">
+                                    <svg class="w-3 h-3 text-white hidden group-has-[:checked]:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-sm font-semibold text-slate-800 mt-2">Aktif</span>
+                                <span class="text-xs text-slate-400 mt-1">Tampil di Toko</span>
+                            </label>
+                            <label class="relative border border-slate-200 rounded-xl p-4 flex flex-col justify-between cursor-pointer select-none hover:bg-slate-50 transition group">
+                                <input type="radio" name="status" value="nonaktif" class="sr-only">
+                                <div class="absolute top-2 right-2 w-5 h-5 border-2 border-slate-300 rounded-full flex items-center justify-center bg-white transition group-has-[:checked]:bg-blue-600 group-has-[:checked]:border-blue-600">
+                                    <svg class="w-3 h-3 text-white hidden group-has-[:checked]:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-sm font-semibold text-slate-800 mt-2">Nonaktif</span>
+                                <span class="text-xs text-slate-400 mt-1">Arsipkan Produk</span>
+                            </label>
+                        </div>
                     </div>
-
                 </div>
             </div>
 
-            <!-- Upload -->
             <div class="mb-8">
                 <h3 class="text-lg font-semibold text-blue-950 mb-4">
                     Gambar Produk
                 </h3>
 
-                <input
-                    type="file"
-                    name="gambar[]"
-                    multiple
-                    class="block w-full text-sm border border-slate-300 rounded-xl p-3"
-                >
+                <div class="flex items-center justify-center w-full mb-4">
+                    <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-slate-300 border-dashed rounded-2xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition group">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg class="w-10 h-10 mb-3 text-slate-400 group-hover:text-blue-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            <p class="mb-1 text-sm text-slate-500 font-medium"><span class="text-blue-600 font-semibold">Klik untuk unggah</span> atau seret gambar ke sini</p>
+                            <p class="text-xs text-slate-400">PNG, JPG, JPEG, WEBP (Bisa pilih beberapa sekaligus)</p>
+                        </div>
+                        <input
+                            type="file"
+                            id="gambar-input"
+                            name="gambar[]"
+                            multiple
+                            accept="image/*"
+                            class="hidden"
+                        >
+                    </label>
+                </div>
+
+                <div id="preview-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4"></div>
             </div>
 
-            <!-- Button -->
-            <div class="flex justify-end gap-3">
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
                 <a
                     href="products.php"
-                    class="px-5 py-3 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 transition"
+                    class="px-5 py-3 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 transition font-medium text-sm"
                 >
                     Batal
                 </a>
 
                 <button
                     type="submit"
-                    class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition"
+                    class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 active:scale-[0.98] transition font-medium text-sm shadow-md shadow-blue-200"
                 >
                     Simpan Produk
                 </button>
@@ -257,5 +405,7 @@
 
     </main>
 
+    <script src="../../assets/js/create-product.js"></script>
+    
 </body>
 </html>
