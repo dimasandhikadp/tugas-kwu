@@ -1,64 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Informasi Pengguna - Segar | Hasil Laut Segar</title>
-    <!-- Tailwind CSS v4 -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body class="bg-[#f8fafc] min-h-screen flex flex-col text-slate-700 font-['Plus_Jakarta_Sans',sans-serif]">
+  <?php
+    include '../includes/head.php'
+  ?>
+  <body class="bg-gray-50 text-gray-800 font-sans">
     
-    <!-- HEADER / NAVBAR -->
-    <header class="bg-white border-b border-slate-100 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <!-- Logo & Tagline -->
-        <div class="flex items-center gap-3">
-          <img
-            src="assets/img/logo.png"
-            alt="Logo Segar"
-            class="w-15 h-10 object-contain scale-x-150"
-          />
-          <div>
-            <h1 class="text-xl font-bold text-blue-950 leading-tight">
-              Segar
-            </h1>
-            <p class="text-[10px] text-slate-500 font-medium">
-              Hasil Laut Segar, Dari Laut Ke Meja Anda
-            </p>
-          </div>
-        </div>
-
-        <!-- Navigasi Menu -->
-        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-          <a href="index.html" class="hover:text-blue-600 transition-colors">Beranda</a>
-          <a href="#" class="text-blue-600 transition-colors">Tentang Kami</a>
-          <a href="#" class="hover:text-blue-600 transition-colors">Cara Belanja</a>
-          <a href="#" class="hover:text-blue-600 transition-colors">Kontak</a>
-        </nav>
-
-        <!-- Kolom Pencarian -->
-        <div class="relative w-64 hidden sm:block">
-          <input
-            type="text"
-            placeholder="Cari produk laut segar..."
-            class="w-full bg-slate-100 text-xs pl-4 pr-10 py-2.5 rounded-full border-none focus:outline-none focus:ring-2 focus:ring-blue-200 text-slate-700 placeholder-slate-400"
-          />
-          <span class="absolute right-3.5 top-3 text-slate-400">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-          </span>
-        </div>
-      </div>
-    </header>
+   <?php
+    include '../includes/header-secondary.php'
+  ?>
 
     <!-- MAIN WRAPPER -->
     <main class="max-w-7xl w-full mx-auto px-6 py-10 flex-grow flex flex-col md:flex-row gap-8">
@@ -67,9 +16,6 @@
       <aside class="w-full md:w-64 shrink-0">
         <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm sticky top-24">
           <ul class="space-y-1" id="sidebar-menu">
-            <li>
-              <button onclick="switchTab('tentang-kami')" id="tab-tentang-kami" class="w-full text-left block px-4 py-2.5 text-sm font-medium rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors cursor-pointer">Tentang Kami</button>
-            </li>
             <li>
               <button onclick="switchTab('pemberitahuan-privasi')" id="tab-pemberitahuan-privasi" class="w-full text-left block px-4 py-2.5 text-sm font-medium rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors cursor-pointer">Pemberitahuan Privasi</button>
             </li>
@@ -89,24 +35,6 @@
       <!-- KONTEN UTAMA KANAN -->
       <section class="flex-grow bg-white border border-slate-100 rounded-2xl p-6 md:p-10 shadow-sm min-h-[500px]">
         
-        <!-- SECTION 1: TENTANG KAMI -->
-        <div id="content-tentang-kami" class="tab-content hidden space-y-6">
-          <h2 class="text-2xl font-bold text-blue-950 border-b border-slate-100 pb-4">Tentang Kami</h2>
-          <p class="text-sm md:text-base text-slate-500 leading-relaxed">
-            <strong class="text-blue-600">Segar</strong> adalah platform e-commerce pelopor yang menghubungkan langsung para nelayan lokal tradisional dengan dapur Anda. Kami berkomitmen menyajikan hasil laut kualitas premium dengan memotong rantai distribusi yang panjang.
-          </p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
-              <h4 class="font-bold text-blue-950 mb-1">Misi Kami</h4>
-              <p class="text-xs text-slate-500">Meningkatkan kesejahteraan nelayan lokal dan memastikan masyarakat mendapatkan asupan protein laut terbaik yang higienis.</p>
-            </div>
-            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
-              <h4 class="font-bold text-blue-950 mb-1">Jaminan Mutu</h4>
-              <p class="text-xs text-slate-500">Setiap produk laut melalui proses kontrol suhu yang ketat (Cold Chain System) mulai dari kapal hulu hingga kurir pengantaran.</p>
-            </div>
-          </div>
-        </div>
-
         <!-- SECTION 2: PEMBERITAHUAN PRIVASI -->
         <div id="content-pemberitahuan-privasi" class="tab-content hidden space-y-6">
           <h2 class="text-2xl font-bold text-blue-950 border-b border-slate-100 pb-4">Pemberitahuan Privasi</h2>
@@ -208,35 +136,13 @@
       </section>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-100 py-6 text-center text-xs text-slate-400">
-      &copy; 2026 Segar - Hasil Laut Segar. All rights reserved.
-    </footer>
+    <?php
+      include '../includes/footer.php';
+    ?>
+    <?php
+      include '../includes/script.php';
+    ?>
 
-    <!-- LOGIK JAVASCRIPT NAVIGASI TAB SIDEBAR -->
-    <script>
-      function switchTab(tabId) {
-        // 1. Sembunyikan semua konten section kanan
-        const contents = document.querySelectorAll('.tab-content');
-        contents.forEach(content => {
-          content.classList.add('hidden');
-        });
-
-        // 2. Tampilkan konten section yang dipilih
-        document.getElementById(`content-${tabId}`).classList.remove('hidden');
-
-        // 3. Reset semua gaya tombol sidebar menjadi tidak aktif
-        const buttons = document.querySelectorAll('#sidebar-menu button');
-        buttons.forEach(btn => {
-          btn.classList.remove('bg-blue-50', 'text-blue-600', 'font-bold');
-          btn.classList.add('text-slate-500', 'font-medium');
-        });
-
-        // 4. Berikan gaya aktif pada tombol sidebar yang sedang dipilih
-        const activeBtn = document.getElementById(`tab-${tabId}`);
-        activeBtn.classList.remove('text-slate-500', 'font-medium');
-        activeBtn.classList.add('bg-blue-50', 'text-blue-600', 'font-bold');
-      }
-    </script>
+    
   </body>
 </html>

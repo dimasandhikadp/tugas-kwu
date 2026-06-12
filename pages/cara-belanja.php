@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
-<body class="bg-slate-50 text-slate-700">
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+
     <?php
     include '../includes/head.php'
     ?>

@@ -19,38 +19,32 @@
           </div>
         </div>
 
+        <!-- Section Navigation -->
         <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-600">
-          <a href="../index.html" class="group relative hover:text-blue-600">
+          <a href="../index.php" class="group relative hover:text-blue-600">
             Beranda
             <span
               class="absolute left-1/2 -bottom-1 h-0.5 w-0 bg-blue-600 transition-all duration-300 group-hover:w-full group-hover:left-0"
             ></span>
           </a>
-          <!-- <a href="#" class="group relative hover:text-blue-600">
-            Kategori
-            <i data-lucide="chevron-down" class="inline w-4 h-4"></i>
-            <span
-              class="absolute left-1/2 -bottom-1 h-0.5 w-0 bg-blue-600 transition-all duration-300 group-hover:w-full group-hover:left-0"
-            ></span>
-          </a> -->
-          <a href="../pages/tentang-kami.php" class="group relative hover:text-blue-600">
+          <a
+            href="../pages/tentang-kami.php"
+            class="group relative hover:text-blue-600"
+          >
             Tentang Kami
             <span
               class="absolute left-1/2 -bottom-1 h-0.5 w-0 bg-blue-600 transition-all duration-300 group-hover:w-full group-hover:left-0"
             ></span>
           </a>
-          <a href="../pages/cara-belanja.php" class="group relative hover:text-blue-600">
+          <a
+            href="../pages/cara-belanja.php"
+            class="group relative hover:text-blue-600"
+          >
             Cara Belanja
             <span
               class="absolute left-1/2 -bottom-1 h-0.5 w-0 bg-blue-600 transition-all duration-300 group-hover:w-full group-hover:left-0"
             ></span>
           </a>
-          <!-- <a href="#" class="group relative hover:text-blue-600">
-            Blog
-            <span
-              class="absolute left-1/2 -bottom-1 h-0.5 w-0 bg-blue-600 transition-all duration-300 group-hover:w-full group-hover:left-0"
-            ></span>
-          </a> -->
           <a href="../pages/kontak.php" class="group relative hover:text-blue-600">
             Kontak
             <span
@@ -60,29 +54,110 @@
         </nav>
 
         <div class="flex items-center space-x-4">
-          <div class="relative hidden sm:block">
+          <!-- Search -->
+          <form action="search.php" method="GET" class="relative hidden sm:block">
             <input
               type="text"
+              name="q"
               placeholder="Cari produk laut segar..."
               class="bg-white text-sm px-4 py-2 pr-10 rounded-full w-80 shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <i
-              data-lucide="search"
-              class="absolute right-3 top-2.5 text-gray-400 w-4 h-4"
-            ></i>
-          </div>
-          <div class="relative">
-            <button class="text-gray-600 hover:text-blue-600">
-              <i data-lucide="shopping-cart" class="w-6 h-6"></i>
-            </button>
-            <span
-              class="absolute -top-1 -right-2 bg-blue-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full"
-              >2</span
+
+            <button
+              type="submit"
+              class="absolute right-3 top-2.5 text-gray-400 hover:text-blue-600 transition cursor-pointer"
+              aria-label="Cari"
             >
-          </div>
-          <button class="text-gray-600 hover:text-blue-600">
-            <i data-lucide="user" class="w-6 h-6"></i>
-          </button>
-        </div>
+              <i data-lucide="search" class="w-4 h-4"></i>
+            </button>
+          </form>
+
+          <!-- Keranjang -->
+          <a
+          href="cart.php"
+          class="relative text-gray-600 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50"
+        >
+          <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+
+          <span
+            class="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full"
+          >
+            2
+          </span>
+        </a>
+
+  <!-- User Menu -->
+  <div class="relative group">
+    <!-- Tombol User -->
+    <button
+      class="text-gray-600 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50"
+      aria-label="Akun"
+    >
+      <i data-lucide="user" class="w-6 h-6"></i>
+    </button>
+
+    <!-- Dropdown -->
+    <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+      <div class="py-2">
+
+        <?php if(isset($_SESSION['user_id'])): ?>
+          <!-- Profile -->
+          <a
+            href="profile.php"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
+          >
+            <i data-lucide="user-circle" class="w-4 h-4"></i>
+            <span>Profile</span>
+          </a>
+        <?php endif; ?>
+
+        <!-- Dark / Light Mode -->
+        <button
+          class="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-left"
+        >
+          <i data-lucide="moon" class="w-4 h-4"></i>
+          <span>Mode Gelap</span>
+        </button>
+
+        <!-- Settings -->
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
+        >
+          <i data-lucide="settings" class="w-4 h-4"></i>
+          <span>Pengaturan</span>
+        </a>
+
+        <!-- Pembatas sebelum Login / Logout -->
+        <div class="h-0.5 bg-gray-300 mx-4 my-2 rounded-full"></div>
+
+        <?php if(isset($_SESSION['user_id'])): ?>
+
+          <!-- Logout -->
+          <a
+            href="auth/logout.php"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-red-600"
+          >
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            <span>Logout</span>
+          </a>
+
+        <?php else: ?>
+
+          <!-- Login -->
+          <a
+            href="auth/auth.php"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
+          >
+            <i data-lucide="log-in" class="w-4 h-4"></i>
+            <span>Login</span>
+          </a>
+
+        <?php endif; ?>
+
       </div>
+    </div>
+  </div>
+</div>
+
     </header>

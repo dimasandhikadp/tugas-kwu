@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
   </head>
   <body class="bg-gray-50 text-gray-800 font-sans">
+    <!-- Section Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
       <div
         class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between"
@@ -35,6 +36,7 @@
           </div>
         </div>
 
+        <!-- Section Navigation -->
         <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-600">
           <a href="#" class="group relative hover:text-blue-600">
             Beranda
@@ -175,8 +177,7 @@
   </div>
 </div>
 
-</header>
-
+    </header>
     <!-- Section Slide  -->
     <section class="max-w-[1200px] mx-auto px-4 my-6 relative z-0">
       <div
@@ -220,11 +221,12 @@
                   Belanja Sekarang
                 </button>
 
-                <button
+                <a
                   class="bg-white/10 backdrop-blur text-white px-6 py-3 rounded-xl border border-white/20 cursor-pointer"
+                  href="pages/kategori.php"
                 >
                   Lihat Kategori
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -297,6 +299,7 @@
       <div class="-mb-16"></div>
     </section>
 
+    <!-- Section Content -->
     <section class="max-w-6xl mx-auto px-4 relative z-20 -mt-16">
       <div
         class="bg-white border border-gray-100 rounded-2xl p-6 grid grid-cols-2 lg:grid-cols-4 gap-6 shadow-sm"
@@ -453,144 +456,194 @@
       </div>
     </section>
 
+    <!-- Section Produk Terlaris -->
     <section class="max-w-7xl mx-auto px-4 my-12">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-blue-950">Produk Terlaris</h2>
+
+        <a
+          href="#"
+          class="text-blue-600 font-semibold text-sm hover:underline flex items-center gap-1"
+        >
+          Lihat Semua Produk
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
       </div>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Card -->
         <div
-          class="bg-white border border-gray-100 rounded-2xl p-4 relative shadow-xs hover:shadow-md transition"
+          class="bg-white border border-slate-200 rounded-xl p-4 relative flex flex-col group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
         >
           <span
-            class="absolute top-4 left-4 bg-blue-600 text-white font-bold text-[10px] px-2 py-0.5 rounded-md z-10"
-            >TERLARIS</span
+            class="absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-600"
           >
-          
-          <div
-            class="w-full h-44 bg-red-50 rounded-xl mb-4 flex items-center justify-center text-red-400"
-          >
-            <i data-lucide="fish" class="w-16 h-16"></i>
+            TERLARIS
+          </span>
+
+          <div class="aspect-[4/3] flex items-center justify-center mb-3 p-1">
+            <div
+              class="w-full h-full bg-red-50 rounded-xl flex items-center justify-center text-red-400"
+            >
+              <i data-lucide="fish" class="w-16 h-16"></i>
+            </div>
           </div>
-          <h3 class="font-bold text-blue-950 text-base mb-1">
+
+          <div class="text-sm font-semibold text-slate-800 mb-0.5">
             Ikan Kakap Merah
-          </h3>
-          <p class="text-xs text-gray-400 mb-3">~ 1 kg / ekor</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base"
-                >Rp 85.000</span
-              >
-              <span class="text-xs text-gray-400">/ekor</span>
+          </div>
+
+          <div class="text-[11px] text-slate-400 mb-3">
+            ~ 1 kg / ekor
+          </div>
+
+          <div class="flex justify-between items-center mt-auto">
+            <div class="text-base font-bold text-slate-900">
+              Rp 85.000
+              <span class="text-[11px] text-slate-400 font-normal">
+                /ekor
+              </span>
             </div>
-            
           </div>
         </div>
 
+        <!-- Card -->
         <div
-          class="bg-white border border-gray-100 rounded-2xl p-4 relative shadow-xs hover:shadow-md transition"
+          class="bg-white border border-slate-200 rounded-xl p-4 relative flex flex-col group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
         >
           <span
-            class="absolute top-4 left-4 bg-green-500 text-white font-bold text-[10px] px-2 py-0.5 rounded-md z-10"
-            >SEGAR</span
+            class="absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded bg-green-50 text-green-600"
           >
-          
-          <img
-            src="https://images.unsplash.com/photo-1559742811-82410b510bc0?w=600&auto=format&fit=crop&q=80"
-            alt="Udang Vaname"
-            class="w-full h-44 object-cover rounded-xl mb-4"
-          />
-          <h3 class="font-bold text-blue-950 text-base mb-1">Udang Vaname</h3>
-          <p class="text-xs text-gray-400 mb-3">500 gr / pack</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base"
-                >Rp 65.000</span
-              >
-              <span class="text-xs text-gray-400">/pack</span>
+            SEGAR
+          </span>
+
+          <div class="aspect-[4/3] flex items-center justify-center mb-3 p-1">
+            <img
+              src="https://images.unsplash.com/photo-1559742811-82410b510bc0?w=600&auto=format&fit=crop&q=80"
+              alt="Udang Vaname"
+              class="max-w-full max-h-full object-contain"
+            />
+          </div>
+
+          <div class="text-sm font-semibold text-slate-800 mb-0.5">
+            Udang Vaname
+          </div>
+
+          <div class="text-[11px] text-slate-400 mb-3">
+            500 gr / pack
+          </div>
+
+          <div class="flex justify-between items-center mt-auto">
+            <div class="text-base font-bold text-slate-900">
+              Rp 65.000
+              <span class="text-[11px] text-slate-400 font-normal">
+                /pack
+              </span>
             </div>
-            
           </div>
         </div>
 
+        <!-- Card -->
         <div
-          class="bg-white border border-gray-100 rounded-2xl p-4 relative shadow-xs hover:shadow-md transition"
+          class="bg-white border border-slate-200 rounded-xl p-4 relative flex flex-col group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
         >
           <span
-            class="absolute top-4 left-4 bg-blue-600 text-white font-bold text-[10px] px-2 py-0.5 rounded-md z-10"
-            >TERLARIS</span
+            class="absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-600"
           >
-          
+            TERLARIS
+          </span>
 
-          <div
-            class="w-full h-44 bg-orange-50 rounded-xl mb-4 flex items-center justify-center text-orange-500"
-          >
-            <svg
-              class="w-16 h-16"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div class="aspect-[4/3] flex items-center justify-center mb-3 p-1">
+            <div
+              class="w-full h-full bg-orange-50 rounded-xl flex items-center justify-center text-orange-500"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
-              ></path>
-            </svg>
-          </div>
-          <h3 class="font-bold text-blue-950 text-base mb-1">Kepiting Bakau</h3>
-          <p class="text-xs text-gray-400 mb-3">~ 500 gr / ekor</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base"
-                >Rp 70.000</span
+              <svg
+                class="w-16 h-16"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-              <span class="text-xs text-gray-400">/ekor</span>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
+                />
+              </svg>
             </div>
-            
+          </div>
+
+          <div class="text-sm font-semibold text-slate-800 mb-0.5">
+            Kepiting Bakau
+          </div>
+
+          <div class="text-[11px] text-slate-400 mb-3">
+            ~ 500 gr / ekor
+          </div>
+
+          <div class="flex justify-between items-center mt-auto">
+            <div class="text-base font-bold text-slate-900">
+              Rp 70.000
+              <span class="text-[11px] text-slate-400 font-normal">
+                /ekor
+              </span>
+            </div>
           </div>
         </div>
 
+        <!-- Card -->
         <div
-          class="bg-white border border-gray-100 rounded-2xl p-4 relative shadow-xs hover:shadow-md transition"
+          class="bg-white border border-slate-200 rounded-xl p-4 relative flex flex-col group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
         >
           <span
-            class="absolute top-4 left-4 bg-green-500 text-white font-bold text-[10px] px-2 py-0.5 rounded-md z-10"
-            >SEGAR</span
+            class="absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded bg-green-50 text-green-600"
           >
-          
-          <div
-            class="w-full h-44 bg-purple-50 rounded-xl mb-4 flex items-center justify-center text-purple-400"
-          >
-            <svg
-              class="w-16 h-16"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+            SEGAR
+          </span>
+
+          <div class="aspect-[4/3] flex items-center justify-center mb-3 p-1">
+            <div
+              class="w-full h-full bg-purple-50 rounded-xl flex items-center justify-center text-purple-400"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-              ></path>
-            </svg>
-          </div>
-          <h3 class="font-bold text-blue-950 text-base mb-1">Cumi Segar</h3>
-          <p class="text-xs text-gray-400 mb-3">500 gr / pack</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base"
-                >Rp 55.000</span
+              <svg
+                class="w-16 h-16"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-              <span class="text-xs text-gray-400">/pack</span>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                />
+              </svg>
             </div>
-            
+          </div>
+
+          <div class="text-sm font-semibold text-slate-800 mb-0.5">
+            Cumi Segar
+          </div>
+
+          <div class="text-[11px] text-slate-400 mb-3">
+            500 gr / pack
+          </div>
+
+          <div class="flex justify-between items-center mt-auto">
+            <div class="text-base font-bold text-slate-900">
+              Rp 55.000
+              <span class="text-[11px] text-slate-400 font-normal">
+                /pack
+              </span>
+            </div>
           </div>
         </div>
+
       </div>
     </section>
 
+    <!-- Section Content -->
     <section class="max-w-7xl mx-auto px-4 my-12">
       <div
         class="bg-gradient-to-r from-blue-700 to-blue-500 text-white rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between shadow-md"
@@ -614,6 +667,7 @@
       </div>
     </section>
 
+    <!-- Section Content -->
     <section class="max-w-7xl mx-auto px-4 my-16 text-center">
       <h2 class="text-3xl font-bold text-blue-950 mb-10">
         Mengapa Memilih Kami?
@@ -674,49 +728,51 @@
       </div>
     </section>
 
-<section id="metode-pembayaran" class="max-w-7xl mx-auto px-4 my-16">
-    <h2 class="text-3xl font-bold text-blue-950 text-center mb-8">
-        Metode Pembayaran
-    </h2>
+<!-- Section Content -->
+    <section id="metode-pembayaran" class="max-w-7xl mx-auto px-4 my-16">
+      <h2 class="text-3xl font-bold text-blue-950 text-center mb-8">
+          Metode Pembayaran
+      </h2>
 
-    <!-- Baris 1 -->
-    <div class="overflow-hidden payment-section mb-15">
-        <div class="flex w-max items-center gap-15 marquee-right">
-            <!-- Logo -->
-            <img src="assets/img/payment-method/bca.jpg" class="h-12 w-32 object-contain scale-175">
-            <img src="assets/img/payment-method/bni.png" class="h-12 w-32 object-contain">
-            <img src="assets/img/payment-method/bri2.png" class="h-12 w-32 mr-4 object-contain scale-250">
-            <img src="assets/img/payment-method/dana.png" class="h-12 w-32 mr-4 object-contain scale-200">
-            <img src="assets/img/payment-method/ovo.png" class="h-12 w-32 object-contain scale-125">
+      <!-- Baris 1 -->
+      <div class="overflow-hidden payment-section mb-15">
+          <div class="flex w-max items-center gap-15 marquee-right">
+              <!-- Logo -->
+              <img src="assets/img/payment-method/bca.jpg" class="h-12 w-32 object-contain scale-175">
+              <img src="assets/img/payment-method/bni.png" class="h-12 w-32 object-contain">
+              <img src="assets/img/payment-method/bri2.png" class="h-12 w-32 mr-4 object-contain scale-250">
+              <img src="assets/img/payment-method/dana.png" class="h-12 w-32 mr-4 object-contain scale-200">
+              <img src="assets/img/payment-method/ovo.png" class="h-12 w-32 object-contain scale-125">
 
-            <!-- Duplikat -->
-            <img src="assets/img/payment-method/bca.jpg" class="h-12 w-32 object-contain scale-175">
-            <img src="assets/img/payment-method/bni.png" class="h-12 w-32 object-contain">
-            <img src="assets/img/payment-method/bri2.png" class="h-12 w-32 mr-4 object-contain scale-250">
-            <img src="assets/img/payment-method/dana.png" class="h-12 w-32 mr-4 object-contain scale-200">
-            <img src="assets/img/payment-method/ovo.png" class="h-12 w-32 object-contain scale-125">
-        </div>
-    </div>
+              <!-- Duplikat -->
+              <img src="assets/img/payment-method/bca.jpg" class="h-12 w-32 object-contain scale-175">
+              <img src="assets/img/payment-method/bni.png" class="h-12 w-32 object-contain">
+              <img src="assets/img/payment-method/bri2.png" class="h-12 w-32 mr-4 object-contain scale-250">
+              <img src="assets/img/payment-method/dana.png" class="h-12 w-32 mr-4 object-contain scale-200">
+              <img src="assets/img/payment-method/ovo.png" class="h-12 w-32 object-contain scale-125">
+          </div>
+      </div>
 
-    <!-- Baris 2 -->
-    <div class="overflow-hidden payment-section">
-        <div class="flex w-max items-center gap-15 marquee-left">
-            <img src="assets/img/payment-method/mandiri.png" class="h-12 w-32 mr-8 object-contain scale-125">
-            <img src="assets/img/payment-method/gopay.webp" class="h-12 w-32 object-contain scale-125">
-            <img src="assets/img/payment-method/shopeepay.webp" class="h-12 w-32 object-contain scale-125">
-            <img src="assets/img/payment-method/qris.png" class="h-12 w-32 object-contain scale-250">
-            <img src="assets/img/payment-method/cod.png" class="h-12 w-32 object-contain scale-125">
+      <!-- Baris 2 -->
+      <div class="overflow-hidden payment-section">
+          <div class="flex w-max items-center gap-15 marquee-left">
+              <img src="assets/img/payment-method/mandiri.png" class="h-12 w-32 mr-8 object-contain scale-125">
+              <img src="assets/img/payment-method/gopay.webp" class="h-12 w-32 object-contain scale-125">
+              <img src="assets/img/payment-method/shopeepay.webp" class="h-12 w-32 object-contain scale-125">
+              <img src="assets/img/payment-method/qris.png" class="h-12 w-32 object-contain scale-250">
+              <img src="assets/img/payment-method/cod.png" class="h-12 w-32 object-contain scale-125">
 
-            <!-- Duplikat -->
-            <img src="assets/img/payment-method/mandiri.png" class="h-12 w-32 mr-8 object-contain scale-125">
-            <img src="assets/img/payment-method/gopay.webp" class="h-12 w-32 object-contain scale-125">
-            <img src="assets/img/payment-method/shopeepay.webp" class="h-12 w-32 object-contain scale-125">
-            <img src="assets/img/payment-method/qris.png" class="h-12 w-32 object-contain scale-250">
-            <img src="assets/img/payment-method/cod.png" class="h-12 w-32 object-contain scale-125">
-        </div>
-    </div>
-</section>
+              <!-- Duplikat -->
+              <img src="assets/img/payment-method/mandiri.png" class="h-12 w-32 mr-8 object-contain scale-125">
+              <img src="assets/img/payment-method/gopay.webp" class="h-12 w-32 object-contain scale-125">
+              <img src="assets/img/payment-method/shopeepay.webp" class="h-12 w-32 object-contain scale-125">
+              <img src="assets/img/payment-method/qris.png" class="h-12 w-32 object-contain scale-250">
+              <img src="assets/img/payment-method/cod.png" class="h-12 w-32 object-contain scale-125">
+          </div>
+      </div>
+    </section>
 
+    <!-- Section Footer -->
     <footer class="bg-blue-950 text-white mt-20">
       <div class="max-w-7xl mx-auto px-4 py-14">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -788,7 +844,7 @@
                 <a href="#" class="hover:text-blue-400">Pengiriman</a>
               </li> -->
               <li>
-                <a href="pages/kebijakan-privasi.html" class="hover:text-blue-400">Kebijakan Privasi</a>
+                <a href="pages/kebijakan-privasi.php" class="hover:text-blue-400">Kebijakan Privasi</a>
               </li>
             </ul>
           </div>
