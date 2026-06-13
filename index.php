@@ -136,17 +136,19 @@
           <span>Mode Gelap</span>
         </button>
 
-        <!-- Settings -->
-        <a
-          href="#"
-          class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
-        >
-          <i data-lucide="settings" class="w-4 h-4"></i>
-          <span>Pengaturan</span>
-        </a>
+        <!-- Dashboard Penjualan -->
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'seller'): ?>
+          <a
+            href="admin/products/index.php"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
+          >
+            <i data-lucide="store" class="w-4 h-4"></i>
+            <span>Dashboard Penjualan</span>
+          </a>
+        <?php endif; ?>
 
-        <!-- Pembatas sebelum Login / Logout -->
-        <div class="h-0.5 bg-gray-300 mx-4 my-2 rounded-full"></div>
+          <!-- Pembatas sebelum Login / Logout -->
+          <div class="h-0.5 bg-gray-300 mx-4 my-2 rounded-full"></div>
 
         <?php if(isset($_SESSION['user_id'])): ?>
 

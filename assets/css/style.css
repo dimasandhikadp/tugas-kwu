@@ -23,9 +23,3 @@
 .marquee-right {
     animation: marqueeRight 20s linear infinite;
 }
-
-/* Melambat saat hover */
-.payment-section:hover .marquee-left,
-.payment-section:hover .marquee-right {
-    animation-duration: paused;
-}

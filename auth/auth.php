@@ -1,15 +1,17 @@
 <?php
-  session_start();
-  require_once '../config/koneksi.php';
-  
-  /** @var mysqli $conn */
+session_start();
+require_once '../config/koneksi.php';
 
-  $error = '';
-  $success = '';
-  $activeForm = 'login';
+/** @var mysqli $conn */
 
-  if (isset($_POST['register_submit'])) {
+$error = '';
+$success = '';
+$activeForm = 'login';
 
+// ==========================================
+// PROSES REGISTER
+// ==========================================
+if (isset($_POST['register_submit'])) {
     $activeForm = 'register';
 
     $username = trim($_POST['name']);
@@ -25,61 +27,33 @@
         $no_hp = preg_replace('/[^0-9]/', '', $login);
     }
 
+    // SESUAIKAN: Kolom seleksi menggunakan 'user_id' bukan 'id'
     $cek = mysqli_prepare(
         $conn,
-        "SELECT id FROM users
-         WHERE username = ?
-         OR email = ?
-         OR no_hp = ?"
+        "SELECT user_id FROM users WHERE username = ? OR email = ? OR no_hp = ?"
     );
 
-    mysqli_stmt_bind_param(
-        $cek,
-        "sss",
-        $username,
-        $email,
-        $no_hp
-    );
-
+    mysqli_stmt_bind_param($cek, "sss", $username, $email, $no_hp);
     mysqli_stmt_execute($cek);
-
     $result = mysqli_stmt_get_result($cek);
 
     if (mysqli_num_rows($result) > 0) {
-
         $error = "Username, email, atau nomor HP sudah digunakan.";
-
     } else {
-
-        $hash = password_hash(
-            $password,
-            PASSWORD_DEFAULT
-        );
+        $hash = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = mysqli_prepare(
             $conn,
-            "INSERT INTO users
-            (username,email,no_hp,password)
-            VALUES (?,?,?,?)"
+            "INSERT INTO users (username, email, no_hp, password, role) VALUES (?, ?, ?, ?, 'buyer')"
         );
 
-        mysqli_stmt_bind_param(
-            $stmt,
-            "ssss",
-            $username,
-            $email,
-            $no_hp,
-            $hash
-        );
+        mysqli_stmt_bind_param($stmt, "ssss", $username, $email, $no_hp, $hash);
 
         if (mysqli_stmt_execute($stmt)) {
-
             $success = "Pendaftaran berhasil. Silakan login.";
-
+            $activeForm = 'login';
         } else {
-
             $error = "Gagal melakukan pendaftaran.";
-
         }
     }
 }
@@ -87,53 +61,37 @@
 $loginClass = $activeForm === 'login' ? 'block' : 'hidden';
 $registerClass = $activeForm === 'register' ? 'block' : 'hidden';
 
-if (isset($_POST['login_submit'])) {
 
+// ==========================================
+// PROSES LOGIN
+// ==========================================
+if (isset($_POST['login_submit'])) {
     $login = trim($_POST['login']);
     $password = $_POST['password'];
 
     $stmt = mysqli_prepare(
         $conn,
-        "SELECT *
-         FROM users
-         WHERE username = ?
-         OR email = ?
-         OR no_hp = ?
-         LIMIT 1"
+        "SELECT * FROM users WHERE username = ? OR email = ? OR no_hp = ? LIMIT 1"
     );
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        "sss",
-        $login,
-        $login,
-        $login
-    );
-
+    mysqli_stmt_bind_param($stmt, "sss", $login, $login, $login);
     mysqli_stmt_execute($stmt);
-
     $result = mysqli_stmt_get_result($stmt);
-
     $user = mysqli_fetch_assoc($result);
 
-    if (
-        $user &&
-        password_verify(
-            $password,
-            $user['password']
-        )
-    ) {
-
-        $_SESSION['user_id'] = $user['id'];
+    if ($user && password_verify($password, $user['password'])) {
+        
+        // PERBAIKAN UTAMA: Mengambil indeks dari nama kolom database yang asli yaitu 'user_id'
+        $_SESSION['user_id']  = $user['user_id']; 
         $_SESSION['username'] = $user['username'];
+        $_SESSION['role']     = $user['role'];
 
+        // Sesuai fungsionalitas sistemmu: Semua role langsung diarahkan ke index.php
         header('Location: ../index.php');
         exit;
 
     } else {
-
         $error = "Username, email, nomor HP, atau password salah.";
-
     }
 }
 ?>
