@@ -1,10 +1,9 @@
 <?php
+include '../../config/koneksi.php';
 session_start();
-require_once '../../config/koneksi.php';
 
 /** @var mysqli $conn */
 
-// 1. PROTEKSI HALAMAN: Menggunakan $_SESSION['user_id'] dan operator OR (||)
 if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role']) !== 'seller') {
     header('Location: ../../auth/auth.php'); 
     exit();
@@ -13,7 +12,6 @@ if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role']) !== 'seller') 
 $user_id_seller = $_SESSION['user_id'];
 $username_seller = $_SESSION['username'] ?? 'Penjual';
 
-// Ambil inisial nama untuk avatar
 $words = explode(" ", $username_seller);
 $initials = "";
 foreach ($words as $w) {
@@ -21,7 +19,6 @@ foreach ($words as $w) {
 }
 $initials = strtoupper(substr($initials, 0, 2));
 
-// 2. Query mengambil produk beserta nama file gambar pertamanya (menggunakan LEFT JOIN)
 $query_produk = "SELECT p.*, 
                  (SELECT pi.nama_file FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) as gambar_utama 
                  FROM products p 

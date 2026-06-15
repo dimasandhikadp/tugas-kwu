@@ -1,4 +1,5 @@
 <?php
+  include 'config/koneksi.php';
   session_start();
 ?>
 
@@ -130,10 +131,18 @@
 
         <!-- Dark / Light Mode -->
         <button
-          class="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-left"
+          class="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-left cursor-pointer"
         >
           <i data-lucide="moon" class="w-4 h-4"></i>
           <span>Mode Gelap</span>
+        </button>
+
+        <!-- Pengaturan -->
+        <button
+          class="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-left cursor-pointer"
+        >
+          <i data-lucide="settings" class="w-4 h-4"></i>
+          <span>Pengaturan</span>
         </button>
 
         <!-- Dashboard Penjualan -->
@@ -180,6 +189,7 @@
 </div>
 
     </header>
+
     <!-- Section Slide  -->
     <section class="max-w-[1200px] mx-auto px-4 my-6 relative z-0">
       <div
@@ -458,192 +468,100 @@
       </div>
     </section>
 
-    <!-- Section Produk Terlaris -->
-    <section class="max-w-7xl mx-auto px-4 my-12">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-blue-950">Produk Terlaris</h2>
+<section class="max-w-7xl mx-auto px-4 my-12">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-blue-950">Produk Terlaris</h2>
 
-        <a
-          href="#"
-          class="text-blue-600 font-semibold text-sm hover:underline flex items-center gap-1"
-        >
-          Lihat Semua Produk
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </a>
-      </div>
+    <a href="produk.php" class="text-blue-600 font-semibold text-sm hover:underline flex items-center gap-1">
+      Lihat Semua Produk
+      <i data-lucide="arrow-right" class="w-4 h-4"></i>
+    </a>
+  </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
 
-        <!-- Card -->
-        <div
-          class="bg-white border border-slate-200 rounded-xl p-4 relative flex flex-col group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-        >
-          <span
-            class="absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-600"
-          >
-            TERLARIS
-          </span>
+    <?php
+    /** @var mysqli $conn */
+    // Pastikan kolom p.slug ikut terpanggil (p.* sudah mencakup kolom slug)
+    $query_terlaris = "SELECT p.*, 
+                      (SELECT pi.nama_file FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) as gambar_utama 
+                      FROM products p 
+                      WHERE p.status = 'aktif' 
+                      ORDER BY (p.badge = 'TERLARIS') DESC, p.id DESC 
+                      LIMIT 5";
+    
+    $result_terlaris = mysqli_query($conn, $query_terlaris);
 
-          <div class="aspect-[4/3] flex items-center justify-center mb-3 p-1">
-            <div
-              class="w-full h-full bg-red-50 rounded-xl flex items-center justify-center text-red-400"
-            >
-              <i data-lucide="fish" class="w-16 h-16"></i>
-            </div>
-          </div>
+    if (mysqli_num_rows($result_terlaris) > 0) {
+        while ($row = mysqli_fetch_assoc($result_terlaris)) {
+            $badge_text = !empty($row['badge']) ? htmlspecialchars($row['badge']) : 'SEGAR';
+            $badge_class = ($badge_text === 'TERLARIS') 
+                ? 'bg-blue-50 text-blue-600 border-blue-100' 
+                : (($badge_text === 'PROMO') ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100');
+            
+            $icon_kategori = 'fish';
+            if (isset($row['kategori'])) {
+                $kat = strtolower($row['kategori']);
+                if (str_contains($kat, 'udang')) $icon_kategori = 'shrimp';
+                if (str_contains($kat, 'kepiting')) $icon_kategori = 'crab';
+            }
+    ?>
+            <a href="pages/product-details.php?produk=<?= $row['slug']; ?>" class="w-full bg-white border border-slate-200 rounded-2xl p-3.5 hover:shadow-sm hover:-translate-y-[2px] transition-all duration-200 relative flex flex-col group">
+              
+              <div class="absolute top-3 left-3 z-10">
+                <span class="<?= $badge_class; ?> text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider border">
+                  <?= $badge_text; ?>
+                </span>
+              </div>
 
-          <div class="text-sm font-semibold text-slate-800 mb-0.5">
-            Ikan Kakap Merah
-          </div>
+              <div class="w-full aspect-square flex items-center justify-center overflow-hidden rounded-xl mb-2.5 bg-slate-50 relative">
+                <?php if (!empty($row['gambar_utama']) && file_exists("assets/img/product-image/" . $row['gambar_utama'])): ?>
+                    <img src="assets/img/product-image/<?= $row['gambar_utama']; ?>" alt="<?= htmlspecialchars($row['nama_produk']); ?>" class="w-full h-full object-cover">
+                <?php else: ?>
+                    <div class="w-full h-full flex items-center justify-center text-blue-500/70 p-1">
+                        <i data-lucide="<?= $icon_kategori; ?>" class="w-14 h-14"></i>
+                    </div>
+                <?php endif; ?>
+              </div>
 
-          <div class="text-[11px] text-slate-400 mb-3">
-            ~ 1 kg / ekor
-          </div>
+              <div class="space-y-0.5 mb-2.5 flex-1 flex flex-col">
+                <h4 class="font-bold text-slate-800 text-sm leading-snug line-clamp-2" title="<?= htmlspecialchars($row['nama_produk']); ?>">
+                    <?= htmlspecialchars($row['nama_produk']); ?>
+                </h4>
+                <p class="text-[11px] text-slate-400 mt-auto font-medium">
+                    <?= number_format($row['berat'], 0); ?> <?= htmlspecialchars($row['satuan'] ?? 'kg'); ?>
+                </p>
+              </div>
 
-          <div class="flex justify-between items-center mt-auto">
-            <div class="text-base font-bold text-slate-900">
-              Rp 85.000
-              <span class="text-[11px] text-slate-400 font-normal">
-                /ekor
-              </span>
-            </div>
-          </div>
+              <div class="flex items-center justify-between pt-1 border-t border-slate-50 mt-1">
+                <div>
+                  <span class="text-blue-600 font-extrabold text-sm md:text-base block leading-tight">
+                      Rp <?= number_format($row['harga'], 0, ',', '.'); ?>
+                  </span>
+                  <span class="text-[10px] text-slate-400">/<?= htmlspecialchars($row['satuan'] ?? 'kg'); ?></span>
+                </div>
+                
+                <div class="text-right max-w-[50%]">
+                  <span class="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded truncate block" title="<?= htmlspecialchars($row['asal_produk'] ?? 'Lokal'); ?>">
+                    <?= !empty($row['asal_produk']) ? htmlspecialchars($row['asal_produk']) : 'Lokal'; ?>
+                  </span>
+                </div>
+              </div>
+
+            </a> <?php
+        }
+    } else {
+    ?>
+        <div class="col-span-full border-2 border-dashed border-slate-200 rounded-2xl py-12 text-center text-slate-400">
+            <i data-lucide="shopping-bag" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i>
+            <p class="text-sm font-medium">Belum ada produk terlaris yang tersedia.</p>
         </div>
+    <?php
+    }
+    ?>
 
-        <!-- Card -->
-        <div
-          class="bg-white border border-slate-200 rounded-xl p-4 relative flex flex-col group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-        >
-          <span
-            class="absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded bg-green-50 text-green-600"
-          >
-            SEGAR
-          </span>
-
-          <div class="aspect-[4/3] flex items-center justify-center mb-3 p-1">
-            <img
-              src="https://images.unsplash.com/photo-1559742811-82410b510bc0?w=600&auto=format&fit=crop&q=80"
-              alt="Udang Vaname"
-              class="max-w-full max-h-full object-contain"
-            />
-          </div>
-
-          <div class="text-sm font-semibold text-slate-800 mb-0.5">
-            Udang Vaname
-          </div>
-
-          <div class="text-[11px] text-slate-400 mb-3">
-            500 gr / pack
-          </div>
-
-          <div class="flex justify-between items-center mt-auto">
-            <div class="text-base font-bold text-slate-900">
-              Rp 65.000
-              <span class="text-[11px] text-slate-400 font-normal">
-                /pack
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card -->
-        <div
-          class="bg-white border border-slate-200 rounded-xl p-4 relative flex flex-col group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-        >
-          <span
-            class="absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-600"
-          >
-            TERLARIS
-          </span>
-
-          <div class="aspect-[4/3] flex items-center justify-center mb-3 p-1">
-            <div
-              class="w-full h-full bg-orange-50 rounded-xl flex items-center justify-center text-orange-500"
-            >
-              <svg
-                class="w-16 h-16"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div class="text-sm font-semibold text-slate-800 mb-0.5">
-            Kepiting Bakau
-          </div>
-
-          <div class="text-[11px] text-slate-400 mb-3">
-            ~ 500 gr / ekor
-          </div>
-
-          <div class="flex justify-between items-center mt-auto">
-            <div class="text-base font-bold text-slate-900">
-              Rp 70.000
-              <span class="text-[11px] text-slate-400 font-normal">
-                /ekor
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card -->
-        <div
-          class="bg-white border border-slate-200 rounded-xl p-4 relative flex flex-col group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-        >
-          <span
-            class="absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded bg-green-50 text-green-600"
-          >
-            SEGAR
-          </span>
-
-          <div class="aspect-[4/3] flex items-center justify-center mb-3 p-1">
-            <div
-              class="w-full h-full bg-purple-50 rounded-xl flex items-center justify-center text-purple-400"
-            >
-              <svg
-                class="w-16 h-16"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div class="text-sm font-semibold text-slate-800 mb-0.5">
-            Cumi Segar
-          </div>
-
-          <div class="text-[11px] text-slate-400 mb-3">
-            500 gr / pack
-          </div>
-
-          <div class="flex justify-between items-center mt-auto">
-            <div class="text-base font-bold text-slate-900">
-              Rp 55.000
-              <span class="text-[11px] text-slate-400 font-normal">
-                /pack
-              </span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
+  </div>
+</section>
 
     <!-- Section Content -->
     <section class="max-w-7xl mx-auto px-4 my-12">

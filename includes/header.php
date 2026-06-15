@@ -1,4 +1,10 @@
-<header class="bg-white shadow-sm sticky top-0 z-50">
+<?php
+  include '../config/koneksi.php';
+  session_start();
+?>
+
+<!-- Section Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
       <div
         class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between"
       >
@@ -113,29 +119,39 @@
 
         <!-- Dark / Light Mode -->
         <button
-          class="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-left"
+          class="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-left cursor-pointer"
         >
           <i data-lucide="moon" class="w-4 h-4"></i>
           <span>Mode Gelap</span>
         </button>
 
-        <!-- Settings -->
-        <a
-          href="#"
-          class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
+        <!-- Pengaturan -->
+        <button
+          class="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-left cursor-pointer"
         >
           <i data-lucide="settings" class="w-4 h-4"></i>
           <span>Pengaturan</span>
-        </a>
+        </button>
 
-        <!-- Pembatas sebelum Login / Logout -->
-        <div class="h-0.5 bg-gray-300 mx-4 my-2 rounded-full"></div>
+        <!-- Dashboard Penjualan -->
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'seller'): ?>
+          <a
+            href="../admin/products/index.php"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
+          >
+            <i data-lucide="store" class="w-4 h-4"></i>
+            <span>Dashboard Penjualan</span>
+          </a>
+        <?php endif; ?>
+
+          <!-- Pembatas sebelum Login / Logout -->
+          <div class="h-0.5 bg-gray-300 mx-4 my-2 rounded-full"></div>
 
         <?php if(isset($_SESSION['user_id'])): ?>
 
           <!-- Logout -->
           <a
-            href="auth/logout.php"
+            href="../auth/logout.php"
             class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-red-600"
           >
             <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -146,7 +162,7 @@
 
           <!-- Login -->
           <a
-            href="auth/auth.php"
+            href="../auth/auth.php"
             class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
           >
             <i data-lucide="log-in" class="w-4 h-4"></i>
