@@ -1,223 +1,313 @@
+<?php
+// 1. Hubungkan ke database Anda
+include '../config/koneksi.php'; // Sesuaikan dengan jalur file koneksi Anda
+
+/** @var mysqli $conn */
+
+// Ambil kategori dari URL jika ada untuk digunakan sebagai default state di PHP (opsional)
+$kategori_aktif = isset($_GET['c']) ? strtolower(trim($_GET['c'])) : 'semua';
+?>
 <!DOCTYPE html>
 <html lang="id">
-
-  <?php
-    include '../includes/head.php'
-  ?>
+  <?php include '../includes/head.php' ?>
+  <style>
+    /* Style pembantu untuk memastikan transisi filter berjalan mulus dan instan */
+    .filter-hidden {
+        display: none !important;
+    }
+  </style>
 
   <body class="bg-gray-50 text-gray-800 font-sans">
 
-  <?php
-    include '../includes/header.php'
-  ?>
+  <?php include '../includes/header.php' ?>
     
-    <main class="max-w-6xl mx-auto mt-8 px-5">
-      <section class="max-w-7xl mx-auto px-4 my-12">
+    <main class="max-w-7xl mx-auto mt-8 px-5 my-12">
+      
+      <section class="mb-12">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl font-bold text-blue-950">Kategori Produk</h2>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div
+            id="btn-semua"
+            data-target-cat="semua"
+            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition-all duration-200 flex flex-col justify-between items-center cursor-pointer select-none hover:shadow-md hover:border-blue-200"
+            onclick="filterCategory(this)"
+          >
+            <div class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center text-blue-600">
+              <i data-lucide="grid" class="w-10 h-10"></i>
+            </div>
+            <h4 class="font-bold text-sm text-blue-950">Semua</h4>
+            <p class="text-xs text-gray-500 font-semibold">Tampilkan Semua</p>
+          </div>
+
           <div
             id="btn-ikan"
-            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition flex flex-col justify-between items-center cursor-pointer"
-            data-category="ikan"
+            data-target-cat="ikan"
+            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition-all duration-200 flex flex-col justify-between items-center cursor-pointer select-none hover:shadow-md hover:border-blue-200"
+            onclick="filterCategory(this)"
           >
             <div class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center">
-              <img src="../assets/img/kategori/ikan.png" alt="Ikan" class="w-20 h-20 object-contain" />
+              <img src="../assets/img/kategori/ikan.png" alt="Ikan" class="w-20 h-20 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <i data-lucide="fish" class="w-10 h-10 text-blue-600 hidden"></i>
             </div>
             <h4 class="font-bold text-sm text-blue-950">Ikan</h4>
-            <p class="text-xs text-gray-400">25+ Produk</p>
+            <p class="text-xs text-gray-400">Produk Pilihan</p>
           </div>
 
           <div
             id="btn-udang"
-            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition flex flex-col justify-between items-center cursor-pointer"
-            data-category="udang"
+            data-target-cat="udang"
+            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition-all duration-200 flex flex-col justify-between items-center cursor-pointer select-none hover:shadow-md hover:border-blue-200"
+            onclick="filterCategory(this)"
           >
             <div class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center">
-              <img src="../assets/img/kategori/udang.png" alt="Udang" class="w-20 h-20 object-contain" />
+              <img src="../assets/img/kategori/udang.png" alt="Udang" class="w-20 h-20 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <i data-lucide="shrimp" class="w-10 h-10 text-blue-600 hidden"></i>
             </div>
             <h4 class="font-bold text-sm text-blue-950">Udang</h4>
-            <p class="text-xs text-gray-400">15+ Produk</p>
+            <p class="text-xs text-gray-400">Produk Pilihan</p>
           </div>
 
           <div
             id="btn-kepiting"
-            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition flex flex-col justify-between items-center cursor-pointer"
-            data-category="kepiting"
+            data-target-cat="kepiting"
+            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition-all duration-200 flex flex-col justify-between items-center cursor-pointer select-none hover:shadow-md hover:border-blue-200"
+            onclick="filterCategory(this)"
           >
             <div class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center">
-              <img src="../assets/img/kategori/kepiting.png" alt="Kepiting" class="w-20 h-20 object-contain" />
+              <img src="../assets/img/kategori/kepiting.png" alt="Kepiting" class="w-20 h-20 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <i data-lucide="crab" class="w-10 h-10 text-blue-600 hidden"></i>
             </div>
             <h4 class="font-bold text-sm text-blue-950">Kepiting</h4>
-            <p class="text-xs text-gray-400">10+ Produk</p>
+            <p class="text-xs text-gray-400">Produk Pilihan</p>
           </div>
 
           <div
             id="btn-cumi"
-            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition flex flex-col justify-between items-center cursor-pointer"
-            data-category="cumi"
+            data-target-cat="cumi"
+            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition-all duration-200 flex flex-col justify-between items-center cursor-pointer select-none hover:shadow-md hover:border-blue-200"
+            onclick="filterCategory(this)"
           >
             <div class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center">
-              <img src="../assets/img/kategori/cumi.png" alt="Cumi & Sotong" class="w-20 h-20 object-contain" />
+              <img src="../assets/img/kategori/cumi.png" alt="Cumi & Sotong" class="w-20 h-20 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <i data-lucide="squid" class="w-10 h-10 text-blue-600 hidden"></i>
             </div>
             <h4 class="font-bold text-sm text-blue-950">Cumi & Sotong</h4>
-            <p class="text-xs text-gray-400">12+ Produk</p>
+            <p class="text-xs text-gray-400">Produk Pilihan</p>
           </div>
 
           <div
             id="btn-kerang"
-            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition flex flex-col justify-between items-center cursor-pointer"
-            data-category="kerang"
+            data-target-cat="kerang"
+            class="category-btn bg-white border border-gray-100 p-4 rounded-2xl text-center transition-all duration-200 flex flex-col justify-between items-center cursor-pointer select-none hover:shadow-md hover:border-blue-200"
+            onclick="filterCategory(this)"
           >
             <div class="w-24 h-20 bg-blue-50 rounded-lg mb-3 flex items-center justify-center">
-              <img src="../assets/img/kategori/kerang.png" alt="Kerang" class="w-20 h-20 object-contain" />
+              <img src="../assets/img/kategori/kerang.png" alt="Kerang" class="w-20 h-20 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <i data-lucide="shell" class="w-10 h-10 text-blue-600 hidden"></i>
             </div>
             <h4 class="font-bold text-sm text-blue-950">Kerang</h4>
-            <p class="text-xs text-gray-400">8+ Produk</p>
+            <p class="text-xs text-gray-400">Produk Pilihan</p>
           </div>
         </div>
       </section>
 
-      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        
-        <div class="product-card bg-white border border-slate-100 p-4 rounded-2xl shadow-xs" data-category="ikan">
-          <div class="w-full h-44 bg-blue-50 rounded-xl mb-4 flex items-center justify-center text-blue-500">
-            <i data-lucide="fish" class="w-16 h-16"></i>
-          </div>
-          <h3 class="font-bold text-blue-950 text-base mb-1">Ikan Kakap Merah</h3>
-          <p class="text-xs text-gray-400 mb-3">~ 800 gr / ekor</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base">Rp 85.000</span>
-              <span class="text-xs text-gray-400">/ekor</span>
-            </div>
-            <button class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700">
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
-          </div>
-        </div>
+      <div class="flex justify-between items-center mb-6">
+        <h2 id="section-title" class="text-2xl font-bold text-blue-950">Daftar Produk</h2>
+      </div>
 
-        <div class="product-card bg-white border border-slate-100 p-4 rounded-2xl shadow-xs" data-category="ikan">
-          <div class="w-full h-44 bg-blue-50 rounded-xl mb-4 flex items-center justify-center text-blue-500">
-            <i data-lucide="fish" class="w-16 h-16"></i>
-          </div>
-          <h3 class="font-bold text-blue-950 text-base mb-1">Fillet Salmon Premium</h3>
-          <p class="text-xs text-gray-400 mb-3">~ 500 gr / pack</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base">Rp 145.000</span>
-              <span class="text-xs text-gray-400">/pack</span>
-            </div>
-            <button class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700">
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
-          </div>
-        </div>
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+        <?php
+        $query_produk = "SELECT p.*, 
+                         (SELECT pi.nama_file FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) as gambar_utama 
+                         FROM products p 
+                         WHERE p.status = 'aktif' 
+                         ORDER BY p.id DESC";
+        $result_produk = mysqli_query($conn, $query_produk);
 
-        <div class="product-card bg-white border border-slate-100 p-4 rounded-2xl shadow-xs" data-category="udang">
-          <div class="w-full h-44 bg-amber-50 rounded-xl mb-4 flex items-center justify-center text-amber-600">
-            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-            </svg>
-          </div>
-          <h3 class="font-bold text-blue-950 text-base mb-1">Udang Vaname Jumbo</h3>
-          <p class="text-xs text-gray-400 mb-3">~ 1 kg / pack</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base">Rp 95.000</span>
-              <span class="text-xs text-gray-400">/kg</span>
-            </div>
-            <button class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700">
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
-          </div>
-        </div>
+        if (mysqli_num_rows($result_produk) > 0) {
+            while ($row = mysqli_fetch_assoc($result_produk)) {
 
-        <div class="product-card bg-white border border-slate-100 p-4 rounded-2xl shadow-xs" data-category="udang">
-          <div class="w-full h-44 bg-amber-50 rounded-xl mb-4 flex items-center justify-center text-amber-600">
-            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-            </svg>
-          </div>
-          <h3 class="font-bold text-blue-950 text-base mb-1">Udang Windu Segar</h3>
-          <p class="text-xs text-gray-400 mb-3">~ 1 kg / pack</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base">Rp 110.000</span>
-              <span class="text-xs text-gray-400">/kg</span>
-            </div>
-            <button class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700">
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
-          </div>
-        </div>
+                // --- PEMETAAN KATEGORI DATA ---
+                $kategori_katalog = 'lainnya';
+                
+                if (!empty($row['kategori'])) {
+                    $kat_lower = strtolower(trim($row['kategori']));
+                    
+                    if (strpos($kat_lower, 'udang') !== false) {
+                        $kategori_katalog = 'udang';
+                    } elseif (strpos($kat_lower, 'kepiting') !== false || strpos($kat_lower, 'rajungan') !== false) {
+                        $kategori_katalog = 'kepiting';
+                    } elseif (strpos($kat_lower, 'cumi') !== false || strpos($kat_lower, 'sotong') !== false || strpos($kat_lower, 'gurita') !== false) {
+                        $kategori_katalog = 'cumi';
+                    } elseif (strpos($kat_lower, 'kerang') !== false || strpos($kat_lower, 'tiram') !== false) {
+                        $kategori_katalog = 'kerang';
+                    } elseif (strpos($kat_lower, 'ikan') !== false) {
+                        $kategori_katalog = 'ikan';
+                    } else {
+                        $kategori_katalog = 'lainnya';
+                    }
+                }
 
-        <div class="product-card bg-white border border-slate-100 p-4 rounded-2xl shadow-xs" data-category="kepiting">
-          <div class="w-full h-44 bg-orange-50 rounded-xl mb-4 flex items-center justify-center text-orange-500">
-            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path>
-            </svg>
-          </div>
-          <h3 class="font-bold text-blue-950 text-base mb-1">Kepiting Bakau</h3>
-          <p class="text-xs text-gray-400 mb-3">~ 500 gr / ekor</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base">Rp 70.000</span>
-              <span class="text-xs text-gray-400">/ekor</span>
-            </div>
-            <button class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700">
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
-          </div>
-        </div>
+                $badge_text = !empty($row['badge']) ? htmlspecialchars($row['badge']) : 'SEGAR';
+                $badge_class = ($badge_text === 'TERLARIS') 
+                    ? 'bg-blue-50 text-blue-600 border-blue-100' 
+                    : (($badge_text === 'PROMO') ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100');
+                
+                $icon = 'fish';
+                if ($kategori_katalog === 'udang') $icon = 'shrimp';
+                if ($kategori_katalog === 'kepiting') $icon = 'crab';
+                if ($kategori_katalog === 'cumi') $icon = 'squid';
+                if ($kategori_katalog === 'kerang') $icon = 'shell';
+        ?>
+            <a href="product-details.php?produk=<?= $row['slug']; ?>" class="product-card w-full bg-white border border-slate-200 rounded-2xl p-3.5 hover:shadow-md hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.99] transition-all duration-150 relative flex flex-col group select-none outline-none" data-cat-name="<?= $kategori_katalog; ?>">
+              
+              <div class="absolute top-3 left-3 z-10">
+                <span class="<?= $badge_class; ?> text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider border">
+                  <?= $badge_text; ?>
+                </span>
+              </div>
 
-        <div class="product-card bg-white border border-slate-100 p-4 rounded-2xl shadow-xs" data-category="cumi">
-          <div class="w-full h-44 bg-purple-50 rounded-xl mb-4 flex items-center justify-center text-purple-500">
-            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
-            </svg>
-          </div>
-          <h3 class="font-bold text-blue-950 text-base mb-1">Cumi-Cumi Segar</h3>
-          <p class="text-xs text-gray-400 mb-3">~ 1 kg / pack</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base">Rp 75.000</span>
-              <span class="text-xs text-gray-400">/kg</span>
-            </div>
-            <button class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700">
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
-          </div>
-        </div>
+              <div class="w-full aspect-square flex items-center justify-center overflow-hidden rounded-xl mb-2.5 bg-slate-50 group-hover:opacity-90 transition-opacity">
+                <?php if (!empty($row['gambar_utama']) && file_exists("../assets/img/product-image/" . $row['gambar_utama'])): ?>
+                    <img src="../assets/img/product-image/<?= $row['gambar_utama']; ?>" alt="<?= htmlspecialchars($row['nama_produk']); ?>" class="w-full h-full object-cover">
+                <?php else: ?>
+                    <div class="w-full h-full flex items-center justify-center text-blue-500/70 p-1">
+                        <i data-lucide="<?= $icon; ?>" class="w-14 h-14"></i>
+                    </div>
+                <?php endif; ?>
+              </div>
 
-        <div class="product-card bg-white border border-slate-100 p-4 rounded-2xl shadow-xs" data-category="kerang">
-          <div class="w-full h-44 bg-orange-50 rounded-xl mb-4 flex items-center justify-center text-orange-500">
-            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-            </svg>
-          </div>
-          <h3 class="font-bold text-blue-950 text-base mb-1">Kerang Hijau Bersih</h3>
-          <p class="text-xs text-gray-400 mb-3">~ 1 kg / pack</p>
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="text-blue-600 font-extrabold text-base">Rp 45.000</span>
-              <span class="text-xs text-gray-400">/kg</span>
-            </div>
-            <button class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700">
-              <i data-lucide="plus" class="w-5 h-5"></i>
-            </button>
-          </div>
-        </div>
+              <div class="space-y-0.5 mb-2.5 flex-1 flex flex-col">
+                <h4 class="font-bold text-slate-800 text-sm leading-snug truncate group-hover:text-blue-600 transition-colors" title="<?= htmlspecialchars($row['nama_produk']); ?>">
+                    <?= htmlspecialchars($row['nama_produk']); ?>
+                </h4>
+                <p class="text-[11px] text-gray-400 mt-auto font-medium">
+                    ± <?= number_format($row['berat'], 0); ?> <?= htmlspecialchars($row['satuan'] ?? 'kg'); ?>
+                </p>
+              </div>
 
+              <div class="flex items-center justify-between pt-1 border-t border-slate-50 mt-1">
+                <div>
+                  <span class="text-blue-600 font-extrabold text-sm md:text-base block leading-tight">
+                    Rp <?= number_format($row['harga'], 0, ',', '.'); ?>
+                  </span>
+                  <span class="text-[10px] text-slate-400">/<?= htmlspecialchars($row['satuan'] ?? 'kg'); ?></span>
+                </div>
+                
+                <div class="text-right max-w-[50%]">
+                  <span class="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded truncate block" title="<?= htmlspecialchars($row['asal_produk'] ?? 'Lokal'); ?>">
+                    <?= !empty($row['asal_produk']) ? htmlspecialchars($row['asal_produk']) : 'Lokal'; ?>
+                  </span>
+                </div>
+              </div>
+            </a>
+        <?php 
+            }
+        } else {
+        ?>
+            <div class="col-span-full border-2 border-dashed border-slate-200 rounded-2xl py-12 text-center text-slate-400">
+                <i data-lucide="shopping-bag" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i>
+                <p class="text-sm font-medium">Belum ada produk yang tersedia saat ini.</p>
+            </div>
+        <?php
+        }
+        ?>
       </div>
     </main>
 
     <?php
       include '../includes/footer.php';
-      include '../includes/script.php';
+      // include '../includes/script.php';
     ?>
-    
+
+    <script>
+    function filterCategory(elementOrString) {
+        let targetCategory = 'semua';
+        let targetElement = null;
+
+        // Mendeteksi apakah fungsi dipanggil dengan mengklik elemen (this) atau string langsung saat loading
+        if (typeof elementOrString === 'string') {
+            targetCategory = elementOrString;
+            targetElement = document.querySelector(`.category-btn[data-target-cat="${targetCategory}"]`);
+        } else if (elementOrString && elementOrString.getAttribute) {
+            targetCategory = elementOrString.getAttribute('data-target-cat');
+            targetElement = elementOrString;
+        }
+
+        // 1. Sinkronisasi parameter ke URL
+        const url = new URL(window.location);
+        if (targetCategory === 'semua') {
+            url.searchParams.delete('c'); 
+        } else {
+            url.searchParams.set('c', targetCategory); 
+        }
+        window.history.pushState({}, '', url);
+
+        // 2. Reset visual seluruh tombol kategori
+        const buttons = document.querySelectorAll('.category-btn');
+        buttons.forEach(btn => {
+            // Hapus style aktif yang tebal
+            btn.classList.remove('bg-blue-50', 'border-blue-400', 'ring-4', 'ring-blue-100', 'shadow-md');
+            // Kembalikan ke style normal
+            btn.classList.add('bg-white', 'border-gray-100');
+        });
+
+        // 3. Set visual tombol AKTIF (yang sedang dipilih)
+        if (targetElement) {
+            targetElement.classList.remove('bg-white', 'border-gray-100');
+            // Tambahkan style aktif yang sangat menonjol menggunakan Tailwind
+            targetElement.classList.add('bg-blue-50', 'border-blue-400', 'ring-4', 'ring-blue-100', 'shadow-md');
+        }
+
+        // 4. Saring Kartu Produk Berdasarkan Atribut Data
+        const cards = document.querySelectorAll('.product-card');
+        cards.forEach(card => {
+            const cardCategory = card.getAttribute('data-cat-name');
+            if (targetCategory === 'semua' || cardCategory === targetCategory) {
+                card.classList.remove('filter-hidden');
+            } else {
+                card.classList.add('filter-hidden');
+            }
+        });
+
+        // 5. Update Judul Komponen Secara Dinamis
+        const sectionTitle = document.getElementById('section-title');
+        if (targetCategory === 'semua') {
+            sectionTitle.textContent = 'Daftar Produk';
+        } else {
+            const displayTitle = targetCategory.charAt(0).toUpperCase() + targetCategory.slice(1);
+            sectionTitle.textContent = 'Daftar Produk ' + displayTitle;
+        }
+
+        // 6. Re-render Lucide Icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
+    // --- INITIAL LOAD ---
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let categoryParam = urlParams.get('c');
+        
+        // Membersihkan potensi string 'undefined' yang macet di cache/URL sebelumnya
+        if (!categoryParam || categoryParam === 'undefined' || categoryParam.trim() === '') {
+            filterCategory('semua');
+        } else {
+            // Validasi apakah kategori di URL benar-benar ada tombolnya
+            const categoryClean = categoryParam.toLowerCase().trim();
+            const exists = document.querySelector(`.category-btn[data-target-cat="${categoryClean}"]`);
+            
+            if (exists) {
+                filterCategory(categoryClean);
+            } else {
+                filterCategory('semua'); // Default aman
+            }
+        }
+    });
+    </script>
   </body>
 </html>

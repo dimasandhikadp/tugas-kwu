@@ -458,7 +458,7 @@
           class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
         >
           <div
-            class="w-20 h-18 bg-gray-50 rounded-lg mb-3 flex items-center justify-center text-gray-500"
+            class="w-20 h-18 bg-gray-50 rounded-lg mb-3 flex items-center justify-center text-blue-600"
           >
             <i data-lucide="layout-grid" class="w-10 h-10"></i>
           </div>
@@ -472,7 +472,7 @@
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-2xl font-bold text-blue-950">Produk Terlaris</h2>
 
-    <a href="produk.php" class="text-blue-600 font-semibold text-sm hover:underline flex items-center gap-1">
+    <a href="pages/products.php" class="text-blue-600 font-semibold text-sm hover:underline flex items-center gap-1">
       Lihat Semua Produk
       <i data-lucide="arrow-right" class="w-4 h-4"></i>
     </a>
