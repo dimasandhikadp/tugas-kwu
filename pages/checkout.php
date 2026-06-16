@@ -1,17 +1,13 @@
 <?php
-// Pastikan session dimulai jika belum ada di koneksi.php untuk mengambil user_id
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
 include '../config/koneksi.php';
-
 /** @var mysqli $conn */
 
-// Ambil user_id dari session login (default ke 1 jika belum login)
-$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1; 
+$user_id = $_SESSION['user_id'] ?? 1;
 
-// --- PROSES SIMPAN ALAMAT (TANPA AJAX) ---
+// --- PROSES SIMPAN ALAMAT ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_alamat'])) {
     $nama_penerima = mysqli_real_escape_string($conn, $_POST['nama_penerima']);
     $no_hp         = mysqli_real_escape_string($conn, $_POST['no_hp']);
@@ -22,62 +18,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_alamat'])) {
     $alamat        = mysqli_real_escape_string($conn, $_POST['alamat']);
 
     if (!empty($nama_penerima) && !empty($no_hp) && !empty($kelurahan) && !empty($alamat)) {
-        // Reset default alamat lama milik user ini terlebih dahulu
         mysqli_query($conn, "UPDATE addresses SET is_default = 0 WHERE user_id = '$user_id'");
-
-        // Query simpan alamat baru sebagai default (is_default = 1)
         $query_save = "INSERT INTO addresses (user_id, nama_penerima, no_hp, alamat, kota, kecamatan, kelurahan, provinsi, is_default) 
                        VALUES ('$user_id', '$nama_penerima', '$no_hp', '$alamat', '$kota', '$kecamatan', '$kelurahan', '$provinsi', 1)";
         mysqli_query($conn, $query_save);
     }
 }
 
-// --- OTOMATIS LOAD ALAMAT DEFAULT SAAT BUKA HALAMAN ---
+// --- LOAD ALAMAT ---
 $alamat_terpanah = null;
-$query_load_alamat = "SELECT * FROM addresses WHERE user_id = '$user_id' AND is_default = 1 LIMIT 1";
-$res_alamat = mysqli_query($conn, $query_load_alamat);
-
+$res_alamat = mysqli_query($conn, "SELECT * FROM addresses WHERE user_id = '$user_id' AND is_default = 1 LIMIT 1");
 if ($res_alamat && mysqli_num_rows($res_alamat) > 0) {
     $data_adr = mysqli_fetch_assoc($res_alamat);
     $alamat_terpanah = [
-        'nama' => $data_adr['nama_penerima'],
-        'telp' => $data_adr['no_hp'],
+        'nama' => $data_adr['nama_penerima'], 'telp' => $data_adr['no_hp'],
         'wilayah' => $data_adr['provinsi'] . ", " . $data_adr['kota'] . ", " . $data_adr['kecamatan'] . ", " . $data_adr['kelurahan'],
         'jalan' => $data_adr['alamat']
     ];
 }
 
-// --- AMBIL DATA PRODUK ---
-$slug = isset($_GET['slug']) ? mysqli_real_escape_string($conn, $_GET['slug']) : '';
-$qty = isset($_GET['qty']) ? (int)$_GET['qty'] : 1;
-if ($qty < 1) { $qty = 1; }
+// --- LOGIKA AMBIL DATA PRODUK (CART POST ATAU DIRECT GET) ---
+$items_checkout = [];
+$subtotal_pesanan = 0;
+$biaya_layanan = 2000;
+$biaya_pengiriman = 20000;
 
-$nama_produk = "Produk Sampel Cincin Manik";
-$harga_produk = 6160;
-$berat_produk = 1;
-$satuan_produk = "kg";
-$gambar_utama = "";
-
-if (!empty($slug)) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_items'])) {
+    $selected_ids = array_map('intval', $_POST['selected_items']);
+    $qty_arr = $_POST['qty'];
+    $ids_string = implode(',', $selected_ids);
+    
+   $query_p = "SELECT ci.id as cart_item_id, p.*, 
+            (SELECT pi.nama_file FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) as gambar_utama 
+            FROM cart_items ci 
+            JOIN products p ON ci.product_id = p.id 
+            JOIN cart c ON ci.cart_id = c.id
+            WHERE ci.id IN ($ids_string) 
+            AND c.user_id = '$user_id'";
+            
+    $res_p = mysqli_query($conn, $query_p);
+    while ($row = mysqli_fetch_assoc($res_p)) {
+        $qty = (int)($qty_arr[$row['cart_item_id']] ?? 1);
+        $row['qty'] = $qty;
+        $subtotal_pesanan += ($row['harga'] * $qty);
+        $items_checkout[] = $row;
+    }
+} elseif (isset($_GET['slug'])) {
+    $slug = mysqli_real_escape_string($conn, $_GET['slug']);
+    $qty = (int)($_GET['qty'] ?? 1);
     $query_p = "SELECT p.*, (SELECT pi.nama_file FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) as gambar_utama 
                 FROM products p WHERE p.slug = '$slug' LIMIT 1";
     $res_p = mysqli_query($conn, $query_p);
-    if (mysqli_num_rows($res_p) > 0) {
-        $p_data = mysqli_fetch_assoc($res_p);
-        $nama_produk = $p_data['nama_produk'];
-        $harga_produk = $p_data['harga'];
-        $berat_produk = $p_data['berat'];
-        $satuan_produk = $p_data['satuan'] ?? 'kg';
-        $gambar_utama = $p_data['gambar_utama'];
+    if ($row = mysqli_fetch_assoc($res_p)) {
+        $row['qty'] = $qty;
+        $subtotal_pesanan = $row['harga'] * $qty;
+        $items_checkout[] = $row;
     }
 }
 
-// Kalkulasi Biaya Awal
-$biaya_layanan = 2000;
-$biaya_pengiriman = 20000;
-$subtotal = $harga_produk * $qty;
-$total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
+$total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -134,43 +135,38 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
                 <h3 class="font-bold text-blue-950">Detail Pesanan</h3>
             </div>
             
+            <?php foreach ($items_checkout as $item): ?>
             <div class="flex gap-4 items-start py-2">
                 <div class="w-20 h-20 bg-slate-100 rounded-xl overflow-hidden flex-shrink-0 border border-gray-100 flex items-center justify-center">
-                    <?php if (!empty($gambar_utama) && file_exists("../assets/img/product-image/" . $gambar_utama)): ?>
-                        <img src="../assets/img/product-image/<?= $gambar_utama; ?>" class="w-full h-full object-cover">
+                    <?php if (!empty($item['gambar_utama']) && file_exists("../assets/img/product-image/" . $item['gambar_utama'])): ?>
+                        <img src="../assets/img/product-image/<?= $item['gambar_utama']; ?>" class="w-full h-full object-cover">
                     <?php else: ?>
                         <i data-lucide="fish" class="w-8 h-8 text-blue-500/50"></i>
                     <?php endif; ?>
                 </div>
+                
                 <div class="flex-1 min-w-0">
-                    <h4 class="font-bold text-slate-800 text-sm truncate"><?= htmlspecialchars($nama_produk); ?></h4>
-                    <p class="text-xs text-slate-400 mt-0.5">Berat: <?= $berat_produk; ?> <?= htmlspecialchars($satuan_produk); ?></p>
+                    <h4 class="font-bold text-slate-800 text-sm truncate"><?= htmlspecialchars($item['nama_produk']); ?></h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Asal Tangkapan: <?= $item['asal_produk']; ?></p>
                     <div class="flex items-center justify-between mt-2">
-                        <span class="text-blue-600 font-extrabold text-sm">Rp <?= number_format($harga_produk, 0, ',', '.'); ?></span>
-                        
-                        <div class="flex items-center border border-gray-200 rounded-lg bg-gray-50 overflow-hidden">
-                            <button type="button" onclick="updateQty(-1)" class="px-2 py-1 text-gray-600 hover:bg-gray-200 font-bold transition text-xs">-</button>
-                            <span id="display-qty" class="px-3 py-1 text-xs font-semibold bg-white text-slate-700 min-w-[24px] text-center"><?= $qty; ?></span>
-                            <button type="button" onclick="updateQty(1)" class="px-2 py-1 text-gray-600 hover:bg-gray-200 font-bold transition text-xs">+</button>
-                        </div>
+                        <span class="text-blue-600 font-extrabold text-sm">Rp <?= number_format($item['harga'], 0, ',', '.'); ?></span>
+                        <span class="text-xs font-semibold text-slate-600 bg-gray-100 px-2 py-1 rounded">Qty: <?= $item['qty']; ?></span>
                     </div>
                 </div>
             </div>
+            <?php endforeach; ?>
         </section>
 
-                <!-- SECTION METODE PEMBAYARAN -->
         <section class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-3">
             <div class="flex items-center justify-between border-b border-gray-50 pb-2">
                 <div class="flex items-center gap-2">
                     <i data-lucide="credit-card" class="w-5 h-5 text-blue-600"></i>
                     <h3 class="font-bold text-blue-950">Metode Pembayaran</h3>
                 </div>
-                <!-- Opsi Lain ditaruh diseberang kanan dengan tulisan abu-abu tipis -->
                 <button type="button" onclick="openPaymentModal()" class="text-xs font-medium text-gray-400 hover:text-gray-600 transition bg-transparent border-none p-0 outline-none">
                     Opsi Lain <i data-lucide="chevron-right" class="w-3 h-3 inline ml-0.5"></i>
                 </button>
             </div>
-            
             <div class="flex items-center gap-3 p-1">
                 <img id="current-pay-img" src="../assets/img/payment-method/cod.png" class="h-7 w-16 object-contain">
                 <div class="text-sm">
@@ -187,8 +183,8 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
                 <h3 class="font-bold text-blue-950">Rincian Pembayaran</h3>
             </div>
             <div class="flex justify-between text-gray-500">
-                <span id="label-rincian-qty">Subtotal Pesanan (<?= $qty; ?> produk)</span>
-                <span class="font-semibold text-gray-700" id="display-subtotal">Rp <?= number_format($subtotal, 0, ',', '.'); ?></span>
+                <span>Subtotal Pesanan</span>
+                <span class="font-semibold text-gray-700">Rp <?= number_format($subtotal_pesanan, 0, ',', '.'); ?></span>
             </div>
             <div class="flex justify-between text-gray-500">
                 <span>Biaya Layanan</span>
@@ -201,7 +197,7 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
             <hr class="border-gray-100 my-1">
             <div class="flex justify-between text-base font-bold text-blue-950 pt-1">
                 <span>Total Pembayaran</span>
-                <span class="text-blue-600 text-lg" id="display-total">Rp <?= number_format($total_pembayaran, 0, ',', '.'); ?></span>
+                <span class="text-blue-600 text-lg">Rp <?= number_format($total_pembayaran, 0, ',', '.'); ?></span>
             </div>
         </section>
     </main>
@@ -209,10 +205,10 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
     <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 shadow-xl z-30">
         <div class="max-w-3xl mx-auto px-4 h-20 flex items-center justify-between">
             <div class="flex flex-col">
-                <span class="text-xs text-gray-400 font-medium">Total Belanja</span>
-                <span class="text-xl font-extrabold text-blue-600" id="display-fixed-total">Rp <?= number_format($total_pembayaran, 0, ',', '.'); ?></span>
+                <span class="text-xs text-gray-400 font-medium">Total Tagihan</span>
+                <span class="text-xl font-extrabold text-blue-600">Rp <?= number_format($total_pembayaran, 0, ',', '.'); ?></span>
             </div>
-            <button type="button" onclick="prosesBuatPesanan()" class="bg-blue-600 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-blue-700 shadow-md active:scale-[0.98] transition cursor-pointer">
+            <button type="button" onclick="document.getElementById('popup-konfirmasi').classList.remove('hidden')" class="bg-blue-600 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-blue-700 shadow-md active:scale-[0.98] transition cursor-pointer">
                 Buat Pesanan
             </button>
         </div>
@@ -256,8 +252,8 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
                 </div>
             </div>
             <div class="p-4 bg-slate-50 border-t border-gray-100 flex items-center justify-between gap-3">
-                <button type="button" onclick="resetFormAlamat()" class="px-5 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-xl transition">Hapus</button>
-                <button type="submit" class="px-6 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md shadow-blue-600/10">Simpan Alamat</button>
+                <button type="button" onclick="resetFormAlamat()" class="px-5 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-xl transition cursor-pointer">Hapus</button>
+                <button type="submit" class="px-6 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md shadow-blue-600/10 cursor-pointer">Simpan Alamat</button>
             </div>
         </form>
     </div>
@@ -420,94 +416,66 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
 </div>
 
     <script>
-    const hargaProduk = <?= $harga_produk; ?>;
+    // Inisialisasi variabel dari PHP
     const biayaLayanan = <?= $biaya_layanan; ?>;
     const biayaPengiriman = <?= $biaya_pengiriman; ?>;
-    let currentQty = <?= $qty; ?>;
 
     function formatRupiah(angka) {
         return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
-    function updateQty(change) {
+    // Fungsi updateQty untuk keranjang (mengirim id_keranjang atau index)
+    function updateQty(id, change, hargaSatuan) {
+        let qtyElement = document.getElementById('qty-' + id);
+        let subtotalElement = document.getElementById('subtotal-' + id);
+        let currentQty = parseInt(qtyElement.textContent);
+        
         let newQty = currentQty + change;
         if (newQty < 1) return; 
         
-        currentQty = newQty;
+        qtyElement.textContent = newQty;
         
-        const subtotal = hargaProduk * currentQty;
-        const total = subtotal + biayaLayanan + biayaPengiriman;
+        // Update subtotal per item
+        let newSubtotal = newQty * hargaSatuan;
+        subtotalElement.textContent = formatRupiah(newSubtotal);
 
-        document.getElementById('display-qty').textContent = currentQty;
-        document.getElementById('label-rincian-qty').textContent = `Subtotal Pesanan (${currentQty} produk)`;
-        document.getElementById('display-subtotal').textContent = formatRupiah(subtotal);
-        document.getElementById('display-total').textContent = formatRupiah(total);
-        document.getElementById('display-fixed-total').textContent = formatRupiah(total);
+        // Hitung ulang total keseluruhan di halaman
+        hitungTotalKeseluruhan();
     }
 
-    // Seluruh wilayah 5 Provinsi Kalimantan
+    function hitungTotalKeseluruhan() {
+        let subtotals = document.querySelectorAll('[id^="subtotal-"]');
+        let total = 0;
+        
+        subtotals.forEach(el => {
+            // Bersihkan format Rupiah untuk perhitungan
+            let val = parseInt(el.textContent.replace(/[^0-9]/g, ''));
+            total += val;
+        });
+
+        const grandTotal = total + biayaLayanan + biayaPengiriman;
+        
+        // Update tampilan total
+        document.getElementById('display-subtotal').textContent = formatRupiah(total);
+        document.getElementById('display-total').textContent = formatRupiah(grandTotal);
+        document.getElementById('display-fixed-total').textContent = formatRupiah(grandTotal);
+    }
+
+    // --- LOGIKA WILAYAH (Tetap sama) ---
     const databaseWilayah = {
-        "Kalimantan Barat": {
-            "Pontianak": {
-                "Pontianak Kota": ["Dararat Sekip", "Mariana", "Sungai Bangkong", "Sungai Jawi"],
-                "Pontianak Tenggara": ["Bangka Belitung Darat", "Bangka Belitung Laut", "Bansir Darat"]
-            },
-            "Singkawang": {
-                "Singkawang Barat": ["Pasiran", "Melayu", "Kuala", "Singkawang Dua"]
-            }
-        },
-        "Kalimantan Selatan": {
-            "Banjarmasin": {
-                "Banjarmasin Tengah": ["Antasan Besar", "Gadang", "Kertak Baru Ilir", "Mawar"],
-                "Banjarmasin Utara": ["Alalak Utara", "Antasan Kecil Timur", "Pangeran"]
-            },
-            "Banjarbaru": {
-                "Landasan Ulin": ["Guntung Payung", "Guntung Manggis", "Syamsudin Noor"]
-            }
-        },
-        "Kalimantan Tengah": {
-            "Palangkaraya": {
-                "Jekan Raya": ["Menteng", "Palangka", "Bukit Tunggal"],
-                "Pahandut": ["Pahandut Seberang", "Panarung", "Langkai"]
-            }
-        },
-        "Kalimantan Timur": {
-            "Samarinda": {
-                "Samarinda Kota": ["Bugis", "Karang Mumus", "Pelabuhan"],
-                "Samarinda Ulu": ["Air Hitam", "Air Putih", "Sidodadi"]
-            },
-            "Balikpapan": {
-                "Balikpapan Kota": ["Klandasan Ulu", "Klandasan Ilir", "Prapatan"]
-            }
-        },
-        "Kalimantan Utara": {
-            "Tarakan": {
-                "Tarakan Barat": ["Karang Anyar", "Karang Balik", "Sebabu"],
-                "Tarakan Timur": ["Lingkas Ujung", "Mamburungan", "Pamusian"]
-            }
-        }
+        "Kalimantan Barat": { "Pontianak": { "Pontianak Kota": ["Dararat Sekip", "Mariana"], "Pontianak Tenggara": ["Bangka Belitung"] }, "Singkawang": { "Singkawang Barat": ["Pasiran", "Melayu"] } },
+        "Kalimantan Selatan": { "Banjarmasin": { "Banjarmasin Tengah": ["Antasan Besar"], "Banjarmasin Utara": ["Alalak Utara"] }, "Banjarbaru": { "Landasan Ulin": ["Guntung Payung"] } },
+        "Kalimantan Tengah": { "Palangkaraya": { "Jekan Raya": ["Menteng"], "Pahandut": ["Pahandut Seberang"] } },
+        "Kalimantan Timur": { "Samarinda": { "Samarinda Kota": ["Bugis"], "Samarinda Ulu": ["Air Hitam"] }, "Balikpapan": { "Balikpapan Kota": ["Klandasan Ulu"] } },
+        "Kalimantan Utara": { "Tarakan": { "Tarakan Barat": ["Karang Anyar"], "Tarakan Timur": ["Lingkas Ujung"] } }
     };
 
-    let selectedProvinsi = "";
-    let selectedKota = "";
-    let selectedKecamatan = "";
-    let selectedKelurahan = "";
+    let selectedProvinsi = "", selectedKota = "", selectedKecamatan = "", selectedKelurahan = "";
 
-    function openAddressModal() {
-        document.getElementById('modal-alamat').classList.remove('hidden');
-        document.body.classList.add('modal-active');
-    }
-    function closeAddressModal() {
-        document.getElementById('modal-alamat').classList.add('hidden');
-        document.body.classList.remove('modal-active');
-    }
-    function openRegionPicker() {
-        document.getElementById('modal-region').classList.remove('hidden');
-        renderProvinsiList();
-    }
-    function closeRegionPicker() {
-        document.getElementById('modal-region').classList.add('hidden');
-    }
+    function openAddressModal() { document.getElementById('modal-alamat').classList.remove('hidden'); document.body.classList.add('modal-active'); }
+    function closeAddressModal() { document.getElementById('modal-alamat').classList.add('hidden'); document.body.classList.remove('modal-active'); }
+    function openRegionPicker() { document.getElementById('modal-region').classList.remove('hidden'); renderProvinsiList(); }
+    function closeRegionPicker() { document.getElementById('modal-region').classList.add('hidden'); }
 
     function renderProvinsiList() {
         document.getElementById('region-modal-title').textContent = "Pilih Provinsi";
@@ -517,16 +485,11 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
             const row = document.createElement('div');
             row.className = "p-4 hover:bg-slate-50 cursor-pointer text-gray-700 font-medium transition";
             row.textContent = prov;
-            row.onclick = () => {
-                selectedProvinsi = prov;
-                document.getElementById('hidden-provinsi').value = prov;
-                renderKotaList();
-            };
+            row.onclick = () => { selectedProvinsi = prov; document.getElementById('hidden-provinsi').value = prov; renderKotaList(); };
             container.appendChild(row);
         });
     }
 
-    // (Fungsi Region Picker tetap sama untuk mempermudah operasional)
     function renderKotaList() {
         document.getElementById('region-modal-title').textContent = "Pilih Kota/Kabupaten";
         const container = document.getElementById('region-list-container');
@@ -535,11 +498,7 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
             const row = document.createElement('div');
             row.className = "p-4 hover:bg-slate-50 cursor-pointer text-gray-700 font-medium transition";
             row.textContent = kota;
-            row.onclick = () => {
-                selectedKota = kota;
-                document.getElementById('hidden-kota').value = kota;
-                renderKecamatanList();
-            };
+            row.onclick = () => { selectedKota = kota; document.getElementById('hidden-kota').value = kota; renderKecamatanList(); };
             container.appendChild(row);
         });
     }
@@ -552,11 +511,7 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
             const row = document.createElement('div');
             row.className = "p-4 hover:bg-slate-50 cursor-pointer text-gray-700 font-medium transition";
             row.textContent = kec;
-            row.onclick = () => {
-                selectedKecamatan = kec;
-                document.getElementById('hidden-kecamatan').value = kec;
-                renderKelurahanList();
-            };
+            row.onclick = () => { selectedKecamatan = kec; document.getElementById('hidden-kecamatan').value = kec; renderKelurahanList(); };
             container.appendChild(row);
         });
     }
@@ -569,12 +524,12 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
             const row = document.createElement('div');
             row.className = "p-4 hover:bg-slate-50 cursor-pointer text-gray-700 font-medium transition";
             row.textContent = kel;
-            row.onclick = () => {
-                selectedKelurahan = kel;
-                document.getElementById('hidden-kelurahan').value = kel;
+            row.onclick = () => { 
+                selectedKelurahan = kel; 
+                document.getElementById('hidden-kelurahan').value = kel; 
                 document.getElementById('txt-region-summary').textContent = `${selectedProvinsi}, ${selectedKota}, ${selectedKecamatan}, ${selectedKelurahan}`;
                 document.getElementById('txt-region-summary').className = "text-gray-800 font-semibold";
-                closeRegionPicker();
+                closeRegionPicker(); 
             };
             container.appendChild(row);
         });
@@ -586,81 +541,45 @@ $total_pembayaran = $subtotal + $biaya_layanan + $biaya_pengiriman;
         document.getElementById('inp-detail-jalan').value = "";
         document.getElementById('txt-region-summary').textContent = "Pilih Provinsi, Kota, Kecamatan, Kelurahan...";
         document.getElementById('txt-region-summary').className = "text-gray-400";
-        document.getElementById('hidden-provinsi').value = "";
-        document.getElementById('hidden-kota').value = "";
-        document.getElementById('hidden-kecamatan').value = "";
-        document.getElementById('hidden-kelurahan').value = "";
     }
 
-    // --- FUNGSI POP-UP MODAL METODE PEMBAYARAN BARU ---
-    function openPaymentModal() {
-        document.getElementById('modal-pembayaran').classList.remove('hidden');
-        document.body.classList.add('modal-active');
-    }
-    
-    function closePaymentModal() {
-        document.getElementById('modal-pembayaran').classList.add('hidden');
-        document.body.classList.remove('modal-active');
-    }
+    // --- PEMBAYARAN & KONFIRMASI ---
+    function openPaymentModal() { document.getElementById('modal-pembayaran').classList.remove('hidden'); document.body.classList.add('modal-active'); }
+    function closePaymentModal() { document.getElementById('modal-pembayaran').classList.add('hidden'); document.body.classList.remove('modal-active'); }
 
     function selectPaymentOpt(id, title, desc, imgFileName) {
-        // Sembunyikan semua check icon di dalam list modal
-        document.querySelectorAll('.pay-opt-row svg').forEach(svg => {
-            svg.parentElement.classList.add('hidden');
-        });
-        
-        // Tampilkan check icon pada pilihan aktif
+        document.querySelectorAll('.pay-opt-row svg').forEach(svg => svg.parentElement.classList.add('hidden'));
         document.getElementById(`check-opt-${id}`).classList.remove('hidden');
-
-        // Update tampilan utama di halaman checkout
         document.getElementById('current-pay-img').src = `../assets/img/payment-method/${imgFileName}`;
         document.getElementById('current-pay-title').textContent = title;
         document.getElementById('current-pay-desc').textContent = desc;
-        
-        // Set value input hidden untuk diproses pas buat pesanan
         document.getElementById('selected-payment-value').value = id.toUpperCase();
-        
-        // Tutup modal
         closePaymentModal();
     }
 
     function prosesBuatPesanan() {
-    // Validasi alamat (seperti logika lamamu)
-    const checkValidAlamat = document.getElementById('lbl-detail') ? document.getElementById('lbl-detail').classList.contains('italic') : true;
-    if (checkValidAlamat) {
-        alert("Harap lengkapi Alamat Pengiriman Anda terlebih dahulu!");
-        openAddressModal();
-        return;
-    }
-    
-    // Tampilkan modal konfirmasi desain baru
-    document.getElementById('popup-konfirmasi').classList.remove('hidden');
-}
-
-    // Fungsi untuk kembali ke halaman produk yang tersimpan
-    function kembaliKeProduk() {
-        const lastPage = localStorage.getItem('lastProductPage');
-        window.location.href = lastPage || "index.php";
-    }
-    </script>
-    
-
-<script>
-function pindahKeSukses() {
-    document.getElementById('popup-konfirmasi').classList.add('hidden');
-    document.getElementById('popup-sukses').classList.remove('hidden');
-    
-    let waktuSisa = 10;
-    const textTimer = document.getElementById('countdown-text');
-    const interval = setInterval(() => {
-        waktuSisa--;
-        textTimer.textContent = waktuSisa;
-        if (waktuSisa <= 0) {
-            clearInterval(interval);
-            kembaliKeProduk();
+        const alamatValid = document.getElementById('hidden-provinsi').value !== "";
+        if (!alamatValid) {
+            alert("Harap lengkapi Alamat Pengiriman Anda!");
+            openAddressModal();
+            return;
         }
-    }, 1000);
-}
+        document.getElementById('popup-konfirmasi').classList.remove('hidden');
+    }
+
+    function pindahKeSukses() {
+        document.getElementById('popup-konfirmasi').classList.add('hidden');
+        document.getElementById('popup-sukses').classList.remove('hidden');
+        let waktuSisa = 10;
+        const textTimer = document.getElementById('countdown-text');
+        const interval = setInterval(() => {
+            waktuSisa--;
+            textTimer.textContent = waktuSisa;
+            if (waktuSisa <= 0) { clearInterval(interval); kembaliKeProduk(); }
+        }, 1000);
+    }
+
+    function kembaliKeProduk() { window.location.href = "index.php"; }
 </script>
 
 <?php

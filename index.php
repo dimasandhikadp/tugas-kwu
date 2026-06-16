@@ -1,6 +1,27 @@
 <?php
   include 'config/koneksi.php';
   session_start();
+
+  $total_items = 0;
+  if (isset($_SESSION['user_id'])) {
+      $user_id = $_SESSION['user_id'];
+      
+      // Query untuk mengambil total qty
+      $query_count = "SELECT SUM(ci.qty) AS total 
+                      FROM cart_items ci 
+                      JOIN cart c ON ci.cart_id = c.id 
+                      WHERE c.user_id = '$user_id'";
+      $res_count = mysqli_query($conn, $query_count);
+      $data_count = mysqli_fetch_assoc($res_count);
+      
+      // Jika ada isinya, ambil angkanya
+      if ($data_count['total'] > 0) {
+          $total_items = $data_count['total'];
+      }
+}
+
+// Logika untuk menampilkan "99+"
+$display_count = ($total_items > 99) ? "99+" : $total_items;
 ?>
 
 <!DOCTYPE html>
@@ -87,18 +108,15 @@
           </form>
 
           <!-- Keranjang -->
-          <a
-          href="cart.php"
-          class="relative text-gray-600 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50"
-        >
-          <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+          <a href="../pages/cart.php" class="relative text-gray-600 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50">
+              <i data-lucide="shopping-cart" class="w-6 h-6"></i>
 
-          <span
-            class="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full"
-          >
-            2
-          </span>
-        </a>
+              <?php if ($total_items > 0): ?>
+              <span class="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full">
+                  <?= $display_count; ?>
+              </span>
+              <?php endif; ?>
+          </a>
 
   <!-- User Menu -->
   <div class="relative group">
@@ -122,6 +140,17 @@
           >
             <i data-lucide="user-circle" class="w-4 h-4"></i>
             <span>Profile</span>
+          </a>
+        <?php endif; ?>
+
+        <?php if(isset($_SESSION['user_id'])): ?>
+          <!-- Pesanan -->
+          <a
+            href="Pesanan.php"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50"
+          >
+            <i data-lucide="package" class="w-4 h-4"></i>
+            <span>Pesanan</span>
           </a>
         <?php endif; ?>
 
