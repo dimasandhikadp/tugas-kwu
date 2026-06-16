@@ -454,7 +454,7 @@
         </a>
 
         <a
-          href="pages/kategori.php?c=ikan"
+          href="pages/kategori.php"
           class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-xs hover:shadow-md transition flex flex-col justify-between items-center cursor-pointer"
         >
           <div
@@ -472,7 +472,7 @@
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-2xl font-bold text-blue-950">Produk Terlaris</h2>
 
-    <a href="pages/products.php" class="text-blue-600 font-semibold text-sm hover:underline flex items-center gap-1">
+    <a href="pages/kategori.php" class="text-blue-600 font-semibold text-sm hover:underline flex items-center gap-1">
       Lihat Semua Produk
       <i data-lucide="arrow-right" class="w-4 h-4"></i>
     </a>
