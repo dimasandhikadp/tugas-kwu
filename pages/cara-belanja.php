@@ -1,11 +1,18 @@
+<?php
+  include '../config/koneksi.php';
+  session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
-<body class="bg-gray-50 text-gray-800 font-sans">
-
-
+    
     <?php
     include '../includes/head.php'
     ?>
+
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+
 
     <?php
     include '../includes/header.php';

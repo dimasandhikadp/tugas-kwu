@@ -1,4 +1,9 @@
-<!doctype html>
+<?php
+  include '../config/koneksi.php';
+  session_start();
+?>
+
+<!DOCTYPE html>
 <html lang="id">
    <?php
     include '../includes/head.php'

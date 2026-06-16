@@ -29,14 +29,11 @@ $total_produk_aktif = mysqli_num_rows($result_produk);
 ?>
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Seller - Segar</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-</head>
+
+<?php
+    include '../../includes/head.php'
+?>
+
 <body class="bg-slate-50 text-slate-800 font-sans antialiased h-screen flex overflow-hidden">
 
     <aside class="w-64 bg-white border-r border-slate-200 text-slate-700 flex flex-col flex-shrink-0 z-20 shadow-md">
@@ -92,9 +89,9 @@ $total_produk_aktif = mysqli_num_rows($result_produk);
                     </span>
                 </div>
             </div>
-            <a href="../../logout.php" class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition" title="Keluar">
+            <!-- <a href="../../logout.php" class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition" title="Keluar">
                 <i class="fa-solid fa-right-from-bracket text-sm"></i>
-            </a>
+            </a> -->
         </div>
     </aside>
 
@@ -382,8 +379,6 @@ $total_produk_aktif = mysqli_num_rows($result_produk);
         </main>
     </div>
 
-    <script src="../../assets/js/dashboard.js">
-        
-    </script>
+    <script src="../../assets/js/dashboard.js"></script>
 </body>
 </html> 

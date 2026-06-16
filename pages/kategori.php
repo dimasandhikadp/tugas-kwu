@@ -1,6 +1,7 @@
 <?php
 // 1. Hubungkan ke database Anda
 include '../config/koneksi.php'; // Sesuaikan dengan jalur file koneksi Anda
+session_start();
 
 /** @var mysqli $conn */
 
@@ -184,9 +185,7 @@ $kategori_aktif = isset($_GET['c']) ? strtolower(trim($_GET['c'])) : 'semua';
                 <h4 class="font-bold text-slate-800 text-sm leading-snug truncate group-hover:text-blue-600 transition-colors" title="<?= htmlspecialchars($row['nama_produk']); ?>">
                     <?= htmlspecialchars($row['nama_produk']); ?>
                 </h4>
-                <p class="text-[11px] text-gray-400 mt-auto font-medium">
-                    ± <?= number_format($row['berat'], 0); ?> <?= htmlspecialchars($row['satuan'] ?? 'kg'); ?>
-                </p>
+                
               </div>
 
               <div class="flex items-center justify-between pt-1 border-t border-slate-50 mt-1">
