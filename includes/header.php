@@ -28,19 +28,22 @@ $display_count = ($total_items > 99) ? "99+" : $total_items;
         class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between"
       >
         <div class="flex items-center space-x-1">
-          <img
+          <a href="../index.php">
+
+            <img
             src="../assets/img/logo.png"
             alt="Logo Segar"
             class="w-15 h-10 object-contain"
             style="transform: scaleX(1.5)"
-          />
-          <div>
-            <span class="text-xl font-bold text-blue-600 block leading-none"
+            />
+            <div>
+              <span class="text-xl font-bold text-blue-600 block leading-none"
               >Se<span class="text-blue-950">gar</span></span
-            >
-            <span class="text-xs text-gray-400 leading-none"
+              >
+              <span class="text-xs text-gray-400 leading-none"
               >Hasil Laut Segar, Dari Laut Ke Meja Anda</span
-            >
+              >
+            </a>
           </div>
         </div>
 
