@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 16, 2026 at 01:36 PM
+-- Generation Time: Jun 17, 2026 at 09:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -45,19 +45,32 @@ CREATE TABLE `addresses` (
 --
 
 INSERT INTO `addresses` (`id`, `user_id`, `nama_penerima`, `no_hp`, `alamat`, `kota`, `kecamatan`, `kelurahan`, `provinsi`, `is_default`) VALUES
-(1, 1, 'Dimas Andhika Dwi Permana', '082253557299', 'Perum PNS Blok A No 456', 'Tarakan', 'Tarakan Timur', 'Mamburungan', 'Kalimantan Utara', 1);
+(1, 1, 'Dimas Andhika Dwi Permana', '082253557299', 'Perum PNS Blok A No 456', 'Tarakan', 'Tarakan Timur', 'Mamburungan', 'Kalimantan Utara', 0),
+(2, 5, 'Bambang', '082253557299', 'Perum PNS Blok A No 456', 'Tarakan', 'Tarakan Timur', 'Lingkas Ujung', 'Kalimantan Utara', 1),
+(3, 1, 'Dimas Andhika Dwi Permana', '082253557299', 'Perum PNS Blok A No 456', 'Palangkaraya', 'Jekan Raya', 'Menteng', 'Kalimantan Tengah', 0),
+(4, 1, 'Dimas Andhika Dwi Permana', '082253557299', 'Perum PNS Blok A No 456', 'Palangkaraya', 'Jekan Raya', 'Menteng', 'Kalimantan Tengah', 0),
+(5, 1, 'Dimas Andhika Dwi Permana', '082253557299', 'Perum PNS Blok A No 456', 'Palangkaraya', 'Jekan Raya', 'Menteng', 'Kalimantan Tengah', 0),
+(6, 1, 'Dimas Andhika Dwi Permana', '082253557299', 'Perum PNS Blok A No 456', 'Palangkaraya', 'Jekan Raya', 'Menteng', 'Kalimantan Tengah', 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `carts`
+-- Table structure for table `cart`
 --
 
-CREATE TABLE `carts` (
+CREATE TABLE `cart` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cart`
+--
+
+INSERT INTO `cart` (`id`, `user_id`, `created_at`) VALUES
+(1, 5, '2026-06-16 13:04:05'),
+(2, 1, '2026-06-17 05:46:17');
 
 -- --------------------------------------------------------
 
@@ -69,7 +82,8 @@ CREATE TABLE `cart_items` (
   `id` int(11) NOT NULL,
   `cart_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
-  `qty` int(11) NOT NULL DEFAULT 1
+  `qty` int(11) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -172,14 +186,14 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `user_id`, `nama_produk`, `slug`, `kategori`, `deskripsi`, `harga`, `stok`, `berat`, `satuan`, `asal_produk`, `badge`, `status`, `created_at`, `updated_at`) VALUES
-(7, 1, 'Ikan Bawal', 'ikan-bawal', 'Ikan', 'Bawal laut adalah sebutan untuk ikan laut dalam famili Bramidae. Ikan ini dapat ditemukan di Kepulauan Hawaii dan sejumlah daerah di Indonesia. Bawal laut hidup berkoloni dan termasuk jenis ikan pemangsa. Ikan ini jauh berbeda dengan ikan bawal air tawar yang termasuk ke dalam famili Serrasalmidae.', 50000.00, 10, 1.00, 'kg', 'Tangkapan Harian', '', 'aktif', '2026-06-13 02:23:03', NULL),
-(8, 1, 'Kepitin Soka', 'kepitin-soka', 'Kepiting', 'Kepiting soka atau kepiting cangkang lunak adalah sebuah istilah kuliner untuk kepiting-kepiting yang baru melepas kulit lamanya dan masih lunak. Cangkang lunak diangkat dari air agar cangkang mereka tak mengeras.', 60000.00, 20, 1.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-13 02:33:04', NULL),
-(9, 1, 'Ikan Bandeng', 'ikan-bandeng', 'Ikan', 'Ikan bandeng adalah ikan pangan populer di Asia Tenggara dan Oseania. Ikan ini merupakan satu-satunya spesies yang masih ada dalam famili Chanidae.', 40000.00, 20, 1.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-13 03:12:19', NULL),
-(10, 5, 'Ikan Kiper', 'ikan-kiper', 'Ikan', 'Ikan kiper atau Ketang-ketang adalah satu dari tiga spesies ikan dalam genus Scatophagus, famili Scatophagidae. Ikan ini umumnya tersebar di sekitar kawasan Indo-Pasifik, hingga Jepang, Papua, dan Australia tenggara.', 40000.00, 20, 1.00, 'kg', 'Tangkapan Harian', 'TERLARIS', 'aktif', '2026-06-15 10:52:28', NULL),
-(11, 5, 'Ikan Tongkol', 'ikan-tongkol', 'Ikan', 'Tongkol Komo adalah golongan ikan tuna kecil dengan ciri badan memanjang, tidak memiliki sisik dengan tektur sirip punggung keras. Ikan ini termasuk dalam famili Scombridae bergenus Euthynnus ini mempunyai ukuran tubuh cukup besar, kulit berwarna abu-abu, dan berdaging tebal berwarna merah tua.', 30000.00, 50, 1.00, 'kg', 'Tangkapan Harian', 'TERLARIS', 'aktif', '2026-06-15 11:00:08', NULL),
-(12, 5, 'Udang Tiger', 'udang-tiger', 'Udang', 'Penaeus monodon atau giant tiger prawn, Asian tiger shrimp, black tiger shrimp, adalah sebuah crustaces yang dibudidayakan secara luas untuk dikunsumsi. Di Indonesia, udang ini disebut udang pancet atau udang windu.', 50000.00, 30, 1.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-15 11:31:25', NULL),
-(13, 5, 'Ikan Kembung', 'ikan-kembung', 'Ikan', 'Ikan Kembung adalah nama sekelompok ikan laut yang tergolong ke dalam genus Rastrelliger, famili Scombridae. Meskipun bertubuh kecil, ikan ini masih sekerabat dengan tenggiri, tongkol, tuna, madidihang, dan makerel. Di Sumatera Barat dikenal sebagai ikan Gembolo/gambolo.', 25000.00, 30, 1.00, 'kg', 'Tangkapan Harian', '', 'aktif', '2026-06-15 11:39:16', NULL),
-(14, 5, 'Ikan Lele', 'ikan-lele', 'Ikan', 'Bangsa Siluriformes mencakup semua kelompok ikan yang secara bebas disebut sebagai ikan berkumis atau lazim disebut lele atau patin. Namanya muncul karena adanya organ pengindra tambahan di sekitar moncongnya yang tampak seperti kumis kucing.', 25000.00, 20, 1.00, 'kg', 'Budidaya Air Tawar', 'PROMO', 'aktif', '2026-06-15 11:41:27', NULL);
+(7, 1, 'Ikan Bawal', 'ikan-bawal', 'Ikan', 'Bawal laut adalah sebutan untuk ikan laut dalam famili Bramidae. Ikan ini dapat ditemukan di Kepulauan Hawaii dan sejumlah daerah di Indonesia. Bawal laut hidup berkoloni dan termasuk jenis ikan pemangsa. Ikan ini jauh berbeda dengan ikan bawal air tawar yang termasuk ke dalam famili Serrasalmidae.', 50000.00, 9, 1.00, 'kg', 'Tangkapan Harian', '', 'aktif', '2026-06-13 02:23:03', NULL),
+(8, 1, 'Kepiting Soka', 'kepiting-soka', 'Kepiting', 'Kepiting soka atau kepiting cangkang lunak adalah sebuah istilah kuliner untuk kepiting-kepiting yang baru melepas kulit lamanya dan masih lunak. Cangkang lunak diangkat dari air agar cangkang mereka tak mengeras.', 60000.00, 20, 1.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-13 02:33:04', NULL),
+(9, 1, 'Ikan Bandeng', 'ikan-bandeng', 'Ikan', 'Ikan bandeng adalah ikan pangan populer di Asia Tenggara dan Oseania. Ikan ini merupakan satu-satunya spesies yang masih ada dalam famili Chanidae.', 40000.00, 12, 1.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-13 03:12:19', NULL),
+(10, 5, 'Ikan Kiper', 'ikan-kiper', 'Ikan', 'Ikan kiper atau Ketang-ketang adalah satu dari tiga spesies ikan dalam genus Scatophagus, famili Scatophagidae. Ikan ini umumnya tersebar di sekitar kawasan Indo-Pasifik, hingga Jepang, Papua, dan Australia tenggara.', 40000.00, 14, 1.00, 'kg', 'Tangkapan Harian', 'TERLARIS', 'aktif', '2026-06-15 10:52:28', NULL),
+(11, 5, 'Ikan Tongkol', 'ikan-tongkol', 'Ikan', 'Tongkol Komo adalah golongan ikan tuna kecil dengan ciri badan memanjang, tidak memiliki sisik dengan tektur sirip punggung keras. Ikan ini termasuk dalam famili Scombridae bergenus Euthynnus ini mempunyai ukuran tubuh cukup besar, kulit berwarna abu-abu, dan berdaging tebal berwarna merah tua.', 30000.00, 38, 1.00, 'kg', 'Tangkapan Harian', 'TERLARIS', 'aktif', '2026-06-15 11:00:08', NULL),
+(12, 5, 'Udang Tiger', 'udang-tiger', 'Udang', 'Penaeus monodon atau giant tiger prawn, Asian tiger shrimp, black tiger shrimp, adalah sebuah crustaces yang dibudidayakan secara luas untuk dikunsumsi. Di Indonesia, udang ini disebut udang pancet atau udang windu.', 50000.00, 28, 1.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-15 11:31:25', NULL),
+(13, 5, 'Ikan Kembung', 'ikan-kembung', 'Ikan', 'Ikan Kembung adalah nama sekelompok ikan laut yang tergolong ke dalam genus Rastrelliger, famili Scombridae. Meskipun bertubuh kecil, ikan ini masih sekerabat dengan tenggiri, tongkol, tuna, madidihang, dan makerel. Di Sumatera Barat dikenal sebagai ikan Gembolo/gambolo.', 25000.00, 29, 1.00, 'kg', 'Tangkapan Harian', '', 'aktif', '2026-06-15 11:39:16', NULL),
+(14, 5, 'Ikan Lele', 'ikan-lele', 'Ikan', 'Bangsa Siluriformes mencakup semua kelompok ikan yang secara bebas disebut sebagai ikan berkumis atau lazim disebut lele atau patin. Namanya muncul karena adanya organ pengindra tambahan di sekitar moncongnya yang tampak seperti kumis kucing.', 25000.00, 18, 1.00, 'kg', 'Budidaya Air Tawar', 'PROMO', 'aktif', '2026-06-15 11:41:27', NULL);
 
 -- --------------------------------------------------------
 
@@ -259,16 +273,19 @@ ALTER TABLE `addresses`
   ADD KEY `fk_addresses_user` (`user_id`);
 
 --
--- Indexes for table `carts`
+-- Indexes for table `cart`
 --
-ALTER TABLE `carts`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `cart`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cart_id` (`cart_id`),
+  ADD KEY `product_id` (`product_id`);
 
 --
 -- Indexes for table `categories`
@@ -333,19 +350,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `carts`
+-- AUTO_INCREMENT for table `cart`
 --
-ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `cart`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -404,6 +421,19 @@ ALTER TABLE `users`
 --
 ALTER TABLE `addresses`
   ADD CONSTRAINT `fk_addresses_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `cart`
+--
+ALTER TABLE `cart`
+  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `cart_items`
+--
+ALTER TABLE `cart_items`
+  ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `products`

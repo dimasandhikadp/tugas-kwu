@@ -133,23 +133,24 @@ $badge_class = ($badge_text === 'TERLARIS')
                 </div>
             </div>
 
-            <form action="checkout.php" method="GET" id="form-checkout">
-                <input type="hidden" name="product_id" value="<?= $row['id']; ?>"> <input type="hidden" name="slug" value="<?= $row['slug']; ?>">
-                
-                <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center mb-4">
-                    <div class="flex items-center border border-slate-300 rounded-lg h-11 bg-white justify-between sm:justify-start">
-                        <button type="button" class="w-10 h-full text-lg text-slate-500 hover:bg-slate-100 rounded-l-lg transition cursor-pointer" onclick="updateQty(-1)">-</button>
-                        <input type="number" id="product-qty" name="qty" value="1" min="1" max="<?= $row['stok']; ?>" readonly class="w-10 text-center font-semibold text-slate-800 border-none outline-none">
-                        <button type="button" class="w-10 h-full text-lg text-slate-500 hover:bg-slate-100 rounded-r-lg transition cursor-pointer" onclick="updateQty(1)">+</button>
-                    </div>
-                    
-                    <button type="button" id="btn-add-cart" class="flex-1 h-11 bg-blue-600 text-white font-semibold rounded-lg text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition shadow-sm shadow-blue-600/10 cursor-pointer">
-                        <i class="fa-solid fa-cart-plus"></i> Masukkan Keranjang
-                    </button>
-                </div>
-                
-                <button type="submit" class="w-full h-11 bg-white text-blue-600 font-semibold border-2 border-blue-600 rounded-lg text-sm hover:bg-blue-50 transition cursor-pointer">Beli Sekarang</button>
-            </form>
+            <form action="checkout.php" method="GET" id="form-checkout-direct">
+    <input type="hidden" name="slug" value="<?= htmlspecialchars($row['slug']); ?>">
+    <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center mb-4">
+        <div class="flex items-center border border-slate-300 rounded-lg h-11 bg-white justify-between sm:justify-start">
+            <button type="button" class="w-10 h-full text-lg text-slate-500 hover:bg-slate-100 rounded-l-lg transition cursor-pointer" onclick="updateQty(-1)">-</button>
+            <input type="number" id="product-qty" name="qty" value="1" min="1" max="<?= $row['stok']; ?>" readonly class="w-10 text-center font-semibold text-slate-800 border-none outline-none">
+            <button type="button" class="w-10 h-full text-lg text-slate-500 hover:bg-slate-100 rounded-r-lg transition cursor-pointer" onclick="updateQty(1)">+</button>
+        </div>
+        
+        <button type="button" id="btn-add-cart" class="flex-1 h-11 bg-blue-600 text-white font-semibold rounded-lg text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition shadow-sm shadow-blue-600/10 cursor-pointer">
+            <i class="fa-solid fa-cart-plus"></i> Masukkan Keranjang
+        </button>
+    </div>
+    
+    <button type="submit" class="w-full h-11 bg-white text-blue-600 font-semibold border-2 border-blue-600 rounded-lg text-sm hover:bg-blue-50 transition cursor-pointer">
+        Beli Sekarang
+    </button>
+</form> 
         </div>
     </main>
     
@@ -254,39 +255,32 @@ $badge_class = ($badge_text === 'TERLARIS')
         }
 
    document.getElementById('btn-add-cart').addEventListener('click', function() {
-    let form = document.getElementById('form-checkout');
     let formData = new FormData();
-    
-    formData.append('product_id', form.querySelector('input[name="product_id"]').value);
+    formData.append('product_id', '<?= (int)$row['id']; ?>');
     formData.append('qty', document.getElementById('product-qty').value);
 
     fetch('../actions/add-to-cart.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text()) // Ambil respon teks dari PHP (added/updated)
+    .then(response => response.text())
     .then(status => {
         let badge = document.querySelector('.absolute.top-0.right-0');
         let qtyInput = parseInt(document.getElementById('product-qty').value);
 
         if (status.includes("added")) {
-            // PRODUK BARU: Tambah ke total badge
             if (badge) {
                 let newQty = parseInt(badge.innerText) + qtyInput;
                 badge.innerText = (newQty > 99) ? "99+" : newQty;
             } else {
-                // Buat badge baru jika belum ada
                 let cartIcon = document.querySelector('[data-lucide="shopping-cart"]').parentElement;
                 let newBadge = document.createElement('span');
                 newBadge.className = 'absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full';
                 newBadge.innerText = qtyInput;
                 cartIcon.appendChild(newBadge);
             }
-            // alert('Berhasil ditambahkan ke keranjang!');
-        } else if (status.includes("updated")) {
-            // PRODUK UPDATE: Jangan tambah total badge, tapi kasih tau user
-            // alert('Jumlah produk di keranjang telah diperbarui!');
         }
+        // status "updated" = produk sudah ada di keranjang, qty diperbarui
     })
     .catch(error => console.error('Error:', error));
 });

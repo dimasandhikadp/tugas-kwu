@@ -108,7 +108,7 @@ $display_count = ($total_items > 99) ? "99+" : $total_items;
           </form>
 
           <!-- Keranjang -->
-          <a href="../pages/cart.php" class="relative text-gray-600 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50">
+          <a href="pages/cart.php" class="relative text-gray-600 hover:text-blue-600 transition p-2 rounded-full hover:bg-blue-50">
               <i data-lucide="shopping-cart" class="w-6 h-6"></i>
 
               <?php if ($total_items > 0): ?>

@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Ambil data keranjang + JOIN tabel gambar (mengambil 1 gambar pertama per produk)
+// Ambil data keranjang
 $query = "SELECT ci.id AS cart_item_id, p.nama_produk, p.harga, ci.qty, p.berat, p.satuan, pi.nama_file
           FROM cart_items ci
           JOIN cart c ON ci.cart_id = c.id
@@ -48,6 +48,8 @@ $result = mysqli_query($conn, $query);
     </header>
 
     <form action="checkout.php" method="POST" id="form-cart">
+        <input type="hidden" name="proses_checkout" value="1">
+        
         <main class="max-w-3xl mx-auto px-4 py-6 space-y-4 mb-24">
             
             <?php if(mysqli_num_rows($result) == 0): ?>
@@ -108,27 +110,23 @@ $result = mysqli_query($conn, $query);
     </form>
 
     <script>
-        // Mengubah kuantitas item
         function updateQty(btn, delta) {
             let container = btn.parentElement;
             let qtyEl = container.querySelector('.qty-text');
             let hiddenInput = container.querySelector('.qty-input');
-            
             let qty = parseInt(qtyEl.innerText) + delta;
             
             if (qty >= 1) {
                 qtyEl.innerText = qty;
-                hiddenInput.value = qty; // Perbarui value input agar terbaca di checkout.php
+                hiddenInput.value = qty; 
                 calculateTotal();
             }
         }
 
-        // Menghitung akumulasi total harga dari item yang dicentang saja
         function calculateTotal() {
             let total = 0;
             document.querySelectorAll('.cart-item').forEach(item => {
                 let checkbox = item.querySelector('.item-checkbox');
-                
                 if (checkbox.checked) {
                     let price = parseInt(item.getAttribute('data-price'));
                     let qty = parseInt(item.querySelector('.qty-text').innerText);
@@ -138,21 +136,17 @@ $result = mysqli_query($conn, $query);
             document.getElementById('totalDisplay').innerText = 'Rp ' + total.toLocaleString('id-ID');
         }
 
-        // Proteksi: Mencegah submit kosong ke halaman checkout
         document.getElementById('form-cart').addEventListener('submit', function(e) {
             let checkedBoxes = document.querySelectorAll('.item-checkbox:checked');
             if (checkedBoxes.length === 0) {
-                e.preventDefault(); // Batalkan pengiriman form
+                e.preventDefault();
                 alert('Pilih minimal satu produk terlebih dahulu untuk checkout!');
             }
         });
 
-        // Load awal ikon dan setup kalkulasi awal
         document.addEventListener('DOMContentLoaded', () => {
             calculateTotal();
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         });
     </script>
 </body>

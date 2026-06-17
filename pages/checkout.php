@@ -5,6 +5,21 @@ if (session_status() === PHP_SESSION_NONE) {
 include '../config/koneksi.php';
 /** @var mysqli $conn */
 
+// --- JEMBATAN DATA DARI CART ATAU PRODUCT-DETAILS ---
+// source: 'cart' = dari cart.php (cart_item_id), 'direct' = dari product-details (product_id)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proses_checkout'])) {
+    // Data dari CART.PHP - qty berindeks cart_item_id
+    $_SESSION['checkout_data'] = [
+        'source'    => 'cart',
+        'ids'       => implode(',', array_map('intval', $_POST['selected_items'])),
+        'qty'       => $_POST['qty'] // [cart_item_id => qty]
+    ];
+} elseif (isset($_GET['slug']) && isset($_GET['qty'])) {
+    // Data dari PRODUCT-DETAILS.PHP (via tombol Beli Sekarang) - pakai slug
+    // Akan diisi setelah query produk di bawah
+    $_SESSION['checkout_data'] = null; // placeholder, diisi setelah query
+}
+
 $user_id = $_SESSION['user_id'] ?? 1;
 
 // --- PROSES SIMPAN ALAMAT ---
@@ -31,9 +46,15 @@ $res_alamat = mysqli_query($conn, "SELECT * FROM addresses WHERE user_id = '$use
 if ($res_alamat && mysqli_num_rows($res_alamat) > 0) {
     $data_adr = mysqli_fetch_assoc($res_alamat);
     $alamat_terpanah = [
-        'nama' => $data_adr['nama_penerima'], 'telp' => $data_adr['no_hp'],
+        'nama' => $data_adr['nama_penerima'], 
+        'telp' => $data_adr['no_hp'],
         'wilayah' => $data_adr['provinsi'] . ", " . $data_adr['kota'] . ", " . $data_adr['kecamatan'] . ", " . $data_adr['kelurahan'],
-        'jalan' => $data_adr['alamat']
+        'jalan' => $data_adr['alamat'],
+        // Tambahkan ini agar bisa dipakai di input hidden
+        'provinsi' => $data_adr['provinsi'],
+        'kota' => $data_adr['kota'],
+        'kecamatan' => $data_adr['kecamatan'],
+        'kelurahan' => $data_adr['kelurahan']
     ];
 }
 
@@ -45,10 +66,12 @@ $biaya_pengiriman = 20000;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_items'])) {
     $selected_ids = array_map('intval', $_POST['selected_items']);
-    $qty_arr = $_POST['qty'];
+    $qty_arr = $_POST['qty']; // [cart_item_id => qty]
     $ids_string = implode(',', $selected_ids);
+
+    // Session sudah diset di blok atas
     
-   $query_p = "SELECT ci.id as cart_item_id, p.*, 
+    $query_p = "SELECT ci.id as cart_item_id, p.*, 
             (SELECT pi.nama_file FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) as gambar_utama 
             FROM cart_items ci 
             JOIN products p ON ci.product_id = p.id 
@@ -63,17 +86,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_items'])) {
         $subtotal_pesanan += ($row['harga'] * $qty);
         $items_checkout[] = $row;
     }
+    
+    // Simpan mapping cart_item_id => product_id ke session agar proses_pembayaran bisa kurangi stok
+    $cart_to_product = [];
+    foreach ($items_checkout as $item) {
+        $cart_to_product[$item['cart_item_id']] = $item['id']; // id = product_id
+    }
+    $_SESSION['checkout_data']['cart_to_product'] = $cart_to_product;
+
 } elseif (isset($_GET['slug'])) {
     $slug = mysqli_real_escape_string($conn, $_GET['slug']);
-    $qty = (int)($_GET['qty'] ?? 1);
+    $qty = max(1, (int)($_GET['qty'] ?? 1));
     $query_p = "SELECT p.*, (SELECT pi.nama_file FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) as gambar_utama 
-                FROM products p WHERE p.slug = '$slug' LIMIT 1";
+                FROM products p WHERE p.slug = '$slug' AND p.status = 'aktif' LIMIT 1";
     $res_p = mysqli_query($conn, $query_p);
-    if ($row = mysqli_fetch_assoc($res_p)) {
-        $row['qty'] = $qty;
-        $subtotal_pesanan = $row['harga'] * $qty;
-        $items_checkout[] = $row;
+    if ($row_direct = mysqli_fetch_assoc($res_p)) {
+        $row_direct['qty'] = $qty;
+        $subtotal_pesanan = $row_direct['harga'] * $qty;
+        $items_checkout[] = $row_direct;
+        
+        // Simpan session untuk direct checkout
+        $_SESSION['checkout_data'] = [
+            'source'     => 'direct',
+            'product_id' => (int)$row_direct['id'],
+            'qty'        => $qty
+        ];
     }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proses_pembayaran'])) {
+    if (isset($_SESSION['checkout_data'])) {
+        $cd = $_SESSION['checkout_data'];
+
+        if ($cd['source'] === 'direct') {
+            // Dari product-details: product_id & qty langsung tersedia
+            $pid = (int)$cd['product_id'];
+            $qty_dibeli = (int)$cd['qty'];
+            $res = mysqli_query($conn, "SELECT stok FROM products WHERE id = '$pid' LIMIT 1");
+            if ($res && $item = mysqli_fetch_assoc($res)) {
+                if ($item['stok'] >= $qty_dibeli) {
+                    mysqli_query($conn, "UPDATE products SET stok = stok - $qty_dibeli WHERE id = '$pid'");
+                }
+            }
+
+        } elseif ($cd['source'] === 'cart') {
+            // Dari cart: ids = cart_item_id, qty = [cart_item_id => qty]
+            // Gunakan mapping cart_item_id => product_id yang sudah disimpan
+            $cart_to_product = $cd['cart_to_product'] ?? [];
+            $qty_arr = $cd['qty']; // [cart_item_id => qty]
+            $ids_string = $cd['ids']; // comma-separated cart_item_id
+
+            // Ambil product_id dari cart_items
+            $res = mysqli_query($conn, "SELECT ci.id as cart_item_id, ci.product_id, p.stok 
+                                        FROM cart_items ci 
+                                        JOIN products p ON ci.product_id = p.id
+                                        WHERE ci.id IN ($ids_string)");
+            while ($item = mysqli_fetch_assoc($res)) {
+                $cid = $item['cart_item_id'];
+                $pid = $item['product_id'];
+                $qty_dibeli = (int)($qty_arr[$cid] ?? 1);
+                if ($item['stok'] >= $qty_dibeli) {
+                    mysqli_query($conn, "UPDATE products SET stok = stok - $qty_dibeli WHERE id = '$pid'");
+                }
+            }
+            // Hapus item dari keranjang
+            mysqli_query($conn, "DELETE FROM cart_items WHERE id IN ($ids_string)");
+        }
+
+        unset($_SESSION['checkout_data']);
+        echo "success";
+        exit;
+    }
+    echo "error_no_session";
+    exit;
 }
 
 $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
@@ -81,13 +166,9 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
 
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <?php include '../includes/head.php'; ?>
-    <style>
-        .modal-active { overflow: hidden; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-    </style>
-</head>
+
+<?php include '../includes/head.php'; ?>
+    
 <body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
     <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
@@ -208,19 +289,25 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
                 <span class="text-xs text-gray-400 font-medium">Total Tagihan</span>
                 <span class="text-xl font-extrabold text-blue-600">Rp <?= number_format($total_pembayaran, 0, ',', '.'); ?></span>
             </div>
-            <button type="button" onclick="document.getElementById('popup-konfirmasi').classList.remove('hidden')" class="bg-blue-600 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-blue-700 shadow-md active:scale-[0.98] transition cursor-pointer">
-                Buat Pesanan
-            </button>
+            <form id="form-pembayaran">
+                <input type="hidden" name="proses_pembayaran" value="1">
+                
+                <button type="button" 
+                        onclick="checkAlamatDanBukaPopup()" 
+                        class="bg-blue-600 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-blue-700 shadow-md active:scale-[0.98] transition cursor-pointer">
+                    Buat Pesanan
+                </button>
+            </form>
         </div>
     </div>
 
     <div id="modal-alamat" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
         <form method="POST" action="" class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             <input type="hidden" name="action_alamat" value="1">
-            <input type="hidden" name="provinsi" id="hidden-provinsi" value="">
-            <input type="hidden" name="kota" id="hidden-kota" value="">
-            <input type="hidden" name="kecamatan" id="hidden-kecamatan" value="">
-            <input type="hidden" name="kelurahan" id="hidden-kelurahan" value="">
+            <input type="hidden" name="provinsi" id="hidden-provinsi" value="<?= $alamat_terpanah['provinsi'] ?? '' ?>">
+            <input type="hidden" name="kota" id="hidden-kota" value="<?= $alamat_terpanah['kota'] ?? '' ?>">
+            <input type="hidden" name="kecamatan" id="hidden-kecamatan" value="<?= $alamat_terpanah['kecamatan'] ?? '' ?>">
+            <input type="hidden" name="kelurahan" id="hidden-kelurahan" value="<?= $alamat_terpanah['kelurahan'] ?? '' ?>">
 
             <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-blue-950 text-white">
                 <h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="map-pin" class="w-5 h-5"></i> Atur Alamat Lengkap</h3>
@@ -393,7 +480,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
             <p class="text-xs text-gray-400 px-2">Apakah kamu yakin ingin memproses pesanan ini?</p>
         </div>
         <div class="flex flex-col gap-2 pt-2">
-            <button type="button" onclick="pindahKeSukses()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl text-sm shadow-md cursor-pointer hover:bg-blue-700">Ya, Buat Pesanan</button>
+            <button type="button" onclick="prosesAJAX()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl text-sm shadow-md cursor-pointer hover:bg-blue-700">Ya, Buat Pesanan</button>
             <button type="button" onclick="document.getElementById('popup-konfirmasi').classList.add('hidden')" class="w-full text-xs font-semibold text-gray-400 py-2 cursor-pointer hover:text-gray-600">Periksa Kembali</button>
         </div>
     </div>
@@ -567,19 +654,44 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
         document.getElementById('popup-konfirmasi').classList.remove('hidden');
     }
 
-    function pindahKeSukses() {
-        document.getElementById('popup-konfirmasi').classList.add('hidden');
-        document.getElementById('popup-sukses').classList.remove('hidden');
-        let waktuSisa = 10;
-        const textTimer = document.getElementById('countdown-text');
-        const interval = setInterval(() => {
-            waktuSisa--;
-            textTimer.textContent = waktuSisa;
-            if (waktuSisa <= 0) { clearInterval(interval); kembaliKeProduk(); }
-        }, 1000);
+    function kembaliKeProduk() { window.location.href = "../index.php"; }
+
+    function checkAlamatDanBukaPopup() {
+        const alamatValid = document.getElementById('hidden-provinsi').value !== "";
+        if (!alamatValid) {
+            alert("Harap lengkapi Alamat Pengiriman Anda!");
+            openAddressModal();
+            return;
+        }
+        document.getElementById('popup-konfirmasi').classList.remove('hidden');
     }
 
-    function kembaliKeProduk() { window.location.href = "index.php"; }
+    function prosesAJAX() {
+        fetch('checkout.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'proses_pembayaran=1'
+        })
+        .then(response => response.text())
+        .then(data => {
+            if (data.trim() === "success") {
+                document.getElementById('popup-konfirmasi').classList.add('hidden');
+                document.getElementById('popup-sukses').classList.remove('hidden');
+                
+                let waktuSisa = 10;
+                const textTimer = document.getElementById('countdown-text');
+                const interval = setInterval(() => {
+                    waktuSisa--;
+                    textTimer.textContent = waktuSisa;
+                    if (waktuSisa <= 0) { clearInterval(interval); kembaliKeProduk(); }
+                }, 1000);
+            } else {
+                alert("Gagal memproses pesanan. Silakan coba lagi.");
+            }
+        })
+        .catch(() => alert("Terjadi kesalahan koneksi. Silakan coba lagi."));
+    }
+
 </script>
 
 <?php
