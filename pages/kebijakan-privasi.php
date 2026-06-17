@@ -14,10 +14,8 @@
     include '../includes/header-secondary.php'
   ?>
 
-    <!-- MAIN WRAPPER -->
     <main class="max-w-7xl w-full mx-auto px-6 py-10 flex-grow flex flex-col md:flex-row gap-8">
-      
-      <!-- SIDEBAR KIRI (NAVIGASI AKTIF VIA JAVASCRIPT) -->
+      <!-- SIDEBAR -->
       <aside class="w-full md:w-64 shrink-0">
         <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm sticky top-24">
           <ul class="space-y-1" id="sidebar-menu">
@@ -37,7 +35,7 @@
         </div>
       </aside>
 
-      <!-- KONTEN UTAMA KANAN -->
+      <!-- KONTEN UTAMA -->
       <section class="flex-grow bg-white border border-slate-100 rounded-2xl p-6 md:p-10 shadow-sm min-h-[500px]">
         
         <!-- SECTION 2: PEMBERITAHUAN PRIVASI -->

@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 /** @var mysqli $conn */
 
-// Pastikan user sudah login
+// Validasi Kondisi Login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -12,7 +12,6 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Ambil data keranjang
 $query = "SELECT ci.id AS cart_item_id, p.nama_produk, p.harga, ci.qty, p.berat, p.satuan, pi.nama_file
           FROM cart_items ci
           JOIN cart c ON ci.cart_id = c.id

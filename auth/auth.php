@@ -8,9 +8,6 @@ $error = '';
 $success = '';
 $activeForm = 'login';
 
-// ==========================================
-// PROSES REGISTER
-// ==========================================
 if (isset($_POST['register_submit'])) {
     $activeForm = 'register';
 
@@ -27,7 +24,6 @@ if (isset($_POST['register_submit'])) {
         $no_hp = preg_replace('/[^0-9]/', '', $login);
     }
 
-    // SESUAIKAN: Kolom seleksi menggunakan 'user_id' bukan 'id'
     $cek = mysqli_prepare(
         $conn,
         "SELECT user_id FROM users WHERE username = ? OR email = ? OR no_hp = ?"
@@ -61,10 +57,6 @@ if (isset($_POST['register_submit'])) {
 $loginClass = $activeForm === 'login' ? 'block' : 'hidden';
 $registerClass = $activeForm === 'register' ? 'block' : 'hidden';
 
-
-// ==========================================
-// PROSES LOGIN
-// ==========================================
 if (isset($_POST['login_submit'])) {
     $login = trim($_POST['login']);
     $password = $_POST['password'];
@@ -81,12 +73,10 @@ if (isset($_POST['login_submit'])) {
 
     if ($user && password_verify($password, $user['password'])) {
         
-        // PERBAIKAN UTAMA: Mengambil indeks dari nama kolom database yang asli yaitu 'user_id'
         $_SESSION['user_id']  = $user['user_id']; 
         $_SESSION['username'] = $user['username'];
         $_SESSION['role']     = $user['role'];
 
-        // Sesuai fungsionalitas sistemmu: Semua role langsung diarahkan ke index.php
         header('Location: ../index.php');
         exit;
 

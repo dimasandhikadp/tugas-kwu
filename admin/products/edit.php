@@ -2,7 +2,7 @@
 session_start();
 require_once '../../config/koneksi.php';
 
-// Proteksi akses seller
+// Validasi Role Akun
 if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role']) !== 'seller') {
     header('Location: ../../auth/auth.php'); 
     exit();
@@ -18,7 +18,6 @@ if (!isset($_GET['id'])) {
 /** @var mysqli $conn */
 $id_produk = mysqli_real_escape_string($conn, $_GET['id']);
 
-// Ambil data produk berdasarkan ID dan user_id seller
 $query_produk = mysqli_query($conn, "SELECT * FROM products WHERE id = '$id_produk' AND user_id = '$user_id'");
 $produk = mysqli_fetch_assoc($query_produk);
 
@@ -27,20 +26,17 @@ if (!$produk) {
     exit();
 }
 
-// Ambil SEMUA gambar terkait produk ini
 $images_list = [];
 $query_images = mysqli_query($conn, "SELECT id, nama_file FROM product_images WHERE product_id = '$id_produk'");
 while ($img_row = mysqli_fetch_assoc($query_images)) {
     $images_list[] = $img_row;
 }
 
-// Ekstrak string asal_produk menjadi array untuk kebutuhan check input radio
 $asal_array = array_map('trim', explode(',', $produk['asal_produk']));
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <?php include '../../includes/head.php'; ?>
-<!-- Hubungkan FontAwesome secara eksplisit jika belum ada di file head -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
@@ -65,7 +61,6 @@ $asal_array = array_map('trim', explode(',', $produk['asal_produk']));
         <form id="form-edit-produk" action="process-edit.php" method="POST" enctype="multipart/form-data" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
             <input type="hidden" name="id" value="<?= $produk['id']; ?>">
             
-            <!-- CONTAINER UNTUK MENAMPUNG ID GAMBAR YANG AKAN DIHAPUS (DI-GENERATED LEWAT JAVASCRIPT) -->
             <div id="container-input-hapus"></div>
 
             <div class="mb-8">
@@ -220,7 +215,6 @@ $asal_array = array_map('trim', explode(',', $produk['asal_produk']));
                 </div>
             </div>
 
-            <!-- BAGIAN MEDIA: MENDUKUNG MENGHAPUS STATE SECARA LOKAL -->
             <div class="mb-8">
                 <h3 class="text-lg font-semibold text-blue-950 mb-4">Gambar Produk</h3>
                 
@@ -229,7 +223,6 @@ $asal_array = array_map('trim', explode(',', $produk['asal_produk']));
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                         <?php if (count($images_list) > 0): ?>
                             <?php foreach ($images_list as $img): ?>
-                                <!-- Ditambahkan id unik di level card untuk proses manipulasi DOM -->
                                 <div id="saved-img-card-<?= $img['id']; ?>" class="relative group border border-slate-200 rounded-xl overflow-hidden aspect-square bg-slate-50 shadow-sm transition duration-300">
                                     <?php if (file_exists("../../assets/img/product-image/" . $img['nama_file'])): ?>
                                         <img src="../../assets/img/product-image/<?= $img['nama_file']; ?>" class="w-full h-full object-cover">
@@ -237,9 +230,7 @@ $asal_array = array_map('trim', explode(',', $produk['asal_produk']));
                                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-300"><i class="fa-solid fa-fish text-3xl"></i></div>
                                     <?php endif; ?>
                                     
-                                    <!-- HOVER OVERLAY & ICON SAMPAH KUSTOM -->
                                     <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition duration-200 flex items-center justify-center">
-                                        <!-- Fungsi diubah agar memicu antrean hapus lokal -->
                                         <button type="button" onclick="antrikanHapusGambar(<?= $img['id']; ?>)" class="w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 active:scale-95 transition shadow-md" title="Hapus Gambar Ini">
                                             <i class="fa-solid fa-trash-can text-sm"></i>
                                         </button>
@@ -299,19 +290,14 @@ $asal_array = array_map('trim', explode(',', $produk['asal_produk']));
         const modalConfirm = document.getElementById('modal-confirm-btn');
         const containerInputHapus = document.getElementById('container-input-hapus');
 
-        // ==========================================
-        // LOGIKA BARU: ANTREKAN HAPUS GAMBAR LOKAL
-        // ==========================================
         function antrikanHapusGambar(imgId) {
             const cardElement = document.getElementById('saved-img-card-' + imgId);
             if (cardElement) {
-                // 1. Sembunyikan gambar dari antarmuka secara instan
                 cardElement.style.opacity = '0';
                 setTimeout(() => {
                     cardElement.remove();
                 }, 250);
 
-                // 2. Buat input hidden baru yang menampung ID gambar untuk disubmit nanti
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
                 hiddenInput.name = 'hapus_gambar_id[]';

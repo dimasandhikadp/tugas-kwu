@@ -3,7 +3,6 @@ include '../config/koneksi.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    // Simpan URL asal untuk redirect setelah login
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
     echo "<script>
             window.location.href = '../auth/auth.php';
@@ -228,7 +227,6 @@ $badge_class = ($badge_text === 'TERLARIS')
     
     <script>
 
-        // Simpan URL halaman ini setiap kali user membuka detail produk
         localStorage.setItem('lastProductPage', window.location.href);
 
         function changeImage(imgUrl, element) {
@@ -280,7 +278,6 @@ $badge_class = ($badge_text === 'TERLARIS')
                 cartIcon.appendChild(newBadge);
             }
         }
-        // status "updated" = produk sudah ada di keranjang, qty diperbarui
     })
     .catch(error => console.error('Error:', error));
 });

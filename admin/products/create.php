@@ -2,8 +2,6 @@
 session_start();
 require_once '../../config/koneksi.php';
 
-// Pastikan user sudah login untuk mendapatkan user_id. 
-// Jika sistem Anda belum menerapkan login, ubah $user_id menjadi ID default, misal: 1
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1; 
 
 /** @var mysqli $conn */
@@ -12,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama_produk = mysqli_real_escape_string($conn, $_POST['nama_produk']);
     $slug        = mysqli_real_escape_string($conn, $_POST['slug']);
     
-    // TANGKAP DATA: Mengambil input kategori dari form
     $kategori    = mysqli_real_escape_string($conn, $_POST['kategori']);
     
     $deskripsi   = mysqli_real_escape_string($conn, $_POST['deskripsi']);
@@ -34,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     mysqli_begin_transaction($conn);
 
     try {
-        // PERBAIKAN QUERY: Menambahkan kolom `kategori` ke dalam statement INSERT INTO
         $query = "INSERT INTO products (user_id, nama_produk, slug, kategori, deskripsi, harga, stok, berat, satuan, asal_produk, badge, status) 
                   VALUES ($user_id, '$nama_produk', '$slug', '$kategori', '$deskripsi', $harga, $stok, $berat, '$satuan', '$asal_produk', '$badge', '$status')";
 
@@ -75,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         mysqli_commit($conn);
         
-        // REFRESH HALAMAN: Mengarahkan kembali ke diri sendiri dengan query parameter success
         header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
         exit();
 

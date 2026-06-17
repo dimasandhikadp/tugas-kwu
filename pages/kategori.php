@@ -1,18 +1,15 @@
 <?php
-// 1. Hubungkan ke database Anda
-include '../config/koneksi.php'; // Sesuaikan dengan jalur file koneksi Anda
+include '../config/koneksi.php'; 
 session_start();
 
 /** @var mysqli $conn */
 
-// Ambil kategori dari URL jika ada untuk digunakan sebagai default state di PHP (opsional)
 $kategori_aktif = isset($_GET['c']) ? strtolower(trim($_GET['c'])) : 'semua';
 ?>
 <!DOCTYPE html>
 <html lang="id">
   <?php include '../includes/head.php' ?>
   <style>
-    /* Style pembantu untuk memastikan transisi filter berjalan mulus dan instan */
     .filter-hidden {
         display: none !important;
     }
@@ -131,7 +128,6 @@ $kategori_aktif = isset($_GET['c']) ? strtolower(trim($_GET['c'])) : 'semua';
         if (mysqli_num_rows($result_produk) > 0) {
             while ($row = mysqli_fetch_assoc($result_produk)) {
 
-                // --- PEMETAAN KATEGORI DATA ---
                 $kategori_katalog = 'lainnya';
                 
                 if (!empty($row['kategori'])) {
@@ -219,7 +215,6 @@ $kategori_aktif = isset($_GET['c']) ? strtolower(trim($_GET['c'])) : 'semua';
 
     <?php
       include '../includes/footer.php';
-      // include '../includes/script.php';
     ?>
 
     <script>
@@ -227,7 +222,6 @@ $kategori_aktif = isset($_GET['c']) ? strtolower(trim($_GET['c'])) : 'semua';
         let targetCategory = 'semua';
         let targetElement = null;
 
-        // Mendeteksi apakah fungsi dipanggil dengan mengklik elemen (this) atau string langsung saat loading
         if (typeof elementOrString === 'string') {
             targetCategory = elementOrString;
             targetElement = document.querySelector(`.category-btn[data-target-cat="${targetCategory}"]`);
@@ -236,7 +230,6 @@ $kategori_aktif = isset($_GET['c']) ? strtolower(trim($_GET['c'])) : 'semua';
             targetElement = elementOrString;
         }
 
-        // 1. Sinkronisasi parameter ke URL
         const url = new URL(window.location);
         if (targetCategory === 'semua') {
             url.searchParams.delete('c'); 
@@ -245,23 +238,17 @@ $kategori_aktif = isset($_GET['c']) ? strtolower(trim($_GET['c'])) : 'semua';
         }
         window.history.pushState({}, '', url);
 
-        // 2. Reset visual seluruh tombol kategori
         const buttons = document.querySelectorAll('.category-btn');
         buttons.forEach(btn => {
-            // Hapus style aktif yang tebal
             btn.classList.remove('bg-blue-50', 'border-blue-400', 'ring-4', 'ring-blue-100', 'shadow-md');
-            // Kembalikan ke style normal
             btn.classList.add('bg-white', 'border-gray-100');
         });
 
-        // 3. Set visual tombol AKTIF (yang sedang dipilih)
         if (targetElement) {
             targetElement.classList.remove('bg-white', 'border-gray-100');
-            // Tambahkan style aktif yang sangat menonjol menggunakan Tailwind
             targetElement.classList.add('bg-blue-50', 'border-blue-400', 'ring-4', 'ring-blue-100', 'shadow-md');
         }
 
-        // 4. Saring Kartu Produk Berdasarkan Atribut Data
         const cards = document.querySelectorAll('.product-card');
         cards.forEach(card => {
             const cardCategory = card.getAttribute('data-cat-name');
@@ -272,7 +259,6 @@ $kategori_aktif = isset($_GET['c']) ? strtolower(trim($_GET['c'])) : 'semua';
             }
         });
 
-        // 5. Update Judul Komponen Secara Dinamis
         const sectionTitle = document.getElementById('section-title');
         if (targetCategory === 'semua') {
             sectionTitle.textContent = 'Daftar Produk';
@@ -281,29 +267,25 @@ $kategori_aktif = isset($_GET['c']) ? strtolower(trim($_GET['c'])) : 'semua';
             sectionTitle.textContent = 'Daftar Produk ' + displayTitle;
         }
 
-        // 6. Re-render Lucide Icons
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
     }
 
-    // --- INITIAL LOAD ---
     document.addEventListener("DOMContentLoaded", function() {
         const urlParams = new URLSearchParams(window.location.search);
         let categoryParam = urlParams.get('c');
         
-        // Membersihkan potensi string 'undefined' yang macet di cache/URL sebelumnya
         if (!categoryParam || categoryParam === 'undefined' || categoryParam.trim() === '') {
             filterCategory('semua');
         } else {
-            // Validasi apakah kategori di URL benar-benar ada tombolnya
             const categoryClean = categoryParam.toLowerCase().trim();
             const exists = document.querySelector(`.category-btn[data-target-cat="${categoryClean}"]`);
             
             if (exists) {
                 filterCategory(categoryClean);
             } else {
-                filterCategory('semua'); // Default aman
+                filterCategory('semua');
             }
         }
     });

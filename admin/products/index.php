@@ -108,7 +108,6 @@ $total_produk_aktif = mysqli_num_rows($result_produk);
 
         <main class="flex-1 overflow-y-auto p-6 bg-slate-50 custom-scrollbar">
 
-            <!-- ALERT NOTIFIKASI SYSTEM (Tambahkan Bagian Ini) -->
             <?php if (isset($_SESSION['success']) || isset($_GET['status'])): 
                 $msg = $_SESSION['success'] ?? 'Aksi berhasil dieksekusi!';
                 if(isset($_GET['status'])) {
@@ -256,14 +255,12 @@ $total_produk_aktif = mysqli_num_rows($result_produk);
                                         </td>
                                         <td class="py-4 px-5">
                                             <div class="flex items-center justify-center space-x-1.5">
-                                                <!-- Tombol Edit: Mengarah ke halaman form edit dengan parameter ID -->
                                                 <a href="edit.php?id=<?= $produk['id']; ?>" 
                                                 class="p-2 border border-slate-200 hover:border-blue-600 hover:bg-blue-50 text-slate-500 hover:text-blue-600 rounded-xl transition" 
                                                 title="Edit Produk">
                                                     <i class="fa-solid fa-pen-to-square text-xs"></i>
                                                 </a>
                                                 
-                                                <!-- Tombol Hapus: Mengarah ke delete.php dengan konfirmasi pop-up browser -->
                                                 <a href="delete.php?id=<?= $produk['id']; ?>" 
                                                 onclick="return confirm('Apakah Anda benar-benar yakin ingin menghapus produk \'<?= addslashes($produk['nama_produk']); ?>\' dari katalog Anda? Semua gambar produk terkait juga akan terhapus fisik.')" 
                                                 class="p-2 border border-slate-200 hover:border-red-600 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-xl transition" 

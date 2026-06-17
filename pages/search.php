@@ -1,5 +1,4 @@
 <?php
-// Cek sesi (sesuai instruksi sebelumnya)
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 include '../config/koneksi.php';
 
@@ -7,7 +6,6 @@ include '../config/koneksi.php';
 
 $search_query = isset($_GET['q']) ? mysqli_real_escape_string($conn, $_GET['q']) : '';
 
-// Query pencarian dengan LIKE
 $query = "SELECT p.*, 
           (SELECT pi.nama_file FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) as gambar_utama 
           FROM products p 

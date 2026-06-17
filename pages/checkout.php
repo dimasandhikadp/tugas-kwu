@@ -5,24 +5,21 @@ if (session_status() === PHP_SESSION_NONE) {
 include '../config/koneksi.php';
 /** @var mysqli $conn */
 
-// --- JEMBATAN DATA DARI CART ATAU PRODUCT-DETAILS ---
-// source: 'cart' = dari cart.php (cart_item_id), 'direct' = dari product-details (product_id)
+// Ambil data barang belanja dari cart.php
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proses_checkout'])) {
-    // Data dari CART.PHP - qty berindeks cart_item_id
     $_SESSION['checkout_data'] = [
         'source'    => 'cart',
         'ids'       => implode(',', array_map('intval', $_POST['selected_items'])),
-        'qty'       => $_POST['qty'] // [cart_item_id => qty]
+        'qty'       => $_POST['qty'] 
     ];
 } elseif (isset($_GET['slug']) && isset($_GET['qty'])) {
-    // Data dari PRODUCT-DETAILS.PHP (via tombol Beli Sekarang) - pakai slug
-    // Akan diisi setelah query produk di bawah
-    $_SESSION['checkout_data'] = null; // placeholder, diisi setelah query
+
+    $_SESSION['checkout_data'] = null; 
 }
 
 $user_id = $_SESSION['user_id'] ?? 1;
 
-// --- PROSES SIMPAN ALAMAT ---
+// Simpan Alamat
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_alamat'])) {
     $nama_penerima = mysqli_real_escape_string($conn, $_POST['nama_penerima']);
     $no_hp         = mysqli_real_escape_string($conn, $_POST['no_hp']);
@@ -40,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_alamat'])) {
     }
 }
 
-// --- LOAD ALAMAT ---
+// Load Alanat yang tersimpan
 $alamat_terpanah = null;
 $res_alamat = mysqli_query($conn, "SELECT * FROM addresses WHERE user_id = '$user_id' AND is_default = 1 LIMIT 1");
 if ($res_alamat && mysqli_num_rows($res_alamat) > 0) {
@@ -50,7 +47,6 @@ if ($res_alamat && mysqli_num_rows($res_alamat) > 0) {
         'telp' => $data_adr['no_hp'],
         'wilayah' => $data_adr['provinsi'] . ", " . $data_adr['kota'] . ", " . $data_adr['kecamatan'] . ", " . $data_adr['kelurahan'],
         'jalan' => $data_adr['alamat'],
-        // Tambahkan ini agar bisa dipakai di input hidden
         'provinsi' => $data_adr['provinsi'],
         'kota' => $data_adr['kota'],
         'kecamatan' => $data_adr['kecamatan'],
@@ -58,7 +54,6 @@ if ($res_alamat && mysqli_num_rows($res_alamat) > 0) {
     ];
 }
 
-// --- LOGIKA AMBIL DATA PRODUK (CART POST ATAU DIRECT GET) ---
 $items_checkout = [];
 $subtotal_pesanan = 0;
 $biaya_layanan = 2000;
@@ -66,10 +61,8 @@ $biaya_pengiriman = 20000;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_items'])) {
     $selected_ids = array_map('intval', $_POST['selected_items']);
-    $qty_arr = $_POST['qty']; // [cart_item_id => qty]
+    $qty_arr = $_POST['qty']; 
     $ids_string = implode(',', $selected_ids);
-
-    // Session sudah diset di blok atas
     
     $query_p = "SELECT ci.id as cart_item_id, p.*, 
             (SELECT pi.nama_file FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) as gambar_utama 
@@ -87,10 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_items'])) {
         $items_checkout[] = $row;
     }
     
-    // Simpan mapping cart_item_id => product_id ke session agar proses_pembayaran bisa kurangi stok
     $cart_to_product = [];
     foreach ($items_checkout as $item) {
-        $cart_to_product[$item['cart_item_id']] = $item['id']; // id = product_id
+        $cart_to_product[$item['cart_item_id']] = $item['id']; 
     }
     $_SESSION['checkout_data']['cart_to_product'] = $cart_to_product;
 
@@ -105,7 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_items'])) {
         $subtotal_pesanan = $row_direct['harga'] * $qty;
         $items_checkout[] = $row_direct;
         
-        // Simpan session untuk direct checkout
         $_SESSION['checkout_data'] = [
             'source'     => 'direct',
             'product_id' => (int)$row_direct['id'],
@@ -119,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proses_pembayaran']))
         $cd = $_SESSION['checkout_data'];
 
         if ($cd['source'] === 'direct') {
-            // Dari product-details: product_id & qty langsung tersedia
             $pid = (int)$cd['product_id'];
             $qty_dibeli = (int)$cd['qty'];
             $res = mysqli_query($conn, "SELECT stok FROM products WHERE id = '$pid' LIMIT 1");
@@ -130,13 +120,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proses_pembayaran']))
             }
 
         } elseif ($cd['source'] === 'cart') {
-            // Dari cart: ids = cart_item_id, qty = [cart_item_id => qty]
-            // Gunakan mapping cart_item_id => product_id yang sudah disimpan
             $cart_to_product = $cd['cart_to_product'] ?? [];
-            $qty_arr = $cd['qty']; // [cart_item_id => qty]
-            $ids_string = $cd['ids']; // comma-separated cart_item_id
+            $qty_arr = $cd['qty']; 
+            $ids_string = $cd['ids']; 
 
-            // Ambil product_id dari cart_items
             $res = mysqli_query($conn, "SELECT ci.id as cart_item_id, ci.product_id, p.stok 
                                         FROM cart_items ci 
                                         JOIN products p ON ci.product_id = p.id
@@ -149,7 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proses_pembayaran']))
                     mysqli_query($conn, "UPDATE products SET stok = stok - $qty_dibeli WHERE id = '$pid'");
                 }
             }
-            // Hapus item dari keranjang
             mysqli_query($conn, "DELETE FROM cart_items WHERE id IN ($ids_string)");
         }
 
@@ -185,6 +171,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
 
     <main class="max-w-3xl mx-auto px-4 py-6 space-y-4 mb-24">
         
+    <!-- Section Alamat -->
         <section class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm relative overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-red-500"></div>
             <div class="flex items-center gap-2 mb-3 text-blue-950">
@@ -210,6 +197,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
             </div>
         </section>
 
+        <!-- Section List Barang yang dibeli -->
         <section class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-4">
             <div class="flex items-center gap-2 border-b border-gray-50 pb-2">
                 <i data-lucide="shopping-bag" class="w-5 h-5 text-blue-600"></i>
@@ -238,6 +226,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
             <?php endforeach; ?>
         </section>
 
+        <!-- Section Metode Pembayaran -->
         <section class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-3">
             <div class="flex items-center justify-between border-b border-gray-50 pb-2">
                 <div class="flex items-center gap-2">
@@ -258,6 +247,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
             <input type="hidden" id="selected-payment-value" value="COD">
         </section>
 
+        <!-- Section Rincian Belanja -->
         <section class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-3 text-sm">
             <div class="flex items-center gap-2 border-b border-gray-50 pb-2 mb-1">
                 <i data-lucide="receipt" class="w-5 h-5 text-blue-600"></i>
@@ -283,6 +273,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
         </section>
     </main>
 
+    <!-- Section Checkout -->
     <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 shadow-xl z-30">
         <div class="max-w-3xl mx-auto px-4 h-20 flex items-center justify-between">
             <div class="flex flex-col">
@@ -301,6 +292,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
         </div>
     </div>
 
+    <!-- POP UP Alamat -->
     <div id="modal-alamat" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
         <form method="POST" action="" class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             <input type="hidden" name="action_alamat" value="1">
@@ -355,7 +347,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
         </div>
     </div>
 
-    <!-- MODAL POP-UP METODE PEMBAYARAN BERKATEGORI -->
+    <!-- POP UP Opsi Pembayaran -->
 <div id="modal-pembayaran" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
     <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
         <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-blue-950 text-white">
@@ -383,7 +375,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
             <div class="space-y-1">
                 <span class="text-[11px] font-bold text-gray-400 tracking-wider uppercase px-2">E-Wallet & QRIS</span>
                 <div class="bg-white border border-gray-100 rounded-xl divide-y divide-gray-50 overflow-hidden shadow-xs">
-                    <!-- QRIS -->
+
                     <div onclick="selectPaymentOpt('qris', 'QRIS All Payment', 'E-Wallet / M-Banking', 'qris.png')" class="pay-opt-row flex items-center justify-between py-3 px-3 cursor-pointer hover:bg-slate-50 transition">
                         <div class="flex items-center gap-3">
                             <img src="../assets/img/payment-method/qris.png" class="h-5 w-12 object-contain">
@@ -391,7 +383,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
                         </div>
                         <div id="check-opt-qris" class="text-blue-600 font-bold hidden"><i data-lucide="check" class="w-4 h-4"></i></div>
                     </div>
-                    <!-- DANA -->
+                
                     <div onclick="selectPaymentOpt('dana', 'DANA E-Wallet', 'Bayar instan pakai saldo DANA', 'dana.png')" class="pay-opt-row flex items-center justify-between py-3 px-3 cursor-pointer hover:bg-slate-50 transition">
                         <div class="flex items-center gap-3">
                             <img src="../assets/img/payment-method/dana.png" class="h-5 w-12 object-contain">
@@ -399,7 +391,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
                         </div>
                         <div id="check-opt-dana" class="text-blue-600 font-bold hidden"><i data-lucide="check" class="w-4 h-4"></i></div>
                     </div>
-                    <!-- GOPAY -->
+
                     <div onclick="selectPaymentOpt('gopay', 'GOPAY E-Wallet', 'Bayar cepat pakai saldo GoPay', 'gopay.webp')" class="pay-opt-row flex items-center justify-between py-3 px-3 cursor-pointer hover:bg-slate-50 transition">
                         <div class="flex items-center gap-3">
                             <img src="../assets/img/payment-method/gopay.webp" class="h-5 w-12 object-contain">
@@ -407,7 +399,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
                         </div>
                         <div id="check-opt-gopay" class="text-blue-600 font-bold hidden"><i data-lucide="check" class="w-4 h-4"></i></div>
                     </div>
-                    <!-- OVO -->
+
                     <div onclick="selectPaymentOpt('ovo', 'OVO E-Wallet', 'Bayar mudah pakai saldo OVO', 'ovo.png')" class="pay-opt-row flex items-center justify-between py-3 px-3 cursor-pointer hover:bg-slate-50 transition">
                         <div class="flex items-center gap-3">
                             <img src="../assets/img/payment-method/ovo.png" class="h-5 w-12 object-contain">
@@ -415,7 +407,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
                         </div>
                         <div id="check-opt-ovo" class="text-blue-600 font-bold hidden"><i data-lucide="check" class="w-4 h-4"></i></div>
                     </div>
-                    <!-- SHOPEEPAY -->
+
                     <div onclick="selectPaymentOpt('shopeepay', 'ShopeePay', 'Integrasi dompet ShopeePay', 'shopeepay.webp')" class="pay-opt-row flex items-center justify-between py-3 px-3 cursor-pointer hover:bg-slate-50 transition">
                         <div class="flex items-center gap-3">
                             <img src="../assets/img/payment-method/shopeepay.webp" class="h-5 w-12 object-contain">
@@ -430,7 +422,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
             <div class="space-y-1">
                 <span class="text-[11px] font-bold text-gray-400 tracking-wider uppercase px-2">Transfer Bank (Virtual Account)</span>
                 <div class="bg-white border border-gray-100 rounded-xl divide-y divide-gray-50 overflow-hidden shadow-xs">
-                    <!-- BCA -->
+
                     <div onclick="selectPaymentOpt('bca', 'BCA Virtual Account', 'Transfer otomatis bank BCA', 'bca.jpg')" class="pay-opt-row flex items-center justify-between py-3 px-3 cursor-pointer hover:bg-slate-50 transition">
                         <div class="flex items-center gap-3">
                             <img src="../assets/img/payment-method/bca.jpg" class="h-5 w-12 object-contain">
@@ -438,7 +430,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
                         </div>
                         <div id="check-opt-bca" class="text-blue-600 font-bold hidden"><i data-lucide="check" class="w-4 h-4"></i></div>
                     </div>
-                    <!-- BNI -->
+
                     <div onclick="selectPaymentOpt('bni', 'BNI Virtual Account', 'Transfer otomatis bank BNI', 'bni.png')" class="pay-opt-row flex items-center justify-between py-3 px-3 cursor-pointer hover:bg-slate-50 transition">
                         <div class="flex items-center gap-3">
                             <img src="../assets/img/payment-method/bni.png" class="h-5 w-12 object-contain">
@@ -446,7 +438,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
                         </div>
                         <div id="check-opt-bni" class="text-blue-600 font-bold hidden"><i data-lucide="check" class="w-4 h-4"></i></div>
                     </div>
-                    <!-- BRI -->
+
                     <div onclick="selectPaymentOpt('bri', 'BRI Virtual Account', 'Transfer otomatis bank BRI', 'bri.png')" class="pay-opt-row flex items-center justify-between py-3 px-3 cursor-pointer hover:bg-slate-50 transition">
                         <div class="flex items-center gap-3">
                             <img src="../assets/img/payment-method/bri.png" class="h-5 w-12 object-contain">
@@ -454,7 +446,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
                         </div>
                         <div id="check-opt-bri" class="text-blue-600 font-bold hidden"><i data-lucide="check" class="w-4 h-4"></i></div>
                     </div>
-                    <!-- MANDIRI -->
+
                     <div onclick="selectPaymentOpt('mandiri', 'Mandiri Virtual Account', 'Transfer otomatis bank Mandiri', 'mandiri.png')" class="pay-opt-row flex items-center justify-between py-3 px-3 cursor-pointer hover:bg-slate-50 transition">
                         <div class="flex items-center gap-3">
                             <img src="../assets/img/payment-method/mandiri.png" class="h-5 w-12 object-contain">
@@ -469,7 +461,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
     </div>
 </div>
 
-<!-- POP-UP YAKIN PESAN -->
+<!-- POP-UP Konfirmasi Pemesanan -->
 <div id="popup-konfirmasi" class="fixed inset-0 z-[100] hidden bg-black/40 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
     <div class="bg-white w-full sm:max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
         <div class="mx-auto w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center shadow-xs">
@@ -486,6 +478,7 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
     </div>
 </div>
 
+<!-- Pop-Up Berhasil Pesan -->
 <div id="popup-sukses" class="fixed inset-0 z-[100] hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
     <div class="bg-white w-full sm:max-w-xs rounded-2xl p-6 shadow-2xl text-center space-y-4">
         <div class="mx-auto w-14 h-14 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center shadow-xs">
@@ -503,7 +496,6 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
 </div>
 
     <script>
-    // Inisialisasi variabel dari PHP
     const biayaLayanan = <?= $biaya_layanan; ?>;
     const biayaPengiriman = <?= $biaya_pengiriman; ?>;
 
@@ -511,7 +503,6 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
         return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
-    // Fungsi updateQty untuk keranjang (mengirim id_keranjang atau index)
     function updateQty(id, change, hargaSatuan) {
         let qtyElement = document.getElementById('qty-' + id);
         let subtotalElement = document.getElementById('subtotal-' + id);
@@ -522,11 +513,9 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
         
         qtyElement.textContent = newQty;
         
-        // Update subtotal per item
         let newSubtotal = newQty * hargaSatuan;
         subtotalElement.textContent = formatRupiah(newSubtotal);
 
-        // Hitung ulang total keseluruhan di halaman
         hitungTotalKeseluruhan();
     }
 
@@ -535,20 +524,18 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
         let total = 0;
         
         subtotals.forEach(el => {
-            // Bersihkan format Rupiah untuk perhitungan
             let val = parseInt(el.textContent.replace(/[^0-9]/g, ''));
             total += val;
         });
 
         const grandTotal = total + biayaLayanan + biayaPengiriman;
         
-        // Update tampilan total
         document.getElementById('display-subtotal').textContent = formatRupiah(total);
         document.getElementById('display-total').textContent = formatRupiah(grandTotal);
         document.getElementById('display-fixed-total').textContent = formatRupiah(grandTotal);
     }
 
-    // --- LOGIKA WILAYAH (Tetap sama) ---
+    // Data untuk Pilihan Wilayah
     const databaseWilayah = {
         "Kalimantan Barat": { "Pontianak": { "Pontianak Kota": ["Dararat Sekip", "Mariana"], "Pontianak Tenggara": ["Bangka Belitung"] }, "Singkawang": { "Singkawang Barat": ["Pasiran", "Melayu"] } },
         "Kalimantan Selatan": { "Banjarmasin": { "Banjarmasin Tengah": ["Antasan Besar"], "Banjarmasin Utara": ["Alalak Utara"] }, "Banjarbaru": { "Landasan Ulin": ["Guntung Payung"] } },
@@ -630,7 +617,6 @@ $total_pembayaran = $subtotal_pesanan + $biaya_layanan + $biaya_pengiriman;
         document.getElementById('txt-region-summary').className = "text-gray-400";
     }
 
-    // --- PEMBAYARAN & KONFIRMASI ---
     function openPaymentModal() { document.getElementById('modal-pembayaran').classList.remove('hidden'); document.body.classList.add('modal-active'); }
     function closePaymentModal() { document.getElementById('modal-pembayaran').classList.add('hidden'); document.body.classList.remove('modal-active'); }
 

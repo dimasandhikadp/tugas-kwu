@@ -3,12 +3,10 @@ include '../config/koneksi.php';
 
 /** @var mysqli $conn */
 
-// Pastikan koneksi sudah di-include
 $total_items = 0;
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
     
-    // Query untuk mengambil total qty
     $query_count = "SELECT SUM(ci.qty) AS total 
                     FROM cart_items ci 
                     JOIN cart c ON ci.cart_id = c.id 
@@ -16,13 +14,11 @@ if (isset($_SESSION['user_id'])) {
     $res_count = mysqli_query($conn, $query_count);
     $data_count = mysqli_fetch_assoc($res_count);
     
-    // Jika ada isinya, ambil angkanya
     if ($data_count['total'] > 0) {
         $total_items = $data_count['total'];
     }
 }
 
-// Logika untuk menampilkan "99+"
 $display_count = ($total_items > 99) ? "99+" : $total_items;
 ?>
 

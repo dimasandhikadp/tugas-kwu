@@ -4,7 +4,7 @@ require_once '../../config/koneksi.php';
 
 /** @var mysqli $conn */
 
-// Proteksi Halaman
+// Validasi Role Akun
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['user_id']) || strtolower($_SESSION['role']) !== 'seller') {
     header('Location: index.php');
     exit();
@@ -31,7 +31,6 @@ if (isset($_POST['asal_produk']) && is_array($_POST['asal_produk'])) {
 mysqli_begin_transaction($conn);
 
 try {
-    // 1. Update data pada tabel utama 'products'
     $query_update = "UPDATE products SET 
         nama_produk = '$nama_produk',
         slug = '$slug',
@@ -48,12 +47,10 @@ try {
         throw new Exception("Gagal memperbarui data informasi produk.");
     }
 
-    // LOGIKA BARU: PROSES PENGHAPUSAN ASLI DI SINI
     if (isset($_POST['hapus_gambar_id']) && is_array($_POST['hapus_gambar_id'])) {
         foreach ($_POST['hapus_gambar_id'] as $img_id) {
             $clean_img_id = mysqli_real_escape_string($conn, $img_id);
 
-            // Cari nama file fisik terlebih dahulu untuk dihapus dari storage local
             $query_find = mysqli_query($conn, "SELECT pi.nama_file FROM product_images pi 
                                                JOIN products p ON pi.product_id = p.id 
                                                WHERE pi.id = '$clean_img_id' AND p.user_id = '$user_id_seller'");
@@ -62,12 +59,10 @@ try {
                 $file_name = $img_data['nama_file'];
                 $path_file = "../../assets/img/product-image/" . $file_name;
 
-                // Hapus file fisik dari direktori local
                 if (!empty($file_name) && file_exists($path_file)) {
                     unlink($path_file);
                 }
 
-                // Hapus baris data di database
                 $query_delete_row = "DELETE FROM product_images WHERE id = '$clean_img_id'";
                 if (!mysqli_query($conn, $query_delete_row)) {
                     throw new Exception("Gagal menghapus entri arsip gambar di database.");
@@ -76,7 +71,6 @@ try {
         }
     }
 
-    // 3. Cek dan proses jika user menambahkan banyak gambar baru sekaligus (Sama dengan alur Create)
     if (isset($_FILES['gambar']) && !empty($_FILES['gambar']['name'][0])) {
         $target_dir = "../../assets/img/product-image/";
         if (!is_dir($target_dir)) {
