@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 17, 2026 at 09:02 AM
+-- Generation Time: Jun 17, 2026 at 01:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -193,7 +193,23 @@ INSERT INTO `products` (`id`, `user_id`, `nama_produk`, `slug`, `kategori`, `des
 (11, 5, 'Ikan Tongkol', 'ikan-tongkol', 'Ikan', 'Tongkol Komo adalah golongan ikan tuna kecil dengan ciri badan memanjang, tidak memiliki sisik dengan tektur sirip punggung keras. Ikan ini termasuk dalam famili Scombridae bergenus Euthynnus ini mempunyai ukuran tubuh cukup besar, kulit berwarna abu-abu, dan berdaging tebal berwarna merah tua.', 30000.00, 38, 1.00, 'kg', 'Tangkapan Harian', 'TERLARIS', 'aktif', '2026-06-15 11:00:08', NULL),
 (12, 5, 'Udang Tiger', 'udang-tiger', 'Udang', 'Penaeus monodon atau giant tiger prawn, Asian tiger shrimp, black tiger shrimp, adalah sebuah crustaces yang dibudidayakan secara luas untuk dikunsumsi. Di Indonesia, udang ini disebut udang pancet atau udang windu.', 50000.00, 28, 1.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-15 11:31:25', NULL),
 (13, 5, 'Ikan Kembung', 'ikan-kembung', 'Ikan', 'Ikan Kembung adalah nama sekelompok ikan laut yang tergolong ke dalam genus Rastrelliger, famili Scombridae. Meskipun bertubuh kecil, ikan ini masih sekerabat dengan tenggiri, tongkol, tuna, madidihang, dan makerel. Di Sumatera Barat dikenal sebagai ikan Gembolo/gambolo.', 25000.00, 29, 1.00, 'kg', 'Tangkapan Harian', '', 'aktif', '2026-06-15 11:39:16', NULL),
-(14, 5, 'Ikan Lele', 'ikan-lele', 'Ikan', 'Bangsa Siluriformes mencakup semua kelompok ikan yang secara bebas disebut sebagai ikan berkumis atau lazim disebut lele atau patin. Namanya muncul karena adanya organ pengindra tambahan di sekitar moncongnya yang tampak seperti kumis kucing.', 25000.00, 18, 1.00, 'kg', 'Budidaya Air Tawar', 'PROMO', 'aktif', '2026-06-15 11:41:27', NULL);
+(14, 5, 'Ikan Lele', 'ikan-lele', 'Ikan', 'Bangsa Siluriformes mencakup semua kelompok ikan yang secara bebas disebut sebagai ikan berkumis atau lazim disebut lele atau patin. Namanya muncul karena adanya organ pengindra tambahan di sekitar moncongnya yang tampak seperti kumis kucing.', 25000.00, 18, 1.00, 'kg', 'Budidaya Air Tawar', 'PROMO', 'aktif', '2026-06-15 11:41:27', NULL),
+(15, 5, 'Ikan Tuna', 'ikan-tuna', 'Ikan', 'Ikan laut berukuran besar dengan daging merah yang padat, kaya protein dan omega-3.', 45000.00, 20, 1.00, 'kg', 'Tangkapan Harian', 'TERLARIS', 'aktif', '2026-06-17 11:15:41', NULL),
+(16, 5, 'Ikan Cakalang', 'ikan-cakalang', 'Ikan', 'Ikan laut populer dengan tekstur daging padat, sering diolah menjadi ikan asap dan masakan khas Nusantara.', 35000.00, 10, 1.00, 'kg', 'Tangkapan Harian', 'BARU', 'aktif', '2026-06-17 11:17:05', NULL),
+(17, 5, 'Ikan Kakap Merah', 'ikan-kakap-merah', 'Ikan', 'Ikan premium dengan daging putih lembut dan sedikit duri.', 40000.00, 10, 0.00, 'kg', 'Tangkapan Harian', 'TERLARIS', 'aktif', '2026-06-17 11:18:14', NULL),
+(18, 5, 'Ikan Kakap Putih', 'ikan-kakap-putih', 'Ikan', 'Ikan dengan daging lembut dan rasa ringan, cocok untuk berbagai olahan masakan.', 50000.00, 20, 0.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-17 11:19:37', NULL),
+(19, 5, 'Ikan Kerapu', 'ikan-kerapu', 'Ikan', 'Ikan bernilai ekonomi tinggi dengan tekstur daging kenyal dan gurih.', 40000.00, 20, 0.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-17 11:21:07', NULL),
+(20, 5, 'Ikan Nila', 'ikan-nila', 'Ikan', 'Ikan berdaging putih yang lembut dan mudah diolah menjadi berbagai masakan.', 20000.00, 100, 0.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-17 11:22:46', NULL),
+(21, 5, 'Ikan Gurame', 'ikan-gurame', 'Ikan', 'Ikan air tawar premium yang sering disajikan di restoran.', 30000.00, 20, 0.00, 'kg', 'Budidaya Air Tawar', 'TERLARIS', 'aktif', '2026-06-17 11:24:15', NULL),
+(22, 5, 'Ikan Patin', 'ikan-patin', 'Ikan', 'Ikan dengan tekstur lembut dan rasa gurih, populer untuk masakan berkuah.', 30000.00, 20, 0.00, 'kg', 'Budidaya Air Tawar', '', 'aktif', '2026-06-17 11:25:49', NULL),
+(23, 5, 'Ikan Selar', 'ikan-selar', 'Ikan', 'Ikan laut kecil dengan rasa gurih dan tekstur daging padat.', 20000.00, 20, 0.00, 'kg', 'Tangkapan Harian', 'TERLARIS', 'aktif', '2026-06-17 11:26:49', NULL),
+(24, 5, 'Udang Vaname', 'udang-vaname', 'Udang', 'Udang paling populer di Indonesia dengan daging kenyal dan produksi tinggi.', 40000.00, 60, 0.00, 'kg', 'Budidaya Air Tawar', '', 'aktif', '2026-06-17 11:30:55', NULL),
+(25, 5, 'Udang Windu', 'udang-windu', 'Udang', 'Udang berukuran besar dengan rasa manis dan tekstur daging padat.', 30000.00, 40, 0.00, 'kg', 'Budidaya Air Tawar', '', 'aktif', '2026-06-17 11:32:03', NULL),
+(26, 5, 'Udang Galah', 'udang-galah', 'Udang', 'Udang air tawar besar dengan capit panjang dan rasa manis.', 40000.00, 60, 0.00, 'kg', 'Budidaya Air Tawar', '', 'aktif', '2026-06-17 11:33:19', NULL),
+(27, 5, 'Kerang Hijau', 'kerang-hijau', 'Kerang', 'Kerang dengan daging lembut dan rasa gurih yang populer di Indonesia.', 50000.00, 30, 0.00, 'kg', 'Tangkapan Harian', '', 'aktif', '2026-06-17 11:35:11', NULL),
+(28, 5, 'Kerang Dara', 'kerang-dara', 'Kerang', 'Kerang bercangkang tebal dengan rasa manis dan tekstur kenyal.', 30000.00, 100, 0.00, 'kg', 'Tangkapan Harian', '', 'aktif', '2026-06-17 11:36:19', NULL),
+(29, 5, 'Kerang Bambu', 'kerang-bambu', 'Kerang', 'Kerang berbentuk panjang dengan daging yang lembut.', 40000.00, 40, 0.00, 'kg', 'Tangkapan Harian', '', 'aktif', '2026-06-17 11:37:26', NULL),
+(30, 5, 'Cumi-cumi', 'cumi-cumi', 'Cumi', 'Cumi segar hasil tangkapan nelayan dengan tekstur kenyal dan rasa manis alami.', 55000.00, 20, 0.00, 'kg', 'Tangkapan Harian', 'TERLARIS', 'aktif', '2026-06-17 11:40:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -232,7 +248,32 @@ INSERT INTO `product_images` (`id`, `product_id`, `nama_file`) VALUES
 (25, 13, 'ikan-kembung-1781523556-2.jpg'),
 (26, 14, 'ikan-lele-1781523687-1.jpg'),
 (27, 14, 'ikan-lele-1781523687-2.jpg'),
-(28, 14, 'ikan-lele-1781523687-3.jpg');
+(28, 14, 'ikan-lele-1781523687-3.jpg'),
+(29, 15, 'ikan-tuna-1781694941-1.jpg'),
+(30, 15, 'ikan-tuna-1781694941-2.jpg'),
+(31, 16, 'ikan-cakalang-1781695025-1.jpg'),
+(32, 16, 'ikan-cakalang-1781695025-2.jpg'),
+(33, 17, 'ikan-kakap-merah-1781695094-1.jpg'),
+(34, 17, 'ikan-kakap-merah-1781695094-2.jpg'),
+(35, 18, 'ikan-kakap-putih-1781695177-1.jpg'),
+(36, 19, 'ikan-kerapu-1781695267-1.jpg'),
+(37, 20, 'ikan-nila-1781695366-1.jpg'),
+(38, 21, 'ikan-gurame-1781695455-1.jpg'),
+(39, 22, 'ikan-patin-1781695549-1.jpg'),
+(40, 23, 'ikan-selar-1781695609-1.webp'),
+(41, 24, 'udang-vaname-1781695855-1.jpg'),
+(42, 24, 'udang-vaname-1781695855-2.jpg'),
+(43, 25, 'udang-windu-1781695923-1.jpg'),
+(44, 25, 'udang-windu-1781695923-2.jpg'),
+(45, 26, 'udang-galah-1781695999-1.jpg'),
+(46, 27, 'kerang-hijau-1781696111-1.jpg'),
+(47, 27, 'kerang-hijau-1781696111-2.jpg'),
+(48, 28, 'kerang-dara-1781696179-1.jpg'),
+(49, 28, 'kerang-dara-1781696179-2.jpg'),
+(50, 29, 'kerang-bambu-1781696246-1.jpg'),
+(51, 30, 'cumi-cumi-1781696400-1.jpg'),
+(52, 30, 'cumi-cumi-1781696400-2.jpg'),
+(53, 30, 'cumi-cumi-1781696400-3.jpg');
 
 -- --------------------------------------------------------
 
@@ -398,13 +439,13 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `product_images`
 --
 ALTER TABLE `product_images`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `users`
